@@ -1,0 +1,8 @@
+button {
+    width: 100%;
+}
+
+.button-container {
+    top: 50%;
+    transform: translateY(50%);
+}
