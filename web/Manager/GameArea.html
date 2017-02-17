@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Game Type</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/Util/UtilityClasses.css">
+    <script src="../js/jquery-3.1.1.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/Util/UtilityFuncs.js"></script>
+    <script src="../js/GameCreator/GameArea.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h3>Would you like to limit to play area?</h3>
+        <div class="radio">
+            <label><input type="radio" id="radio_0" name="playArea-radio">Yes</label>
+        </div>
+        <div class="radio">
+            <label><input checked type="radio" id="radio_1" name="playArea-radio">No</label>
+        </div>
+        <div hidden class="area-limit-enabled">
+            <h1>Area limit is not yet supported, please come back again later!</h1>
+        </div>
+    </div>
+</body>
+</html>
