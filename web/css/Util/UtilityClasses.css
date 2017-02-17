@@ -1,3 +1,22 @@
 .btn-wide {
     width: 100%;
 }
+
+svg {
+    cursor: pointer;
+    height: 24px;
+    width: 24px;
+}
+svg > circle {
+    stroke: black;
+    fill: white;
+}
+svg > path {
+    stroke: black;
+}
+svg:hover > circle {
+    fill: red;
+}
+svg:hover > path {
+    stroke: white;
+}

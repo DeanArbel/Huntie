@@ -6,66 +6,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="../css/bootstrap.min.css">
     <link rel="stylesheet" href="../css/Util/UtilityClasses.css">
-    <script src="../js/bootstrap.min.js"></script>
     <script src="../js/jquery-3.1.1.min.js"></script>
-    <script src="../js/Util/RemovableTable.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/Util/UtilityFuncs.js"></script>
+    <script src="../js/GameCreator/GameType.js"></script>
 </head>
 <body>
-<!--<div class="dropdown">-->
-    <!--<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Dropdown Example-->
-        <!--<span class="caret"></span></button>-->
-    <!--<ul class="dropdown-menu">-->
-        <!--<li><a href="#">HTML</a></li>-->
-        <!--<li><a href="#">CSS</a></li>-->
-        <!--<li><a href="#">JavaScript</a></li>-->
-    <!--</ul>-->
-<!--</div>-->
-<table class="table table-striped table-hover table-users">
-    <thead>
-    <tr>
-
-        <th class="hidden-phone">Usuario</th>
-        <th>Nombre</th>
-        <th>Apellido</th>
-        <th class="hidden-phone">Email</th>
-        <th class="hidden-phone">Provincia</th>
-        <th class="hidden-phone">Miembro desde</th>
-        <th>Estado</th>
-        <th></th>
-    </tr>
-    </thead>
-
-    <tbody>
-
-    <tr>
-
-        <td class="hidden-phone">johnny</td>
-        <td>john</td>
-        <td>doe</td>
-        <td class="hidden-phone">dsd@gmail.com</td>
-        <td class="hidden-phone">active</td>
-        <td class="hidden-phone">10/12/1999</td>
-
-        <td><span class="label label-warning">Not Active</span></td>
-
-        <td><a href="#" class="confirm-delete btn mini red-stripe" role="button" data-title="johnny" data-id="1">Delete</a></td>
-    </tr>
-    <tr>
-
-        <td class="hidden-phone">kitty</td>
-        <td>jane</td>
-        <td>doe</td>
-        <td class="hidden-phone">dasasasd@gmail.com</td>
-        <td class="hidden-phone">active</td>
-        <td class="hidden-phone">10/1/1999</td>
-
-        <td><span class="label label-danger">Activo</span></td>
-
-        <td><a href="#" class="confirm-delete btn mini red-stripe" role="button" data-title="kitty" data-id="2">Delete</a></td>
-    </tr>
-
-    </tbody>
-
-</table>
+    <div class="container">
+        <div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle dropdown-btn" type="button" data-toggle="dropdown">Individual Game
+                <span class="caret"></span></button>
+            <ul class="dropdown-menu">
+                <li><a href="#" class="dropdown-selection">Individual Game</a></li>
+                <li><a href="#" class="dropdown-selection">Team Game</a></li>
+            </ul>
+        </div>
+        <table id="teamTable" class="table table-hover table-users show-team">
+            <thead>
+            <tr>
+                <th>Team name</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Team Instinct</td>
+                <td>
+                    <svg>
+                        <circle cx="12" cy="12" r="11" stroke="black" stroke-width="2" fill="white" />
+                        <path stroke="black" stroke-width="4" fill="none" d="M6.25,6.25,17.75,17.75" />
+                        <path stroke="black" stroke-width="4" fill="none" d="M6.25,17.75,17.75,6.25" />
+                    </svg>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </body>
 </html>
