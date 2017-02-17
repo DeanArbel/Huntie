@@ -27,8 +27,8 @@
             <input type="number" class="form-control short-input" id="maxPlayersIndividual" value="10" min="1" max="999">
         </div>
         <div class="show-team">
-            <label for="maxPlayersGroup">Max Players Per Team:</label>
-            <input type="number" class="form-control short-input" id="maxPlayersGroup" value="1" min="1" max="99">
+            <label for="maxPlayersTeam">Max Players Per Team:</label>
+            <input type="number" class="form-control short-input" id="maxPlayersTeam" value="1" min="1" max="99">
             <br>
             <button type="button" id="openModal-btn" class="btn btn-success" data-toggle="modal" data-target="#myModal">Add Team</button>
             <!-- Modal -->
@@ -38,8 +38,8 @@
                     <!-- Modal content-->
                     <div class="modal-content">
                         <div class="modal-body">
-                            <label for="groupName">Group Name:</label>
-                            <input type="text" class="form-control" id="groupName" maxlength="15">
+                            <label for="teamName">Group Name:</label>
+                            <input type="text" class="form-control" id="teamName" maxlength="15">
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-success" data-dismiss="modal" id="addTeam-btn">Add Team</button>

@@ -6,21 +6,40 @@ var INDIVIDUAL_GAME = "Individual Game";
 var MAX_GROUPS = 10;
 var mTeams = {};
 var sCurGameType;
-var groupNameInput;
+var teamNameInput;
+var maxPlayerIndividualInput;
+var maxPlayerTeamInput;
 
 $(function() {
     dropdownChange($('.dropdown-btn')[0].innerText);
-    document.getElementById('groupName').oninput = onTeamNameInput;
-    groupNameInput = $('#groupName')[0];
+    document.getElementById('teamName').oninput = onTeamNameInput;
+    document.getElementById('maxPlayersIndividual').oninput = onMaxPlayersIndividualInput;
+    document.getElementById('maxPlayersTeam').oninput = onMaxPlayersTeamInput;
+    teamNameInput = $('#teamName')[0];
+    maxPlayerIndividualInput = $('#maxPlayersIndividual')[0];
+    maxPlayerTeamInput = $('#maxPlayersTeam')[0];
 });
 
 function onTeamNameInput() {
-    var inputValue = groupNameInput.value;
+    var inputValue = teamNameInput.value;
     $('#addTeam-btn')[0].disabled = mTeams[inputValue];
 }
 
+function onMaxPlayersIndividualInput() {
+    _inputLimiter(maxPlayerIndividualInput, 3);
+}
+
+function onMaxPlayersTeamInput() {
+    _inputLimiter(maxPlayerTeamInput, 2);
+}
+
+function _inputLimiter(input, max) {
+    if (input.value.length >= max) {
+        input.value = input.value.substr(0,max);
+    }
+}
+
 function dropdownChange(innerText) {
-    console.log("dropdown-btn value is now " + innerText);
     sCurGameType = innerText;
     if (innerText === TEAM_GAME) {
         $('.show-team').show();
@@ -38,13 +57,13 @@ $(document).on('click','#openModal-btn', function() {
 
 $(document).on('shown.bs.modal', '#myModal', function () {
     $('#addTeam-btn')[0].disabled = true;
-    groupNameInput.focus();
+    teamNameInput.focus();
 });
 
 $(document).on('click', '#addTeam-btn', function() {
-    var inputValue = groupNameInput.value;
+    var inputValue = teamNameInput.value;
     mTeams[inputValue] = {};
-    groupNameInput.value = "";
+    teamNameInput.value = "";
     addRow(inputValue);
 });
 

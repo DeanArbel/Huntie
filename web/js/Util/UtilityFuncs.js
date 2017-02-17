@@ -6,6 +6,7 @@ var REMOVE_BUTTON_SVG = '<td><svg> <circle cx="12" cy="12" r="11" stroke="black"
 
 $(document).on('click', 'td > svg', function() {
     $(this).parents('tr').remove();
+    // This function can be implemented in specific script
     rowWasRemoved(this);
 });
 
