@@ -1,6 +1,7 @@
 package servlets.GameCreator;
 
 import Util.DatabaseFacade;
+import com.google.gson.Gson;
 
 import javax.servlet.annotation.WebServlet;
 import java.io.IOException;
@@ -12,7 +13,6 @@ import java.io.IOException;
 public class NewGameServlet extends javax.servlet.http.HttpServlet {
     protected void doPost(javax.servlet.http.HttpServletRequest request, javax.servlet.http.HttpServletResponse response) throws javax.servlet.ServletException, IOException {
         response.setContentType("application/json");
-        Gson gson = new Gson();
         //TODO: Fix this
         //String username = SessionUtils.getUsername(request);
         String userid = "1";

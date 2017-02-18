@@ -26,13 +26,17 @@ function initPageElementsFromServer() {
         url: "GameCreator/GameComponents",
         data: { requestType: "GameType" },
         type: 'GET',
-        success: function(isTeamGame, maxPlayers, maxPlayersInTeam, teamName) {
-            if(isTeamGame) {
-                updateDropdownValue($('.dropdown-selection')[0].innerText);
+        success: function(previousGameType) {
+            if(previousGameType[0]) {
+                updateDropdownValue($('.dropdown-selection')[1].innerText);
             }
-            maxPlayerIndividualInput.value = maxPlayers;
-            maxPlayerTeamInput.value = maxPlayersInTeam;
-            //TODO: Add teamName support
+            maxPlayerIndividualInput.value = previousGameType[1];
+            maxPlayerTeamInput.value = previousGameType[2];
+            //TODO: Add teamName (previousGameType[3]) support
+            var size = previousGameType[3].length;
+            for(var i = 0; i < size; i++) {
+                _addTeam(previousGameType[3][i]);
+            }
         }
     });
 }
@@ -78,10 +82,30 @@ $(document).on('shown.bs.modal', '#myModal', function () {
 });
 
 $(document).on('click', '#addTeam-btn', function() {
-    var inputValue = teamNameInput.value;
+    _addTeam(teamNameInput.value);
+});
+
+function _addTeam(inputValue) {
     mTeams[inputValue] = {};
     teamNameInput.value = "";
     addRow(inputValue);
+}
+
+$(document).on('click', '#nextPage-btn', function() {
+   $.ajax({
+       url: "GameCreator/GameComponents",
+       type: "POST",
+       data: {  requestType: "GameType",
+                teams: JSON.stringify(mTeams),
+                maxPlayers: maxPlayerIndividualInput.value,
+                maxPlayersInTeam: maxPlayerTeamInput.value,
+                gameType: $('.dropdown-btn')[0].innerText
+       },
+       success: function() {
+           console.log("Updated server successfuly");
+           //TODO: Move to next page
+       }
+   });
 });
 
 function addRow(sRowName) {
@@ -98,7 +122,7 @@ function addRow(sRowName) {
 function rowWasRemoved(that) {
     var removedValue = $(that).parents('td').siblings()[0].innerText;
     delete mTeams[removedValue];
-    $('#openModal-btn').disabled = false;
+    $('#openModal-btn')[0].disabled = false;
 }
 
 function _isTableFull() {

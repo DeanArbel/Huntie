@@ -4,6 +4,7 @@ import Util.Enums.GameStatus;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Dean on 18/2/2017.
@@ -13,11 +14,11 @@ public class Game {
     private final List<String> r_Managers = new ArrayList<>();
     private final List<Team> r_Teams = new ArrayList<>();
     private final List<List<Riddle>> r_Riddles = new ArrayList<>();
-    private int m_MaxPlayers = 10;
-    private int m_MaxPayersInTeam = 1;
+    private int m_MaxPlayers = 20;
+    private int m_MaxPayersInTeam = 2;
     private String m_GameArea;
     private GameStatus m_GameStatus = GameStatus.IN_CREATION;
-    private boolean m_IsTeamGame = false;
+    private boolean m_IsTeamGame = true;
 
     public Game(String i_GameId, String i_ManagerId) {
         r_GameId = i_GameId;
@@ -63,5 +64,12 @@ public class Game {
 
     public void setIsTeamGame(boolean i_IsTeamGame) {
         this.m_IsTeamGame = i_IsTeamGame;
+    }
+
+    public void setTeamNames(Set<String> teamNames) {
+        r_Teams.clear();
+        for(String team : teamNames) {
+            r_Teams.add(new Team(team));
+        }
     }
 }
