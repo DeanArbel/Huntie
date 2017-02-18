@@ -14,7 +14,7 @@ public class User {
     private String m_UserName;
     private String m_Password;
     private String m_EmailAddress;
-    private Game m_UnformedGame = null;
+    private Game m_UnpublishedGame = null;
 
     public String getUserId() {
         return r_UserId;
@@ -40,12 +40,12 @@ public class User {
         this.m_Password = m_Password;
     }
 
-    public Game getUnformedGame() {
-        return m_UnformedGame;
+    public Game getUnpublishedGame() {
+        return m_UnpublishedGame;
     }
 
-    public void setUnformedGame(Game i_UnformedGame) {
-        this.m_UnformedGame = i_UnformedGame;
+    public void setUnpublishedGame(Game i_UnpublishedGame) {
+        this.m_UnpublishedGame = i_UnpublishedGame;
     }
 
     public String getEmailAddress() {
@@ -56,11 +56,11 @@ public class User {
         this.m_EmailAddress = m_EmailAddress;
     }
 
-    public void DeleteUnformedGame() {
-        if (m_UnformedGame != null) {
-            DatabaseFacade.DeleteGame(m_UnformedGame.getGameId());
+    public void DeleteUnpublishedGame() {
+        if (m_UnpublishedGame != null) {
+            DatabaseFacade.DeleteGame(m_UnpublishedGame.getGameId());
         }
 
-        m_UnformedGame = null;
+        m_UnpublishedGame = null;
     }
 }

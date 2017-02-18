@@ -36,10 +36,10 @@ public class DatabaseFacade {
         Game newGame = null;
         User gameCreator = sr_Users.get(i_UserId);
         if (gameCreator != null) {
-            gameCreator.DeleteUnformedGame();
+            gameCreator.DeleteUnpublishedGame();
             newGame = new Game(String.valueOf(s_CurrentGameId++), i_UserId);
             sr_Games.put(newGame.getGameId(), newGame);
-            gameCreator.setUnformedGame(newGame);
+            gameCreator.setUnpublishedGame(newGame);
         }
 
         return newGame;
