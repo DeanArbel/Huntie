@@ -32,14 +32,17 @@ public class DatabaseFacade {
         return newUser;
     }
 
-    public static void CreateNewGame(String i_UserId) {
+    public static Game CreateNewGame(String i_UserId) {
+        Game newGame = null;
         User gameCreator = sr_Users.get(i_UserId);
         if (gameCreator != null) {
             gameCreator.DeleteUnformedGame();
-            Game newGame = new Game(String.valueOf(s_CurrentGameId++), i_UserId);
+            newGame = new Game(String.valueOf(s_CurrentGameId++), i_UserId);
             sr_Games.put(newGame.getGameId(), newGame);
             gameCreator.setUnformedGame(newGame);
         }
+
+        return newGame;
     }
 
     public static void DeleteGame(String i_GameId) {
