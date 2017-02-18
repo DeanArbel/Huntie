@@ -18,7 +18,24 @@ $(function() {
     teamNameInput = $('#teamName')[0];
     maxPlayerIndividualInput = $('#maxPlayersIndividual')[0];
     maxPlayerTeamInput = $('#maxPlayersTeam')[0];
+    initPageElementsFromServer();
 });
+
+function initPageElementsFromServer() {
+    $.ajax({
+        url: "GameCreator/GameComponents",
+        data: { requestType: "GameType" },
+        type: 'GET',
+        success: function(isTeamGame, maxPlayers, maxPlayersInTeam, teamName) {
+            if(isTeamGame) {
+                updateDropdownValue($('.dropdown-selection')[0].innerText);
+            }
+            maxPlayerIndividualInput.value = maxPlayers;
+            maxPlayerTeamInput.value = maxPlayersInTeam;
+            //TODO: Add teamName support
+        }
+    });
+}
 
 function onTeamNameInput() {
     var inputValue = teamNameInput.value;

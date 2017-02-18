@@ -11,4 +11,12 @@
         <servlet-name>NewGameServlet</servlet-name>
         <url-pattern>/newGame</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>UnpublishedGameComponentsServlet</servlet-name>
+        <servlet-class>servlets.GameCreator.UnpublishedGameComponentsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>UnpublishedGameComponentsServlet</servlet-name>
+        <url-pattern>/Manager/GameCreator/GameComponents</url-pattern>
+    </servlet-mapping>
 </web-app>

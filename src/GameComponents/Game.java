@@ -27,4 +27,41 @@ public class Game {
     public String getGameId() {
         return r_GameId;
     }
+
+    public int getMaxPlayers() {
+        return m_MaxPlayers;
+    }
+
+    public void setMaxPlayers(int i_MaxPlayers) {
+        this.m_MaxPlayers = i_MaxPlayers;
+    }
+
+    public int getMaxPayersInTeam() {
+        return m_MaxPayersInTeam;
+    }
+
+    public void setMaxPayersInTeam(int i_MaxPayersInTeam) {
+        this.m_MaxPayersInTeam = i_MaxPayersInTeam;
+    }
+
+    public List<Team> getTeams() {
+        return r_Teams;
+    }
+
+    public List<String> getTeamNames() {
+        List<String> teamNames = new ArrayList<>();
+        for(Team team : r_Teams) {
+            teamNames.add(team.getTeamName());
+        }
+
+        return teamNames;
+    }
+
+    public boolean isTeamGame() {
+        return m_IsTeamGame;
+    }
+
+    public void setIsTeamGame(boolean i_IsTeamGame) {
+        this.m_IsTeamGame = i_IsTeamGame;
+    }
 }

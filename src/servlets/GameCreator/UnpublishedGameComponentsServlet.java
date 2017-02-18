@@ -1,5 +1,7 @@
 package servlets.GameCreator;
 
+import GameComponents.Game;
+import Util.DatabaseFacade;
 import com.google.gson.Gson;
 
 import javax.servlet.ServletException;
@@ -9,6 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+
+import static servlets.Util.ServletUtils.SetError;
 
 /**
  * Created by Dean on 18/2/2017.
@@ -21,23 +25,35 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
-        String gameName = request.getParameter("gameName");
-        try (PrintWriter out = response.getWriter()) {
-            Gson gson = new Gson();
-            if (gameName != null) {
-                if (isGameExist(gameName)) {
-                    GameEntry gameEntry = getGameEntry(gameName);
-                    handleRequest(request, response, gameEntry);
-                    String json = gson.toJson(gameEntry);
-                    out.println(json);
-                    out.flush();
+        //String username = SessionUtils.getUsername(request);
+        String userid = "1";
+        if (userid == null) {
+            response.sendRedirect("index.jsp"); //TODO: Change this according to login system
+        } else {
+            try (PrintWriter out = response.getWriter()) {
+                Game game = DatabaseFacade.getGame(DatabaseFacade.getUser(userid).getUnpublishedGame().getGameId());
+                if (game != null) {
+                    handleRequest(request, out, game);
                 } else {
-                    setError(response, "Game not found");
+                    SetError(response, 400, "Game not found");
                 }
+            } catch (Exception e) {
+                SetError(response, 400, e.getMessage());
             }
         }
-        catch (Exception e) {
-            setError(response, e.getMessage());
+    }
+
+    private void handleRequest(HttpServletRequest request, PrintWriter out, Game game) throws ServletException {
+        String requestType = request.getParameter("requestType");
+        Gson gson = new Gson();
+        switch (requestType) {
+            case "GameType":
+                out.println(gson.toJson(game.isTeamGame()));
+                out.println(gson.toJson(game.getMaxPlayers()));
+                out.println(gson.toJson(game.getMaxPayersInTeam()));
+                out.println(gson.toJson(game.getTeamNames()));
+            default:
+                throw new ServletException("No request was sent");
         }
     }
 }

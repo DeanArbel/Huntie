@@ -11,6 +11,6 @@
     <title>$Title$</title>
   </head>
   <body>
-  $END$
+    <h1>This is a temp page</h1>
   </body>
 </html>
