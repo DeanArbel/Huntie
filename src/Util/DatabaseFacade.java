@@ -32,6 +32,11 @@ public class DatabaseFacade {
         return newUser;
     }
 
+    public static boolean DoesUserHaveAnUnpublishedGame(String i_UserId) {
+        return sr_Users.get(i_UserId).getUnpublishedGame() != null;
+    }
+
+    //TODO: Adjust username or id depending on login implementation
     public static Game CreateNewGame(String i_UserId) {
         Game newGame = null;
         User gameCreator = sr_Users.get(i_UserId);

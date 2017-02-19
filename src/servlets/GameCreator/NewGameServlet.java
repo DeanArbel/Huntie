@@ -2,8 +2,11 @@ package servlets.GameCreator;
 
 import Util.DatabaseFacade;
 import com.google.gson.Gson;
+import servlets.Util.ServletUtils;
 
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
@@ -20,26 +23,21 @@ public class NewGameServlet extends javax.servlet.http.HttpServlet {
         if (userid == null) {
             response.sendRedirect("index.jsp");
         } else {
-//            try (PrintWriter out = response.getWriter()) {
-//                Gson gson = new Gson();
-//                if (gameName != null) {
-//                    if (isGameExist(gameName)) {
-//                        GameEntry gameEntry = getGameEntry(gameName);
-//                        handleRequest(request, response, gameEntry);
-//                        String json = gson.toJson(gameEntry);
-//                        out.println(json);
-//                        out.flush();
-//                    } else {
-//                        setError(response, "Game not found");
-//                    }
-//                }
-//            }
-//            catch (Exception e) {
-//                setError(response, e.getMessage());
-//            }
-            //TODO: Adjust username or id depending on login implementation
-            DatabaseFacade.CreateNewGame(userid);
-            response.sendRedirect("/Manager/GameType.html");
+            if (DatabaseFacade.DoesUserHaveAnUnpublishedGame(userid)) {
+                if ("true".equals(request.getParameter("createNewGame"))) {
+                    createNewGame(response, userid);
+                } else {
+                    ServletUtils.SetError(response, 499, "User already has a game");
+                }
+            }
+            else {
+                createNewGame(response, userid);
+            }
         }
+    }
+
+    private void createNewGame(HttpServletResponse i_Response, String i_UserId) throws IOException {
+        DatabaseFacade.CreateNewGame(i_UserId);
+        i_Response.sendRedirect("/Manager/GameType.html");
     }
 }
