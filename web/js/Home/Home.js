@@ -6,7 +6,7 @@ $(document).on('click', "#joinGame-btn", function() {
        url: "newGame",
        type: 'POST',
        success: function(response) {
-           window.location = SITE_URL + "/Manager/GameType.html";
+           window.location.href = SITE_URL + "/Manager/GameType.html";
        },
        error: function(xhr, status, error) {
            if (xhr.status === 400) {

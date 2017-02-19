@@ -11,6 +11,6 @@
     <title>$Title$</title>
   </head>
   <body>
-    <h1>This is a temp page</h1>
+    <meta http-equiv="refresh" content="0; url=Home.html">
   </body>
 </html>
