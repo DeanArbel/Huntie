@@ -94,21 +94,47 @@ function _addTeam(inputValue) {
 }
 
 $(document).on('click', '#nextPage-btn', function() {
-   $.ajax({
-       url: "GameCreator/GameComponents",
-       type: "POST",
-       data: {  requestType: "GameType",
+   var gameType = $('.dropdown-btn')[0].innerText,
+       errMsg = checkErrorsBeforeSubmit(gameType);
+    if (errMsg == "") {
+        $.ajax({
+            url: "GameCreator/GameComponents",
+            type: "POST",
+            data: {
+                requestType: "GameType",
                 teams: JSON.stringify(mTeams),
                 maxPlayers: maxPlayerIndividualInput.value,
                 maxPlayersInTeam: maxPlayerTeamInput.value,
-                gameType: $('.dropdown-btn')[0].innerText
-       },
-       success: function() {
-           console.log("Updated server successfuly");
-           //TODO: Move to next page
-       }
-   });
+                gameType: gameType
+            },
+            success: function () {
+                console.log("Updated server successfuly");
+                //TODO: Move to next page
+            }
+        });
+    }
+    else {
+        confirm(errMsg);
+    }
 });
+
+function checkErrorsBeforeSubmit(gameType) {
+    var errMsg = "";
+    if (gameType === TEAM_GAME + " ") {
+        if (maxPlayerTeamInput.value === "" || parseInt(maxPlayerTeamInput.value) < 1) {
+            errMsg += "- Team size should be greater than zero\n";
+        }
+        if ($('table > tbody').children().length < 2) {
+            errMsg += "- Team game should have at least two teams\n"
+        }
+    } else {
+        if (maxPlayerIndividualInput.value === "" || parseInt(maxPlayerIndividualInput.value) < 1) {
+            errMsg += "- Max players should be greater than zero\n";
+        }
+    }
+
+    return errMsg;
+}
 
 function addRow(sRowName) {
     var eTbody = $('table > tbody');

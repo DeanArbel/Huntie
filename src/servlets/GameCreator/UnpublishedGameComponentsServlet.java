@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.Map;
 
 import static servlets.Util.ServletUtils.SetError;
@@ -82,17 +83,35 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
 
     private void handlePostRequest(HttpServletRequest request, Game game) throws ServletException {
         String requestType = request.getParameter("requestType");
-        Gson gson = new Gson();
         switch (requestType) {
             case "GameType":
-                game.setMaxPlayers(Integer.parseInt(request.getParameter("maxPlayers")));
-                game.setMaxPayersInTeam(Integer.parseInt(request.getParameter("maxPlayersInTeam")));
-                game.setIsTeamGame(request.getParameter("gameType").equals("Team Game "));
-                Map teamMap = gson.fromJson(request.getParameter("teams"), Map.class);
-                game.setTeamNames(teamMap.keySet());
+                handleGameTypeRequest(request, game);
                 break;
             default:
                 throw new ServletException("No request was sent");
         }
+    }
+
+    private void handleGameTypeRequest(HttpServletRequest request, Game game) {
+        Gson gson = new Gson();
+        boolean isTeamGame = request.getParameter("gameType").equals("Team Game ");
+        Integer maxPlayers;
+        Integer maxPlayersInTeam;
+        Map teamMap;
+        if (isTeamGame) {
+            maxPlayersInTeam = Integer.parseInt(request.getParameter("maxPlayersInTeam"));
+            teamMap = gson.fromJson(request.getParameter("teams"), Map.class);
+            maxPlayers = maxPlayersInTeam * teamMap.size();
+        }
+        else {
+            maxPlayersInTeam = 1;
+            teamMap = new HashMap();
+            maxPlayers = Integer.parseInt(request.getParameter("maxPlayers"));
+        }
+
+        game.setMaxPayersInTeam(maxPlayersInTeam);
+        game.setMaxPlayers(maxPlayers);
+        game.setIsTeamGame(isTeamGame);
+        game.setTeamNames(teamMap.keySet());
     }
 }
