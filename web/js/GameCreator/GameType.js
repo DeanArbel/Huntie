@@ -27,6 +27,8 @@ function initPageElementsFromServer() {
         data: { requestType: "GameType" },
         type: 'GET',
         success: function(previousGameType) {
+            $(".loader").hide();
+            $(".container").show();
             if(previousGameType[0]) {
                 updateDropdownValue($('.dropdown-selection')[1].innerText);
             }

@@ -19,10 +19,10 @@ public class NewGameServlet extends javax.servlet.http.HttpServlet {
         //TODO: Fix this
         //String username = SessionUtils.getUsername(request);
         String userid = "1";
-        DatabaseFacade.createUser("tmp", "tmp");
         if (userid == null) {
-            response.sendRedirect("index.jsp");
+            response.sendRedirect("index.jsp"); //TODO: Change this according to login system
         } else {
+            ServletUtils.AssertUserInDatabase(userid);
             if (DatabaseFacade.DoesUserHaveAnUnpublishedGame(userid)) {
                 if ("true".equals(request.getParameter("createNewGame"))) {
                     createNewGame(response, userid);

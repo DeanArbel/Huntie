@@ -13,7 +13,7 @@ $(document).on('click', "#createGame-btn", function() {
                $("#myModal").modal('show');
            }
            else if (xhr.status === 400) {
-               displayError(xhr.getResponseHeader(error));
+               console.log(xhr.getResponseHeader(error));
            }
        }
    });
@@ -30,7 +30,7 @@ $(document).on('click', '#modal-no-btn', function() {
         },
         error: function(xhr, status, error) {
             if (xhr.status === 400) {
-                displayError(xhr.getResponseHeader(error));
+                console.log(xhr.getResponseHeader(error));
             }
         }
     });

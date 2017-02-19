@@ -3,12 +3,14 @@ package servlets.GameCreator;
 import GameComponents.Game;
 import Util.DatabaseFacade;
 import com.google.gson.Gson;
+import servlets.Util.ServletUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Map;
@@ -48,13 +50,14 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
         if (userid == null) {
             response.sendRedirect("index.jsp"); //TODO: Change this according to login system
         } else {
+            ServletUtils.AssertUserInDatabase(userid);
             try (PrintWriter out = response.getWriter()) {
-                Game game = DatabaseFacade.getGame(DatabaseFacade.getUser(userid).getUnpublishedGame().getGameId());
-                if (game != null) {
-                    handleGetRequest(request, out, game);
-                } else {
-                    SetError(response, 400, "Game not found");
+                Game game = DatabaseFacade.getUser(userid).getUnpublishedGame();
+                if (game == null) {
+                    game = DatabaseFacade.CreateNewGame(userid);
                 }
+
+                handleGetRequest(request, out, game);
             } catch (Exception e) {
                 SetError(response, 400, e.getMessage());
             }
