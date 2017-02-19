@@ -4,6 +4,7 @@
 $(function () {
     $(".loader").hide();
     $(".container").show();
+    sessionStorage.setItem("GameAreaVisited", "True");
 });
 
 $(document).on('change', 'input:radio[id^="radio_"]', function (event) {

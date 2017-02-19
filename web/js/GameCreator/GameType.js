@@ -11,14 +11,20 @@ var maxPlayerIndividualInput;
 var maxPlayerTeamInput;
 
 $(function() {
-    dropdownChange($('.dropdown-btn')[0].innerText);
-    document.getElementById('teamName').oninput = onTeamNameInput;
-    document.getElementById('maxPlayersIndividual').oninput = onMaxPlayersIndividualInput;
-    document.getElementById('maxPlayersTeam').oninput = onMaxPlayersTeamInput;
-    teamNameInput = $('#teamName')[0];
-    maxPlayerIndividualInput = $('#maxPlayersIndividual')[0];
-    maxPlayerTeamInput = $('#maxPlayersTeam')[0];
-    initPageElementsFromServer();
+    if (sessionStorage.getItem("GameAreaVisited")) {
+        sessionStorage.removeItem("GameAreaVisited");
+        window.location.reload(true); // force refresh page1
+    }
+    else {
+        dropdownChange($('.dropdown-btn')[0].innerText);
+        document.getElementById('teamName').oninput = onTeamNameInput;
+        document.getElementById('maxPlayersIndividual').oninput = onMaxPlayersIndividualInput;
+        document.getElementById('maxPlayersTeam').oninput = onMaxPlayersTeamInput;
+        teamNameInput = $('#teamName')[0];
+        maxPlayerIndividualInput = $('#maxPlayersIndividual')[0];
+        maxPlayerTeamInput = $('#maxPlayersTeam')[0];
+        initPageElementsFromServer();
+    }
 });
 
 function initPageElementsFromServer() {
