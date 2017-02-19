@@ -107,9 +107,11 @@ $(document).on('click', '#nextPage-btn', function() {
                 maxPlayersInTeam: maxPlayerTeamInput.value,
                 gameType: gameType
             },
-            success: function () {
-                console.log("Updated server successfuly");
-                //TODO: Move to next page
+            success: function (response) {
+                window.location.href = SITE_URL + "/Manager/GameArea.html";
+            },
+            error: function(e) {
+                console.log(JSON.stringify(e));
             }
         });
     }

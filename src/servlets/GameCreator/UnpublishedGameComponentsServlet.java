@@ -24,7 +24,6 @@ import static servlets.Util.ServletUtils.SetError;
 @WebServlet(name = "UnpublishedGameComponentsServlet")
 public class UnpublishedGameComponentsServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("application/json");
         //String username = SessionUtils.getUsername(request);
         String userid = "1";
         if (userid == null) {
@@ -33,7 +32,7 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
             try {
                 Game game = DatabaseFacade.getGame(DatabaseFacade.getUser(userid).getUnpublishedGame().getGameId());
                 if (game != null) {
-                    handlePostRequest(request, game);
+                    handlePostRequest(request, response, game);
                 } else {
                     SetError(response, 400, "Game not found");
                 }
@@ -81,15 +80,18 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
         }
     }
 
-    private void handlePostRequest(HttpServletRequest request, Game game) throws ServletException {
+    private void handlePostRequest(HttpServletRequest request, HttpServletResponse response, Game game)
+            throws ServletException, IOException{
         String requestType = request.getParameter("requestType");
         switch (requestType) {
             case "GameType":
                 handleGameTypeRequest(request, game);
+                //response.sendRedirect("Manager/GameArea.html");
                 break;
             default:
                 throw new ServletException("No request was sent");
         }
+        response.setStatus(200);
     }
 
     private void handleGameTypeRequest(HttpServletRequest request, Game game) {
