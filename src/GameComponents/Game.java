@@ -72,4 +72,8 @@ public class Game {
             r_Teams.add(new Team(team));
         }
     }
+
+    public List<List<Riddle>> getRiddles() {
+        return r_Riddles;
+    }
 }

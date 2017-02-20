@@ -75,6 +75,9 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
                 out.println(gson.toJson(game.getTeamNames()) + "]");
                 out.flush();
                 break;
+            case "GameBuilder":
+                out.println(gson.toJson(game.getRiddles()));
+                break;
             default:
                 throw new ServletException("No request was sent");
         }
