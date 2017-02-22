@@ -28,52 +28,80 @@
             <!-- Modal content-->
             <div class="modal-content">
                 <div class="modal-body form-horizontal">
+                    <button type="button" class="btn btn-danger pull-right" id="riddle-reset-btn">Reset</button>
                     <h2 class="text-center">Riddle Builder</h2>
-                    <div class="form-group">
-                        <div class="col-xs-6">
-                            <label class="control-label" for="riddle-name">Riddle Name:</label>
-                        </div>
-                        <div class="col-xs-6">
-                            <input type="text" class="form-control" id="riddle-name" maxlength="15">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-xs-6">
-                            <label for="riddle-appearance-number">Riddle Apperance Number:</label>
-                            <p class="col-xs-offset-1"><i>*riddles with the same number will appear at the same time</i></p>
-                        </div>
-                        <div class="col-xs-6">
-                            <input type="number" class="form-control" id="riddle-appearance-number" min="0">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-xs-6">
-                            <label>Riddle Type:</label>
-                        </div>
-                        <div class="col-xs-6">
-                            <div class="dropdown">
-                                <button class="btn btn-primary dropdown-toggle dropdown-btn btn-wide" type="button" data-toggle="dropdown">Text Answer
-                                    <span class="caret"></span>
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a href="#" class="dropdown-selection" data-toggle="dropdown">Text Answer</a></li>
-                                    <li><a href="#" class="dropdown-selection" data-toggle="dropdown">Photo Answer</a></li>
-                                </ul>
+                    <form id="riddle-form">
+                        <div class="form-group">
+                            <div class="col-xs-6">
+                                <label class="control-label" for="riddle-name">Riddle Name:</label>
+                            </div>
+                            <div class="col-xs-6">
+                                <input type="text" class="form-control" id="riddle-name" maxlength="15">
                             </div>
                         </div>
-                    </div>
-                    <div hidden id="riddle-photo">
-                        <h2 class="text-center">No photo support at the moment</h2>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-xs-6">
-                            <labe>Location Based:</labe>
+                        <div class="form-group">
+                            <div class="col-xs-6">
+                                <label for="riddle-appearance-number">Riddle Apperance Number:</label>
+                                <p class="col-xs-offset-1"><i>*riddles with the same number will appear at the same time</i></p>
+                            </div>
+                            <div class="col-xs-6">
+                                <input type="number" class="form-control" id="riddle-appearance-number" min="0">
+                            </div>
                         </div>
-                        <div class="col-xs-6">
-                            <input id="riddle-location-checkbox" type="checkbox" value="">
+                        <div class="form-group">
+                            <div class="col-xs-6">
+                                <label>Riddle Type:</label>
+                            </div>
+                            <div class="col-xs-6">
+                                <div class="dropdown">
+                                    <button class="btn btn-primary dropdown-toggle dropdown-btn btn-wide" type="button" data-toggle="dropdown">Text Answer
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="#" class="dropdown-selection" data-toggle="dropdown">Text Answer</a></li>
+                                        <li><a href="#" class="dropdown-selection" data-toggle="dropdown">Photo Answer</a></li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <button hidden class="btn btn-default center-block">Set Location</button>
+                        <div class="form-group">
+                            <div class="col-xs-6">
+                                <label for="riddle-question-text">Question:</label>
+                            </div>
+                            <div class="col-xs-6">
+                                <textarea class="form-control" id="riddle-question-text" maxlength="255"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-xs-6">
+                                <label for="riddle-question-optionalimage-uploadbtn">Optional Image Question:</label>
+                            </div>
+                            <div class="col-xs-6">
+                                <input type='file' id="riddle-question-optionalimage-uploadbtn" onchange="readURL(this);" />
+                                <img hidden id="riddle-question-optionalimage" src="#" alt="your image" />
+                            </div>
+                        </div>
+                        <div hidden id="riddle-photo" class="form-group">
+                            <h2 class="text-center">No photo support at the moment</h2>
+                        </div>
+                        <div hidden id="riddle-text" class="form-group">
+                            <div class="col-xs-6">
+                                <label for="riddle-answer-text">Answer:</label>
+                            </div>
+                            <div class="col-xs-6">
+                                <textarea class="form-control" id="riddle-answer-text" maxlength="255"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-xs-6">
+                                <label for="riddle-location-checkbox">Location Based:</label>
+                            </div>
+                            <div class="col-xs-6">
+                                <input id="riddle-location-checkbox" type="checkbox" value="">
+                            </div>
+                        </div>
+                        <button hidden class="btn btn-default center-block">Set Location</button>
+                    </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-success" id="riddle-submit-btn">Submit</button>
@@ -87,6 +115,7 @@
             <thead>
             <tr>
                 <th>Appearance Number</th>
+                <th>Index</th>
                 <th>Riddle Name</th>
                 <th></th>
             </tr>
