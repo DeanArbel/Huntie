@@ -18,7 +18,7 @@ var riddleModal;
 
 $(function() {
     sessionStorage.setItem("GameBuilderVisited", "True");
-    dropdownChange($('.dropdown-btn')[0].innerText);
+    dropdownChange(TEXT_ANSWER);
     initGlobalVars();
     initPageElementsFromServer();
 });
@@ -166,7 +166,7 @@ function checkRiddleErrors(riddle) {
     if (riddle.questionText === "") {
         errMsg += "- Riddle must have a question\n";
     }
-    if (riddle.type === TEXT_ANSWER) {
+    if (riddle.type !== PHOTO_ANSWER) {
         if (riddle.answerText === "") {
             errMsg += "- Riddle must have an answer\n";
         }
