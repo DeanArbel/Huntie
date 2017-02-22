@@ -9,7 +9,7 @@ $(document).on('click', "#sign-in-btn", function() {
             window.location.href = SITE_URL + "/Home/Home.html";
         },
         error: function() {
-            !red commenet  username/password invalid
+            alert("UserName/Password entered incorrect")
         }
     });
 });
