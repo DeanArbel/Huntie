@@ -37,8 +37,9 @@ function initGlobalVars() {
 }
 
 $(document).on("click", "#riddle-submit-btn", function() {
-    var riddle = getRiddleInTableFormat();
-    if (riddle !== null) {
+    var riddleErr = getRiddleInTableFormat();
+    if (riddleErr[1] === "") {
+        var riddle = riddleErr[0];
         // $.ajax({
         //     url: GAME_CREATOR_COMPONENTS_URL,
         //     data: {requestType: "GameBuilder", riddle: riddle},
@@ -56,16 +57,22 @@ $(document).on("click", "#riddle-submit-btn", function() {
         riddles[riddle.appearanceNumber][riddles[riddle.appearanceNumber].length] = riddle;
         updateRiddlesTable();
         riddleModal.modal("toggle");
+        resetForm();
+    }
+    else {
+        confirm(riddleErr[1]);
     }
 });
 
-$(document).on("click", "#riddle-reset-btn", function() {
+$(document).on("click", "#riddle-reset-btn", resetForm);
+
+function resetForm() {
     document.getElementById("riddle-form").reset();
     var image = document.getElementById('riddle-question-optionalimage');
     image.src = "";
     image.hidden = true;
     //TODO: Remove location
-});
+}
 
 function initPageElementsFromServer() {
     $.ajax({
@@ -105,9 +112,9 @@ function updateRiddlesTable() {
 }
 
 function addRow(riddle) {
-    var $eRow = $('<tr class="iIndex' + riddle.appearanceNumber + ' jIndex' + riddle.index + '">');
+    var $eRow = $('<tr class="iIndex' + riddle.appearanceNumber + '">');
     $eRow.append('<td>' + riddle.appearanceNumber + '</td>');
-    $eRow.append('<td>' + (riddle.index + 1) + '</td>');
+    $eRow.append('<td hidden>' + (riddle.index + 1) + '</td>');
     $eRow.append('<td>' + riddle.name + '</td>');
     $eRow.append(REMOVE_BUTTON_SVG);
     riddlesTable.append($eRow);
@@ -147,9 +154,29 @@ function rowWasRemoved(that) {
     var size = riddles[removedFirstIdx].length,
         rowTable = $('.iIndex' + removedFirstIdx);
     for (var i = removedSecondIdx; i < size; i++) {
-        rowTable[i].classList = ["iIndex" + removedFirstIdx + " jIndex" + i];
         rowTable[i].children[1].innerText = (i + 1);
     }
+}
+
+function checkRiddleErrors(riddle) {
+    var errMsg = "";
+    if (parseInt(riddle.appearanceNumber) > 99 || parseInt(riddle.appearanceNumber) < 1) {
+        errMsg += "- Appearance number should be between 1 and 99\n";
+    }
+    if (riddle.questionText === "") {
+        errMsg += "- Riddle must have a question\n";
+    }
+    if (riddle.type === TEXT_ANSWER) {
+        if (riddle.answerText === "") {
+            errMsg += "- Riddle must have an answer\n";
+        }
+        else {
+            //TODO: Add check if photo riddle has an answer
+        }
+    }
+    //TODO: Add checks for map location
+
+    return errMsg;
 }
 
 function getRiddleInTableFormat() {
@@ -162,7 +189,7 @@ function getRiddleInTableFormat() {
         answerText: riddleTextAnswer.value
         //TODO: after google maps add location
         //TODO: Add here question and answer
-    };
+    }, errMsg = checkRiddleErrors(riddle);
     //TODO: Add checks here, if one fails return null
-    return riddle;
+    return [riddle, errMsg];
 }
