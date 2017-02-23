@@ -92,4 +92,8 @@ public class Game {
         }
         r_Riddles.get(riddleIndex).add(riddle);
     }
+
+    public void DeleteRiddle(int appearanceNumber, int index) {
+        r_Riddles.get(appearanceNumber).remove(index);
+    }
 }

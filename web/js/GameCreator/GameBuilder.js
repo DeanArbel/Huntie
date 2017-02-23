@@ -54,14 +54,6 @@ $(document).on("click", "#riddle-submit-btn", function() {
                 resetForm();
             } //TODO: Add error notification
         });
-        //TODO: Remove lines below this comment after setting up server
-        // if (!riddles[riddle.appearanceNumber]) {
-        //     riddles[riddle.appearanceNumber] = [];
-        // }
-        // riddles[riddle.appearanceNumber][riddles[riddle.appearanceNumber].length] = riddle;
-        // updateRiddlesTable();
-        // riddleModal.modal("toggle");
-        // resetForm();
     }
     else {
         confirm(riddleErr[1]);
@@ -155,11 +147,19 @@ function rowWasRemoved(that) {
     var removedCells = $(that).parents('td').siblings(),
         removedFirstIdx = parseInt(removedCells[0].innerText),
         removedSecondIdx = parseInt(removedCells[1].innerText) - 1;
+    $.ajax({
+        url: "GameCreator/GameComponents",
+        data: { requestType: "GameBuilder", action: "delete", riddle: JSON.stringify(riddles[removedFirstIdx][removedSecondIdx]) },
+        type: 'POST',
+        error: function() { confirm("Encountered error while deleting, please refresh");}
+        //TODO: Handle error properly
+    });
     riddles[removedFirstIdx].splice(removedSecondIdx, 1);
     var size = riddles[removedFirstIdx].length,
         rowTable = $('.iIndex' + removedFirstIdx);
     for (var i = removedSecondIdx; i < size; i++) {
         rowTable[i].children[1].innerText = (i + 1);
+        riddles[removedFirstIdx][i].index = i;
     }
 }
 

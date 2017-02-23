@@ -125,9 +125,9 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
 
     private void handleGameBuilderRequest(HttpServletRequest request, Game game) throws ServletException {
         String gameBuilderRequest = request.getParameter("action");
-        HashMap<String, String> riddleMap = gson.fromJson(request.getParameter("riddle"), HashMap.class);
+        HashMap<String, Object> riddleMap = gson.fromJson(request.getParameter("riddle"), HashMap.class);
         if ("delete".equals(gameBuilderRequest)) {
-            deleteRiddle(game, Integer.parseInt(riddleMap.get("appearanceNumber")), Integer.parseInt(riddleMap.get("index")));
+            deleteRiddle(game, ((Double)riddleMap.get("appearanceNumber")).intValue(), ((Double)riddleMap.get("index")).intValue());
         }
         else if ("add".equals(gameBuilderRequest)) {
             Riddle riddle = buildRiddle(riddleMap);
@@ -153,6 +153,6 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
     }
 
     private void deleteRiddle(Game game, int appearanceNumber, int index) {
-        int iIndex;
+        game.DeleteRiddle(appearanceNumber,index);
     }
 }
