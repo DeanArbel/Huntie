@@ -13,7 +13,7 @@ public class Game {
     private final String r_GameId;
     private final List<String> r_Managers = new ArrayList<>();
     private final List<Team> r_Teams = new ArrayList<>();
-    private final List<List<Riddle>> r_Riddles = new ArrayList<>();
+    private final List<List<Riddle>> r_Riddles = new ArrayList<>(Riddle.MAX_APPEARANCE + 1);
     private int m_MaxPlayers = 20;
     private int m_MaxPayersInTeam = 2;
     private String m_GameArea;
@@ -75,5 +75,21 @@ public class Game {
 
     public List<List<Riddle>> getRiddles() {
         return r_Riddles;
+    }
+
+    public void ClearRiddles() { r_Riddles.clear(); }
+
+    public void AddRiddle(Riddle riddle) {
+        int riddleIndex = riddle.getAppearanceNumber();
+        if (r_Riddles.size() < riddleIndex) {
+            for (int i = r_Riddles.size(); i < riddleIndex; i++) {
+                r_Riddles.add(i, null);
+            }
+            r_Riddles.add(riddleIndex, new ArrayList<>());
+        }
+        else if (r_Riddles.get(riddleIndex) == null) {
+            r_Riddles.add(riddleIndex, new ArrayList<>());
+        }
+        r_Riddles.get(riddleIndex).add(riddle);
     }
 }

@@ -1,6 +1,7 @@
 package servlets.GameCreator;
 
 import GameComponents.Game;
+import GameComponents.Riddle;
 import Util.DatabaseFacade;
 import com.google.gson.Gson;
 import servlets.Util.ServletUtils;
@@ -10,7 +11,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -23,6 +23,8 @@ import static servlets.Util.ServletUtils.SetError;
  */
 @WebServlet(name = "UnpublishedGameComponentsServlet")
 public class UnpublishedGameComponentsServlet extends HttpServlet {
+    private static Gson gson = new Gson();
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //String username = SessionUtils.getUsername(request);
         String userid = "1";
@@ -66,7 +68,6 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
 
     private void handleGetRequest(HttpServletRequest request, PrintWriter out, Game game) throws ServletException {
         String requestType = request.getParameter("requestType");
-        Gson gson = new Gson();
         switch (requestType) {
             case "GameType":
                 out.print("[" + gson.toJson(game.isTeamGame()) + ", ");
@@ -91,6 +92,9 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
                 handleGameTypeRequest(request, game);
                 //response.sendRedirect("Manager/GameArea.html");
                 break;
+            case "GameBuilder":
+                handleGameBuilderRequest(request, game);
+                break;
             default:
                 throw new ServletException("No request was sent");
         }
@@ -98,14 +102,13 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
     }
 
     private void handleGameTypeRequest(HttpServletRequest request, Game game) {
-        Gson gson = new Gson();
-        boolean isTeamGame = request.getParameter("gameType").equals("Team Game ");
+        boolean isTeamGame = request.getParameter("gameType").equals("Team Game");
         Integer maxPlayers;
         Integer maxPlayersInTeam;
         Map teamMap;
         if (isTeamGame) {
             maxPlayersInTeam = Integer.parseInt(request.getParameter("maxPlayersInTeam"));
-            teamMap = gson.fromJson(request.getParameter("teams"), Map.class);
+            teamMap = gson.fromJson(request.getParameter("teams"), HashMap.class);
             maxPlayers = maxPlayersInTeam * teamMap.size();
         }
         else {
@@ -118,5 +121,38 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
         game.setMaxPlayers(maxPlayers);
         game.setIsTeamGame(isTeamGame);
         game.setTeamNames(teamMap.keySet());
+    }
+
+    private void handleGameBuilderRequest(HttpServletRequest request, Game game) throws ServletException {
+        String gameBuilderRequest = request.getParameter("action");
+        HashMap<String, String> riddleMap = gson.fromJson(request.getParameter("riddle"), HashMap.class);
+        if ("delete".equals(gameBuilderRequest)) {
+            deleteRiddle(game, Integer.parseInt(riddleMap.get("appearanceNumber")), Integer.parseInt(riddleMap.get("index")));
+        }
+        else if ("add".equals(gameBuilderRequest)) {
+            Riddle riddle = buildRiddle(riddleMap);
+            game.AddRiddle(riddle);
+        }
+    }
+
+    private Riddle buildRiddle(Map i_Riddle) throws ServletException {
+        Riddle riddle = new Riddle();
+        String name = (String)i_Riddle.get("name");
+        String questionText = (String)i_Riddle.get("questionText");
+        String answerText = (String)i_Riddle.get("answerText");
+        int appearanceNumber = ((Double)i_Riddle.get("appearanceNumber")).intValue();
+        //TODO: Add image support
+        if (name == null || questionText == null || answerText == null && appearanceNumber > Riddle.MAX_APPEARANCE && appearanceNumber < Riddle.MIN_APPEARANCE) {
+            throw new ServletException("Received illegal parameters");
+        }
+        riddle.setName(name);
+        riddle.setTextQuestion(questionText);
+        riddle.setTextAnswer(answerText);
+        riddle.setAppearanceNumber(appearanceNumber);
+        return riddle;
+    }
+
+    private void deleteRiddle(Game game, int appearanceNumber, int index) {
+        int iIndex;
     }
 }

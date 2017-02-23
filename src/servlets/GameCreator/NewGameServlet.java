@@ -1,11 +1,9 @@
 package servlets.GameCreator;
 
 import Util.DatabaseFacade;
-import com.google.gson.Gson;
 import servlets.Util.ServletUtils;
 
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 

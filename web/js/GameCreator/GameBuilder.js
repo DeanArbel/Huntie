@@ -40,24 +40,28 @@ $(document).on("click", "#riddle-submit-btn", function() {
     var riddleErr = getRiddleInTableFormat();
     if (riddleErr[1] === "") {
         var riddle = riddleErr[0];
-        // $.ajax({
-        //     url: GAME_CREATOR_COMPONENTS_URL,
-        //     data: {requestType: "GameBuilder", riddle: riddle},
-        //     type: 'POST',
-        //     success: function () {
-        //         riddles[riddle.appearanceNumber][riddle.name] = riddle;
-        //         updateRiddlesTable();
-        //         riddleModal("toggle");
-        //     } //TODO: Add error notification
-        // });
+        $.ajax({
+            url: GAME_CREATOR_COMPONENTS_URL,
+            data: {requestType: "GameBuilder", action:"add", riddle: JSON.stringify(riddle)},
+            type: 'POST',
+            success: function () {
+                if (!riddles[riddle.appearanceNumber]) {
+                    riddles[riddle.appearanceNumber] = [];
+                }
+                riddles[riddle.appearanceNumber][riddles[riddle.appearanceNumber].length] = riddle;
+                updateRiddlesTable();
+                riddleModal.modal("toggle");
+                resetForm();
+            } //TODO: Add error notification
+        });
         //TODO: Remove lines below this comment after setting up server
-        if (!riddles[riddle.appearanceNumber]) {
-            riddles[riddle.appearanceNumber] = [];
-        }
-        riddles[riddle.appearanceNumber][riddles[riddle.appearanceNumber].length] = riddle;
-        updateRiddlesTable();
-        riddleModal.modal("toggle");
-        resetForm();
+        // if (!riddles[riddle.appearanceNumber]) {
+        //     riddles[riddle.appearanceNumber] = [];
+        // }
+        // riddles[riddle.appearanceNumber][riddles[riddle.appearanceNumber].length] = riddle;
+        // updateRiddlesTable();
+        // riddleModal.modal("toggle");
+        // resetForm();
     }
     else {
         confirm(riddleErr[1]);
@@ -77,6 +81,7 @@ function resetForm() {
 function initPageElementsFromServer() {
     $.ajax({
         url: "GameCreator/GameComponents",
+        datatype: "application/json; charset=utf-8",
         data: { requestType: "GameBuilder" },
         type: 'GET',
         success: function(serverRiddles) {
@@ -86,8 +91,8 @@ function initPageElementsFromServer() {
                 var riddleArrSize = serverRiddles.length;
                 for (var i = 0; i < riddleArrSize; i++) {
                     riddles[i] = {};
-                    var currApperanceSize = serverRiddles[i].length;
-                    for (var j = 0; j < currApperanceSize; j++) {
+                    var currAppearanceSize = serverRiddles[i].length;
+                    for (var j = 0; j < currAppearanceSize; j++) {
                         riddles[i][j] = serverRiddles[i][j];
                     }
                 }
@@ -160,7 +165,7 @@ function rowWasRemoved(that) {
 
 function checkRiddleErrors(riddle) {
     var errMsg = "";
-    if (parseInt(riddle.appearanceNumber) > 99 || parseInt(riddle.appearanceNumber) < 1) {
+    if (!riddle.appearanceNumber || riddle.appearanceNumber > 99 || riddle.appearanceNumber < 1) {
         errMsg += "- Appearance number should be between 1 and 99\n";
     }
     if (riddle.questionText === "") {
@@ -182,7 +187,7 @@ function checkRiddleErrors(riddle) {
 function getRiddleInTableFormat() {
     var riddle = {
         name: riddleNameInput.value,
-        appearanceNumber: riddleAppearanceInput.value,
+        appearanceNumber: parseInt(riddleAppearanceInput.value),
         type: riddleType.innerText,
         questionText: riddleQuestion.value,
         questionOptionalImage: riddleOptionalImage, //TODO: Debug this

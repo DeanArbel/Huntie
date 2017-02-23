@@ -128,7 +128,7 @@ $(document).on('click', '#nextPage-btn', function() {
 
 function checkErrorsBeforeSubmit(gameType) {
     var errMsg = "";
-    if (gameType === TEAM_GAME + " ") {
+    if (gameType === TEAM_GAME) {
         if (maxPlayerTeamInput.value === "" || parseInt(maxPlayerTeamInput.value) < 1) {
             errMsg += "- Team size should be greater than zero\n";
         }
