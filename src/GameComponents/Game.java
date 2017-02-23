@@ -81,7 +81,7 @@ public class Game {
 
     public void AddRiddle(Riddle riddle) {
         int riddleIndex = riddle.getAppearanceNumber();
-        if (r_Riddles.size() < riddleIndex) {
+        if (r_Riddles.size() <= riddleIndex) {
             for (int i = r_Riddles.size(); i < riddleIndex; i++) {
                 r_Riddles.add(i, null);
             }
