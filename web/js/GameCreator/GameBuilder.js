@@ -9,12 +9,13 @@ var riddlesTable;
 var riddleNameInput;
 var riddleAppearanceInput;
 var riddleType;
-var riddleQuestion;
+var riddleTextQuestion;
 var riddleOptionalImage;
 var riddleTextAnswer;
 var riddleLocationCheckBox;
 var riddleLocation;
 var riddleModal;
+var editFlag = false;
 
 $(function() {
     sessionStorage.setItem("GameBuilderVisited", "True");
@@ -28,7 +29,7 @@ function initGlobalVars() {
     riddleNameInput = $("#riddle-name")[0];
     riddleAppearanceInput = $("#riddle-appearance-number")[0];
     riddleType = $(".dropdown-btn")[0];
-    riddleQuestion = $("#riddle-question-text")[0];
+    riddleTextQuestion = $("#riddle-question-text")[0];
     riddleOptionalImage = $("#riddle-question-optionalimage")[0];
     riddleTextAnswer = $("#riddle-answer-text")[0];
     riddleLocationCheckBox = $("#riddle-location-checkbox")[0];
@@ -37,30 +38,50 @@ function initGlobalVars() {
 }
 
 $(document).on("click", "#riddle-submit-btn", function() {
-    var riddleErr = getRiddleInTableFormat();
-    if (riddleErr[1] === "") {
-        var riddle = riddleErr[0];
-        $.ajax({
-            url: GAME_CREATOR_COMPONENTS_URL,
-            data: {requestType: "GameBuilder", action:"add", riddle: JSON.stringify(riddle)},
-            type: 'POST',
-            success: function () {
-                if (!riddles[riddle.appearanceNumber]) {
-                    riddles[riddle.appearanceNumber] = [];
-                }
-                riddles[riddle.appearanceNumber][riddles[riddle.appearanceNumber].length] = riddle;
-                updateRiddlesTable();
-                riddleModal.modal("toggle");
-                resetForm();
-            } //TODO: Add error notification
-        });
+    var riddleAndErr = getRiddleInTableFormat();
+    if (riddleAndErr[1] === "") {
+        //TODO: add loading screen to prevent user from using page
+        if (editFlag) {
+            sendRiddleToServer({requestType: "GameBuilder", action:"edit", riddle: JSON.stringify(riddleAndErr[0])}, riddleAndErr[0]);
+        } else {
+            sendRiddleToServer({requestType: "GameBuilder", action:"add", riddle: JSON.stringify(riddleAndErr[0])}, riddleAndErr[0]);
+        }
     }
     else {
-        confirm(riddleErr[1]);
+        confirm(riddleAndErr[1]);
     }
 });
 
 $(document).on("click", "#riddle-reset-btn", resetForm);
+
+$(document).on("click", ".table > tbody > tr", function(clickedEvent) {
+    var clickedRowCells = clickedEvent.currentTarget.cells,
+        clickedRiddle = riddles[clickedRowCells[1].innerText][clickedRowCells[2].innerText];
+    editRiddle(clickedRiddle);
+});
+
+function sendRiddleToServer(data, riddle) {
+    $.ajax({
+        url: GAME_CREATOR_COMPONENTS_URL,
+        data: data,
+        type: 'POST',
+        success: onSuccessfulRiddlePost(riddle),
+        error: function(err) {
+            confirm("Encountered error on server, please try again");
+        }
+    });
+}
+
+function onSuccessfulRiddlePost(riddle) {
+    //TODO: Close loading screen
+    if (!riddles[riddle.appearanceNumber]) {
+        riddles[riddle.appearanceNumber] = [];
+    }
+    riddles[riddle.appearanceNumber][riddles[riddle.appearanceNumber].length] = riddle;
+    updateRiddlesTable();
+    riddleModal.modal("toggle");
+    resetForm();
+}
 
 function resetForm() {
     document.getElementById("riddle-form").reset();
@@ -133,7 +154,16 @@ function addRow(riddle) {
     riddlesTable.append($eRow);
 }
 
-function readURL(input) {
+function editRiddle(riddle) {
+    riddleNameInput.value = riddle.name;
+    riddleAppearanceInput = riddle.appearanceNumber;
+    riddleTextQuestion = riddle.questionText;
+    riddleTextAnswer = riddle.answerText;
+    //TODO: Add other relevant fields
+
+}
+
+function readPictureURL(input) {
     if (input.files && input.files[0]) {
         var reader = new FileReader();
 
@@ -205,7 +235,7 @@ function getRiddleInTableFormat() {
         name: riddleNameInput.value,
         appearanceNumber: parseInt(riddleAppearanceInput.value),
         type: riddleType.innerText,
-        questionText: riddleQuestion.value,
+        questionText: riddleTextQuestion.value,
         questionOptionalImage: riddleOptionalImage, //TODO: Debug this
         answerText: riddleTextAnswer.value
         //TODO: after google maps add location
