@@ -133,6 +133,9 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
             Riddle riddle = buildRiddle(riddleMap);
             game.AddRiddle(riddle);
         }
+        else {
+            throw new ServletException("No action was given");
+        }
     }
 
     private Riddle buildRiddle(Map i_Riddle) throws ServletException {

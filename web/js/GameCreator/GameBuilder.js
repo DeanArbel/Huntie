@@ -16,10 +16,12 @@ var riddleLocationCheckBox;
 var riddleLocation;
 var riddleModal;
 var editFlag = false;
+var edittedRiddle;
+var edittedRiddleDeleteButton;
 
 $(function() {
     sessionStorage.setItem("GameBuilderVisited", "True");
-    dropdownChange(TEXT_ANSWER);
+    updateDropdownValue(TEXT_ANSWER);
     initGlobalVars();
     initPageElementsFromServer();
 });
@@ -33,6 +35,7 @@ function initGlobalVars() {
     riddleOptionalImage = $("#riddle-question-optionalimage")[0];
     riddleTextAnswer = $("#riddle-answer-text")[0];
     riddleLocationCheckBox = $("#riddle-location-checkbox")[0];
+    toggleLocationInformation();
     //TODO: Add this after google maps integration: riddleLocation = $("#riddle-location")[0];
     riddleModal = $("#myModal");
 }
@@ -42,9 +45,10 @@ $(document).on("click", "#riddle-submit-btn", function() {
     if (riddleAndErr[1] === "") {
         //TODO: add loading screen to prevent user from using page
         if (editFlag) {
-            sendRiddleToServer({requestType: "GameBuilder", action:"edit", riddle: JSON.stringify(riddleAndErr[0])}, riddleAndErr[0]);
+            edittedRiddle = riddleAndErr[0];
+            edittedRiddleDeleteButton.click();
         } else {
-            sendRiddleToServer({requestType: "GameBuilder", action:"add", riddle: JSON.stringify(riddleAndErr[0])}, riddleAndErr[0]);
+            sendRiddleToServer(riddleAndErr[0]);
         }
     }
     else {
@@ -56,14 +60,15 @@ $(document).on("click", "#riddle-reset-btn", resetForm);
 
 $(document).on("click", ".table > tbody > tr", function(clickedEvent) {
     var clickedRowCells = clickedEvent.currentTarget.cells,
-        clickedRiddle = riddles[clickedRowCells[1].innerText][clickedRowCells[2].innerText];
+        clickedRiddle = riddles[clickedRowCells[0].innerText][clickedRowCells[1].innerText];
+    edittedRiddleDeleteButton = $(clickedRowCells[3]).children();
     editRiddle(clickedRiddle);
 });
 
-function sendRiddleToServer(data, riddle) {
+function sendRiddleToServer(riddle) {
     $.ajax({
         url: GAME_CREATOR_COMPONENTS_URL,
-        data: data,
+        data: {requestType: "GameBuilder", action:"add", riddle: JSON.stringify(riddle)},
         type: 'POST',
         success: onSuccessfulRiddlePost(riddle),
         error: function(err) {
@@ -74,6 +79,7 @@ function sendRiddleToServer(data, riddle) {
 
 function onSuccessfulRiddlePost(riddle) {
     //TODO: Close loading screen
+    editFlag = false;
     if (!riddles[riddle.appearanceNumber]) {
         riddles[riddle.appearanceNumber] = [];
     }
@@ -88,6 +94,7 @@ function resetForm() {
     var image = document.getElementById('riddle-question-optionalimage');
     image.src = "";
     image.hidden = true;
+    toggleLocationInformation();
     //TODO: Remove location
 }
 
@@ -148,19 +155,23 @@ function updateRiddlesTable() {
 function addRow(riddle) {
     var $eRow = $('<tr class="iIndex' + riddle.appearanceNumber + '">');
     $eRow.append('<td>' + riddle.appearanceNumber + '</td>');
-    $eRow.append('<td hidden>' + (riddle.index + 1) + '</td>');
+    $eRow.append('<td hidden>' + riddle.index + '</td>');
     $eRow.append('<td>' + riddle.name + '</td>');
     $eRow.append(REMOVE_BUTTON_SVG);
     riddlesTable.append($eRow);
 }
 
 function editRiddle(riddle) {
-    riddleNameInput.value = riddle.name;
-    riddleAppearanceInput = riddle.appearanceNumber;
-    riddleTextQuestion = riddle.questionText;
-    riddleTextAnswer = riddle.answerText;
-    //TODO: Add other relevant fields
-
+    if (!editFlag) {
+        riddleNameInput.value = riddle.name;
+        riddleAppearanceInput.value = riddle.appearanceNumber;
+        riddleTextQuestion.value = riddle.questionText;
+        riddleTextAnswer.value = riddle.answerText;
+        updateDropdownValue(riddle.type);
+        editFlag = true;
+        riddleModal.modal("toggle");
+        //TODO: Add other relevant fields
+    }
 }
 
 function readPictureURL(input) {
@@ -192,21 +203,28 @@ function dropdownChange(newDropdownValue) {
 function rowWasRemoved(that) {
     var removedCells = $(that).parents('td').siblings(),
         removedFirstIdx = parseInt(removedCells[0].innerText),
-        removedSecondIdx = parseInt(removedCells[1].innerText) - 1;
+        removedSecondIdx = parseInt(removedCells[1].innerText);
     $.ajax({
         url: "GameCreator/GameComponents",
         data: { requestType: "GameBuilder", action: "delete", riddle: JSON.stringify(riddles[removedFirstIdx][removedSecondIdx]) },
         type: 'POST',
-        error: function() { confirm("Encountered error while deleting, please refresh");}
+        success: function() {
+            riddles[removedFirstIdx].splice(removedSecondIdx, 1);
+            var size = riddles[removedFirstIdx].length,
+                rowTable = $('.iIndex' + removedFirstIdx);
+            for (var i = removedSecondIdx; i < size; i++) {
+                rowTable[i].children[1].innerText = i;
+                riddles[removedFirstIdx][i].index = i;
+            }
+            if (editFlag) {
+                sendRiddleToServer(edittedRiddle);
+            }
+        },
+        error: function() {
+            confirm("Encountered error while deleting, please refresh");
+        }
         //TODO: Handle error properly
     });
-    riddles[removedFirstIdx].splice(removedSecondIdx, 1);
-    var size = riddles[removedFirstIdx].length,
-        rowTable = $('.iIndex' + removedFirstIdx);
-    for (var i = removedSecondIdx; i < size; i++) {
-        rowTable[i].children[1].innerText = (i + 1);
-        riddles[removedFirstIdx][i].index = i;
-    }
 }
 
 function checkRiddleErrors(riddle) {
@@ -243,4 +261,13 @@ function getRiddleInTableFormat() {
     }, errMsg = checkRiddleErrors(riddle);
     //TODO: Add checks here, if one fails return null
     return [riddle, errMsg];
+}
+
+function toggleLocationInformation() {
+    if (riddleLocationCheckBox.checked) {
+        $('.location-info').show();
+    }
+    else {
+        $('.location-info').hide();
+    }
 }
