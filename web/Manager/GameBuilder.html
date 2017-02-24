@@ -14,8 +14,13 @@
 <body>
 <div class="loader centered"></div>
 <div hidden class="container">
-    <div class="col-xs-1 col-xs-offset-11">
-        <button id="nextPage-btn" class="glyphicon glyphicon-chevron-right"></button>
+    <div class="col-xs-12">
+        <div class="col-xs-1">
+            <button id="prevPage-btn" class="btn glyphicon glyphicon-chevron-left"></button>
+        </div>
+        <div class="col-xs-1 col-xs-offset-10">
+            <button id="nextPage-btn" class="btn glyphicon glyphicon-chevron-right"></button>
+        </div>
     </div>
     <br>
     <h1 class="text-center">Game Builder</h1>
@@ -97,7 +102,7 @@
                                 <label for="riddle-location-checkbox">Location Based:</label>
                             </div>
                             <div class="col-xs-6">
-                                <input id="riddle-location-checkbox" type="checkbox" onclick="toggleLocationInformation()" value="">
+                                <input id="riddle-location-checkbox" type="checkbox" checked>
                             </div>
                         </div>
                         <button hidden class="btn btn-default center-block location-info">Set Location</button>

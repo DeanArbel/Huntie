@@ -35,10 +35,17 @@ function initGlobalVars() {
     riddleOptionalImage = $("#riddle-question-optionalimage")[0];
     riddleTextAnswer = $("#riddle-answer-text")[0];
     riddleLocationCheckBox = $("#riddle-location-checkbox")[0];
-    toggleLocationInformation();
     //TODO: Add this after google maps integration: riddleLocation = $("#riddle-location")[0];
     riddleModal = $("#myModal");
 }
+
+$(document).on('click', '#prevPage-btn', function() {
+    window.location.href = SITE_URL + "/Manager/GameArea.html";
+});
+
+$(document).on('click', '#nextPage-btn', function() {
+    window.location.href = SITE_URL + "/Manager/PublishGame.html";
+});
 
 $(document).on("click", "#riddle-submit-btn", function() {
     var riddleAndErr = getRiddleInTableFormat();
@@ -94,7 +101,7 @@ function resetForm() {
     var image = document.getElementById('riddle-question-optionalimage');
     image.src = "";
     image.hidden = true;
-    toggleLocationInformation();
+    $('.location-info').show();
     //TODO: Remove location
 }
 
@@ -263,11 +270,6 @@ function getRiddleInTableFormat() {
     return [riddle, errMsg];
 }
 
-function toggleLocationInformation() {
-    if (riddleLocationCheckBox.checked) {
-        $('.location-info').show();
-    }
-    else {
-        $('.location-info').hide();
-    }
-}
+$(document).on('change', '#riddle-location-checkbox', function (event) {
+    $('.location-info').toggle();
+});

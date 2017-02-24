@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Game Type</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Game Area</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="../css/bootstrap.min.css">
     <link rel="stylesheet" href="../css/Util/UtilityClasses.css">
@@ -14,10 +14,16 @@
 <body>
     <div class="loader centered"></div>
     <div hidden class="container">
-        <div class="col-xs-1 col-xs-offset-11">
-            <button id="nextPage-btn" class="glyphicon glyphicon-chevron-right"></button>
+        <div class="col-xs-12">
+            <div class="col-xs-1">
+                <button id="prevPage-btn" class="btn glyphicon glyphicon-chevron-left"></button>
+            </div>
+            <div class="col-xs-1 col-xs-offset-10">
+                <button id="nextPage-btn" class="btn glyphicon glyphicon-chevron-right"></button>
+            </div>
         </div>
-        <br>       <h3 class="text-center">Would you like to limit to play area?</h3>
+        <br>
+        <h3 class="text-center">Would you like to limit to play area?</h3>
         <div class="radio">
             <label><input type="radio" id="radio_0" name="playArea-radio">Yes</label>
         </div>
