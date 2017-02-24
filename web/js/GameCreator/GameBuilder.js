@@ -44,7 +44,7 @@ $(document).on('click', '#prevPage-btn', function() {
 });
 
 $(document).on('click', '#nextPage-btn', function() {
-    window.location.href = SITE_URL + "/Manager/PublishGame.html";
+    window.location.href = SITE_URL + "/Manager/GameSettings.html";
 });
 
 $(document).on("click", "#riddle-submit-btn", function() {
