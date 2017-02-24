@@ -82,16 +82,32 @@ function initPageElementsFromServer() {
             if (serverRiddles.length > 0) {
                 var riddleArrSize = serverRiddles.length;
                 for (var i = 0; i < riddleArrSize; i++) {
-                    riddles[i] = {};
-                    var currAppearanceSize = serverRiddles[i].length;
-                    for (var j = 0; j < currAppearanceSize; j++) {
-                        riddles[i][j] = serverRiddles[i][j];
+                    if (serverRiddles[i]) {
+                        riddles[i] = [];
+                        var currAppearanceSize = serverRiddles[i].length;
+                        for (var j = 0; j < currAppearanceSize; j++) {
+                            riddles[i][j] = convertRiddleToClientFormat(serverRiddles[i][j]);
+                        }
                     }
                 }
                 updateRiddlesTable();
             }
         }
     });
+}
+
+function convertRiddleToClientFormat(serverRiddle) {
+    var riddle = {};
+    riddle.appearanceNumber = serverRiddle.m_AppearanceNumber;
+    riddle.name = serverRiddle.m_Name;
+    riddle.questionText = serverRiddle.m_TextQuestion;
+    if (serverRiddle.m_IsTextType) {
+        riddle.type = TEXT_ANSWER;
+        riddle.answerText = serverRiddle.m_TextAnswer;
+    }
+    return riddle;
+    //TODO: Add support for optional image
+    //TODO: Add here photo support
 }
 
 function updateRiddlesTable() {

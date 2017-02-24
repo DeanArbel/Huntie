@@ -141,14 +141,19 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
         String questionText = (String)i_Riddle.get("questionText");
         String answerText = (String)i_Riddle.get("answerText");
         int appearanceNumber = ((Double)i_Riddle.get("appearanceNumber")).intValue();
+        boolean isTextType = !"Photo Type".equals(i_Riddle.get("type"));
         //TODO: Add image support
         if (name == null || questionText == null || answerText == null && appearanceNumber > Riddle.MAX_APPEARANCE && appearanceNumber < Riddle.MIN_APPEARANCE) {
             throw new ServletException("Received illegal parameters");
         }
         riddle.setName(name);
-        riddle.setTextQuestion(questionText);
-        riddle.setTextAnswer(answerText);
         riddle.setAppearanceNumber(appearanceNumber);
+        riddle.setTextQuestion(questionText);
+        riddle.setIsTextType(isTextType);
+        if (isTextType) {
+            riddle.setTextAnswer(answerText);
+        }
+        //TODO: Add image support here as well
         return riddle;
     }
 
