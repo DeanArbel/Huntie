@@ -3,6 +3,7 @@ package GameComponents;
 import Util.Enums.GameStatus;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -17,6 +18,9 @@ public class Game {
     private int m_MaxPlayers = 20;
     private int m_MaxPayersInTeam = 2;
     private String m_GameArea;
+    private String m_TreasureType;
+    private Date m_StartDate;
+    private float m_Duration;
     private GameStatus m_GameStatus = GameStatus.IN_CREATION;
     private boolean m_IsTeamGame = true;
 
@@ -95,5 +99,37 @@ public class Game {
 
     public void DeleteRiddle(int appearanceNumber, int index) {
         r_Riddles.get(appearanceNumber).remove(index);
+    }
+
+    public Date getStartDate() {
+        return m_StartDate;
+    }
+
+    public void setStartDate(Date i_Date) {
+        this.m_StartDate = i_Date;
+    }
+
+    public float getDuration() {
+        return m_Duration;
+    }
+
+    public void setDuration(float i_Duration) {
+        this.m_Duration = i_Duration;
+    }
+
+    public String getTreasureType() {
+        return m_TreasureType;
+    }
+
+    public void setTreasureType(String i_TreasureType) {
+        this.m_TreasureType = i_TreasureType;
+    }
+
+    public GameStatus getGameStatus() {
+        return m_GameStatus;
+    }
+
+    public void setGameStatus(GameStatus i_GameStatus) {
+        this.m_GameStatus = i_GameStatus;
     }
 }

@@ -3,6 +3,7 @@ package servlets.GameCreator;
 import GameComponents.Game;
 import GameComponents.Riddle;
 import Util.DatabaseFacade;
+import Util.Enums.GameStatus;
 import com.google.gson.Gson;
 import servlets.Util.ServletUtils;
 
@@ -13,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,10 +33,11 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
         if (userid == null) {
             response.sendRedirect("index.jsp"); //TODO: Change this according to login system
         } else {
-            try {
+            try (PrintWriter out = response.getWriter()) {
                 Game game = DatabaseFacade.getGame(DatabaseFacade.getUser(userid).getUnpublishedGame().getGameId());
                 if (game != null) {
-                    handlePostRequest(request, response, game);
+                    handlePostRequest(request, response, game, userid);
+                    out.println(gson.toJson(game.getGameId()));
                 } else {
                     SetError(response, 400, "Game not found");
                 }
@@ -84,7 +87,7 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
         }
     }
 
-    private void handlePostRequest(HttpServletRequest request, HttpServletResponse response, Game game)
+    private void handlePostRequest(HttpServletRequest request, HttpServletResponse response, Game game, String userid)
             throws ServletException, IOException{
         String requestType = request.getParameter("requestType");
         switch (requestType) {
@@ -95,10 +98,23 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
             case "GameBuilder":
                 handleGameBuilderRequest(request, game);
                 break;
+            case "GameSettings":
+                handleGameSettingsRequest(request, game, userid);
+                break;
             default:
                 throw new ServletException("No request was sent");
         }
         response.setStatus(200);
+    }
+
+    private void handleGameSettingsRequest(HttpServletRequest request, Game game, String userid) {
+        HashMap<String, Object> settingsMap = gson.fromJson(request.getParameter("settings"), HashMap.class);
+        game.setStartDate(new Date(((Double)settingsMap.get("startTime")).longValue()));
+        game.setDuration(((Double)settingsMap.get("duration")).floatValue());
+        game.setTreasureType((String)settingsMap.get("treasureType"));
+        game.setGameStatus(GameStatus.CREATION_COMPLETE);
+        //TODO: Add check that game is really ready for publish
+        DatabaseFacade.getUser(userid).setUnpublishedGame(null);
     }
 
     private void handleGameTypeRequest(HttpServletRequest request, Game game) {

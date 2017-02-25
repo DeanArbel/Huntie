@@ -18,9 +18,10 @@ var riddleModal;
 var editFlag = false;
 var edittedRiddle;
 var edittedRiddleDeleteButton;
+var rowIsMidRemoval;
 
 $(function() {
-    sessionStorage.setItem("GameBuilderVisited", "True");
+    sessionStorage.setItem("PrevPage", "GameBuilder");
     updateDropdownValue(TEXT_ANSWER);
     initGlobalVars();
     initPageElementsFromServer();
@@ -44,7 +45,12 @@ $(document).on('click', '#prevPage-btn', function() {
 });
 
 $(document).on('click', '#nextPage-btn', function() {
-    window.location.href = SITE_URL + "/Manager/GameSettings.html";
+        if ($("tbody > tr").length > 0) {
+        window.location.href = SITE_URL + "/Manager/GameSettings.html";
+    }
+    else {
+        confirm("Game must have at least 1 riddle");
+    }
 });
 
 $(document).on("click", "#riddle-submit-btn", function() {
@@ -66,10 +72,12 @@ $(document).on("click", "#riddle-submit-btn", function() {
 $(document).on("click", "#riddle-reset-btn", resetForm);
 
 $(document).on("click", ".table > tbody > tr", function(clickedEvent) {
-    var clickedRowCells = clickedEvent.currentTarget.cells,
-        clickedRiddle = riddles[clickedRowCells[0].innerText][clickedRowCells[1].innerText];
-    edittedRiddleDeleteButton = $(clickedRowCells[3]).children();
-    editRiddle(clickedRiddle);
+    if (!rowIsMidRemoval) {
+        var clickedRowCells = clickedEvent.currentTarget.cells,
+            clickedRiddle = riddles[clickedRowCells[0].innerText][clickedRowCells[1].innerText];
+        edittedRiddleDeleteButton = $(clickedRowCells[3]).children();
+        editRiddle(clickedRiddle);
+    }
 });
 
 function sendRiddleToServer(riddle) {
@@ -211,11 +219,13 @@ function rowWasRemoved(that) {
     var removedCells = $(that).parents('td').siblings(),
         removedFirstIdx = parseInt(removedCells[0].innerText),
         removedSecondIdx = parseInt(removedCells[1].innerText);
+    rowIsMidRemoval = true;
     $.ajax({
         url: "GameCreator/GameComponents",
         data: { requestType: "GameBuilder", action: "delete", riddle: JSON.stringify(riddles[removedFirstIdx][removedSecondIdx]) },
         type: 'POST',
         success: function() {
+            rowIsMidRemoval = false;
             riddles[removedFirstIdx].splice(removedSecondIdx, 1);
             var size = riddles[removedFirstIdx].length,
                 rowTable = $('.iIndex' + removedFirstIdx);

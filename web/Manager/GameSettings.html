@@ -12,72 +12,78 @@
     <script src="../js/GameCreator/GameSettings.js"></script>
 </head>
 <body>
-<nav class="navbar navbar-inverse navbar-fixed-top">
-    <a class="navbar-brand" href="#">Huntie</a>
-    <ul class="nav navbar-nav">
-        <li><a id="prevPage-btn" href="#"><span class="glyphicon glyphicon-chevron-left"></span>Game Builder</a></li>
-    </ul>
-    <ul class="nav navbar-nav navbar-right">
-        <li><a id="nextPage-btn" href="#">Publish Game<span class="glyphicon glyphicon-chevron-right"></span></a></li>
-    </ul>
-</nav>
-<div class="container">
-    <div class="form-horizontal col-xs-12 col-sm-8 col-md-6 center-block">
-        <br>
-        <br>
-        <h2 class="text-center">Game Settings</h2>
-        <b>Treasure</b>
-        <br>
-        <div class="col-xs-offset-1">
-            <div class="form-group">
-                <div class="col-xs-4">
-                    <label for="settings-type">Type</label>
-                </div>
-                <div class="col-xs-8">
-                    <div class="dropdown">
-                        <button id="settings-type" class="btn btn-primary dropdown-toggle dropdown-btn btn-wide" type="button" data-toggle="dropdown">
-                            <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li><a href="#" class="dropdown-selection" data-toggle="dropdown">Treasure Chest</a></li>
-                            <li><a href="#" class="dropdown-selection" data-toggle="dropdown">Trophy</a></li>
-                        </ul>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <a class="navbar-brand" href="#">Huntie</a>
+        <ul class="nav navbar-nav">
+            <li><a id="prevPage-btn" href="#"><span class="glyphicon glyphicon-chevron-left"></span>Game Builder</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a id="nextPage-btn" href="#">Publish Game<span class="glyphicon glyphicon-chevron-right"></span></a></li>
+        </ul>
+    </nav>
+    <div class="container settings-container">
+        <div class="form-horizontal col-xs-12 col-sm-offset-3 col-sm-8 col-md-6">
+            <br>
+            <br>
+            <h2 class="text-center">Game Settings</h2>
+            <b>Treasure</b>
+            <br>
+            <div class="col-xs-offset-1">
+                <div class="form-group">
+                    <div class="col-xs-4">
+                        <label for="settings-type">Type</label>
                     </div>
-                    <br>
-                    <button hidden class="btn btn-default center-block location-info">Set Location</button>
+                    <div class="col-xs-8">
+                        <div class="dropdown">
+                            <button id="settings-type" class="btn btn-primary dropdown-toggle dropdown-btn btn-wide" type="button" data-toggle="dropdown">
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a href="#" class="dropdown-selection" data-toggle="dropdown">Treasure Chest</a></li>
+                                <li><a href="#" class="dropdown-selection" data-toggle="dropdown">Trophy</a></li>
+                            </ul>
+                        </div>
+                        <br>
+                        <button hidden class="btn btn-default center-block location-info">Set Location</button>
+                    </div>
+                </div>
+            </div>
+            <b>Game Details</b>
+            <br>
+            <div class="col-xs-offset-1">
+                <div class="form-group">
+                    <div class="col-xs-4">
+                        <label for="settings-duration">Duration(hours)</label>
+                    </div>
+                    <div class="col-xs-8">
+                        <input type="number" class="form-control" id="settings-duration">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-xs-4">
+                        <label for="settings-start-date">Start Date</label>
+                    </div>
+                    <div class="col-xs-8">
+                        <input type="date" class="form-control" id="settings-start-date">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-xs-4">
+                        <label for="settings-start-time">Start Time</label>
+                    </div>
+                    <div class="col-xs-8">
+                        <input type="time" class="form-control" id="settings-start-time">
+                    </div>
                 </div>
             </div>
         </div>
-        <b>Game Details</b>
-        <br>
-        <div class="col-xs-offset-1">
-            <div class="form-group">
-                <div class="col-xs-4">
-                    <label for="settings-time">Duration(hours)</label>
-                </div>
-                <div class="col-xs-8">
-                    <input type="number" class="form-control" id="settings-time">
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="col-xs-4">
-                    <label for="settings-start-date">Start Date</label>
-                </div>
-                <div class="col-xs-8">
-                    <input type="date" class="form-control" id="settings-start-date">
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="col-xs-4">
-                    <label for="settings-start-time">Start Time</label>
-                </div>
-                <div class="col-xs-8">
-                    <input type="time" class="form-control" id="settings-start-time">
-                </div>
-            </div>
-        </div>
-        <button hidden class="btn btn-default center-block location-info">Add/Remove Managers</button>
     </div>
-</div>
+    <div hidden class="container published-game">
+        <br>
+        <br>
+        <h2 class="text-center">Your game has been published!</h2>
+        <b>Below is your game summary, you can</b>
+        <br>
+    </div>
 </body>
 </html>

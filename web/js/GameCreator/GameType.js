@@ -11,8 +11,7 @@ var maxPlayerIndividualInput;
 var maxPlayerTeamInput;
 
 $(function() {
-    if (sessionStorage.getItem("GameAreaVisited")) {
-        sessionStorage.removeItem("GameAreaVisited");
+    if (sessionStorage.getItem("PrevPage") === "GameArea") {
         window.location.reload(true); // force refresh page1
     }
     else {
@@ -25,6 +24,7 @@ $(function() {
         maxPlayerTeamInput = $('#maxPlayersTeam')[0];
         initPageElementsFromServer();
     }
+    sessionStorage.setItem("PrevPage", "GameType");
 });
 
 function initPageElementsFromServer() {

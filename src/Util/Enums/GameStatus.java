@@ -5,7 +5,7 @@ package Util.Enums;
  */
 public enum GameStatus {
     IN_CREATION,
-    DIDNT_START,
+    CREATION_COMPLETE,
     STARTED,
     ENDED
 }
