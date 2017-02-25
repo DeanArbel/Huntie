@@ -19,6 +19,10 @@ $(document).on('click', "#createGame-btn", function() {
    });
 });
 
+$(document).on('click', "#joinGame-btn", function() {
+    window.location.href = SITE_URL + "/Player/JoinGame.html";
+});
+
 $(document).on('click', '#modal-yes-btn', function() { window.location.href = SITE_URL + "/Manager/GameType.html"; });
 $(document).on('click', '#modal-no-btn', function() {
     $.ajax({

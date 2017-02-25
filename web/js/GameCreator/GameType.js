@@ -99,6 +99,10 @@ function _addTeam(inputValue) {
     addRow(inputValue);
 }
 
+$(document).on('click', '#prevPage-btn', function() {
+    window.location.href = SITE_URL + "/Home.html";
+});
+
 $(document).on('click', '#nextPage-btn', function() {
    var gameType = $('.dropdown-btn')[0].innerText,
        errMsg = checkErrorsBeforeSubmit(gameType);
