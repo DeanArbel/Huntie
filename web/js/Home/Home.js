@@ -20,7 +20,7 @@ $(document).on('click', "#createGame-btn", function() {
 });
 
 $(document).on('click', "#joinGame-btn", function() {
-    window.location.href = SITE_URL + "/Player/JoinGame.html";
+    window.location.href = SITE_URL + "/Player/FindGame.html";
 });
 
 $(document).on('click', '#modal-yes-btn', function() { window.location.href = SITE_URL + "/Manager/GameType.html"; });

@@ -41,7 +41,7 @@ public class Game {
         this.m_MaxPlayers = i_MaxPlayers;
     }
 
-    public int getMaxPayersInTeam() {
+    public int getMaxPlayersInTeam() {
         return m_MaxPayersInTeam;
     }
 
@@ -131,5 +131,16 @@ public class Game {
 
     public void setGameStatus(GameStatus i_GameStatus) {
         this.m_GameStatus = i_GameStatus;
+    }
+
+    public boolean IsPlayerInGame(String i_UserId) {
+        boolean result = false;
+        for (Team team : r_Teams) {
+            if (team.IsPlayerInTeam(i_UserId)) {
+                result = true;
+                break;
+            }
+        }
+        return result;
     }
 }

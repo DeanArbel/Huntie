@@ -75,7 +75,7 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
             case "GameType":
                 out.print("[" + gson.toJson(game.isTeamGame()) + ", ");
                 out.print(gson.toJson(game.getMaxPlayers()) +", ");
-                out.print(gson.toJson(game.getMaxPayersInTeam()) +", ");
+                out.print(gson.toJson(game.getMaxPlayersInTeam()) +", ");
                 out.println(gson.toJson(game.getTeamNames()) + "]");
                 out.flush();
                 break;

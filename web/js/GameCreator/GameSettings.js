@@ -33,7 +33,7 @@ $(document).on('click', '#nextPage-btn', function() {
             data: { requestType: "GameSettings", settings: JSON.stringify(settingsAndErr[0])},
             type: 'POST',
             success: function(gameId) {
-                //TODO: Show dialog that will take you back home
+                //TODO: Show dialog that will take you back home and will contain all the data you need
                 confirm("Game settings for have been set, your game id is: " + gameId);
                 window.location.href = SITE_URL + "/Home.html";
             }

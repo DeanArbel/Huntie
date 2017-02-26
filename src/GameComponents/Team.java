@@ -17,4 +17,12 @@ public class Team {
     public String getTeamName() {
         return r_TeamName;
     }
+
+    public boolean IsPlayerInTeam(String i_userId) {
+        return r_TeamMembers.get(i_userId) != null;
+    }
+
+    public int Count() {
+        return r_TeamMembers.size();
+    }
 }

@@ -19,4 +19,12 @@
         <servlet-name>UnpublishedGameComponentsServlet</servlet-name>
         <url-pattern>/Manager/GameCreator/GameComponents</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>GameEntryServlet</servlet-name>
+        <servlet-class>servlets.Game.GameEntryServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>GameEntryServlet</servlet-name>
+        <url-pattern>/Player/GameEntry</url-pattern>
+    </servlet-mapping>
 </web-app>
