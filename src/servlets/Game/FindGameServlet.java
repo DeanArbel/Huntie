@@ -52,7 +52,7 @@ public class FindGameServlet extends HttpServlet {
         if (game.IsPlayerInGame(userId)) {
             dataMap.put("url", "/Player/Game.html");
         } else if (!game.IsGameFull()) {
-            dataMap.put("url", "/Player/GameEntry.html");
+            dataMap.put("url", "/Player/JoinGame.html");
         } else {
             throw new ServletException("Game is full");
         }

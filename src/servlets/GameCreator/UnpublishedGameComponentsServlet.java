@@ -130,6 +130,7 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
         else {
             maxPlayersInTeam = 1;
             teamMap = new HashMap();
+            teamMap.put("Players", null);
             maxPlayers = Integer.parseInt(request.getParameter("maxPlayers"));
         }
 

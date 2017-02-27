@@ -102,7 +102,7 @@ public class Game {
         r_Riddles.get(appearanceNumber).remove(index);
     }
 
-    public void AddPlayer(User i_PlayerToAdd, int i_TeamIdx) {
+    public void AddPlayer(String i_PlayerToAdd, int i_TeamIdx) {
         if (!IsGameFull()) {
             Team team = r_Teams.get(i_TeamIdx);
             if (m_IsTeamGame && team.GetSize() >= m_MaxPayersInTeam) {

@@ -23,9 +23,29 @@ import static servlets.Util.ServletUtils.SetError;
 /**
  * Created by Dean on 26/02/2017.
  */
-@WebServlet(name = "GameEntryServlet")
-public class GameEntryServlet extends HttpServlet {
+@WebServlet(name = "JoinGameServlet")
+public class JoinGameServlet extends HttpServlet {
     private static Gson gson = new Gson();
+
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        //String username = SessionUtils.getUsername(request);
+        String userid = "1";
+        if (userid == null) {
+            response.sendRedirect("index.jsp"); //TODO: Change this according to login system
+        } else {
+            try {
+                Game game = DatabaseFacade.getGame(DatabaseFacade.getUser(userid).getUnpublishedGame().GetGameId());
+                if (game != null) {
+                    game.AddPlayer(userid, Integer.parseInt(request.getParameter("teamIndex")));
+                } else {
+                    SetError(response, 400, "Game not found");
+                }
+            }
+            catch (Exception e) {
+                SetError(response, 400, e.getMessage());
+            }
+        }
+    }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");

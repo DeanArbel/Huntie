@@ -1,10 +1,13 @@
 /**
  * Created by Dean on 26/02/2017.
  */
-var teamsPlayerCanJoin;
+var isTeamAvailableArray;
 var maxPlayersInTeam;
 var teamTable;
 var gameCode;
+var clickedRow;
+var chosenTeamIdx;
+var joinGameBtn;
 
 $(function () {
     sessionStorage.setItem("PrevPage", "GameEntry");
@@ -12,10 +15,21 @@ $(function () {
     initPageElementsFromServer();
 });
 
+$(document).on("click", ".table > tbody > tr", function(clickedEvent) {
+    if (clickedRow) {
+        clickedRow.classList.remove("active");
+    }
+    clickedRow = clickedEvent.currentTarget;
+    clickedRow.classList.add("active");
+    chosenTeamIdx = clickedEvent.currentTarget.rowIndex - 1;
+    joinGameBtn[0].disabled = !isTeamAvailableArray[chosenTeamIdx];
+});
+
 function initGlobalVars() {
-    teamsPlayerCanJoin = [];
+    isTeamAvailableArray = [];
     teamTable = $('table > tbody');
     gameCode = getParameterByName("gameCode");
+    joinGameBtn = $("#joinGame-btn");
 }
 
 function initPageElementsFromServer() {
@@ -27,7 +41,7 @@ function initPageElementsFromServer() {
             if (!gameData.isPlayerInGame) {
                 if (gameData.errMsg === "") {
                     var size = gameData.teams.length;
-                    if (size === 1) { // if not team game
+                    if (size <= 1) { // if not team game
                         registerPlayerToGame();
                     } else {
                         maxPlayersInTeam = gameData.maxPlayersInTeam;
@@ -47,14 +61,25 @@ function initPageElementsFromServer() {
     });
 }
 
-//TODO: Make sure player can't send "join game" unless he has chosen a team with enough space
-
 function registerPlayerToGame() {
-    //TODO: Add ajax here
+    if (!chosenTeamIdx) {
+        chosenTeamIdx = 0;
+    }
+    $.ajax({
+        url: GAME_ENTRY_URL,
+        type: 'POST',
+        data: { teamIndex: chosenTeamIdx },
+        success: function() {
+            window.location.href = SITE_URL + "/Player/GameLobby.html?gameCode=" + gameCode;
+        },
+        error: function(errMsg) {
+            confirm(errMsg.error);
+        }
+    });
 }
 
 function _addTeam(index, teamData) {
-    teamsPlayerCanJoin[index] = teamData.count !== maxPlayersInTeam;
+    isTeamAvailableArray[index] = teamData.count !== maxPlayersInTeam;
     _addRow(teamData);
 }
 
