@@ -1,5 +1,5 @@
 /**
- * Created by Dean Arbel on 24/02/2017.
+ * Created by Dean on 24/02/2017.
  */
 var TREASURE_CHEST = "Treasure Chest";
 var TROPHY = "Trophy";
@@ -34,7 +34,7 @@ $(document).on('click', '#nextPage-btn', function() {
             type: 'POST',
             success: function(gameId) {
                 //TODO: Show dialog that will take you back home and will contain all the data you need
-                confirm("Game settings for have been set, your game id is: " + gameId);
+                confirm("Game settings for have been set, your game code is: " + gameId);
                 window.location.href = SITE_URL + "/Home.html";
             }
         });

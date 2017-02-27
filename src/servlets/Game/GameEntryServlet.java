@@ -21,7 +21,7 @@ import java.util.Map;
 import static servlets.Util.ServletUtils.SetError;
 
 /**
- * Created by Dean Arbel on 26/02/2017.
+ * Created by Dean on 26/02/2017.
  */
 @WebServlet(name = "GameEntryServlet")
 public class GameEntryServlet extends HttpServlet {
@@ -36,7 +36,7 @@ public class GameEntryServlet extends HttpServlet {
         } else {
             ServletUtils.AssertUserInDatabase(userid);
             try (PrintWriter out = response.getWriter()) {
-                Game game = DatabaseFacade.getGame(request.getParameter("gameid"));
+                Game game = DatabaseFacade.getGame(request.getParameter("gameCode"));
                 if (game == null) {
                     throw new ServletException("No game was found");
                 }
@@ -55,8 +55,8 @@ public class GameEntryServlet extends HttpServlet {
             String errMsg = getPlayerJoinGameErrors(userId, game);
             outputMap.put("errMsg", errMsg);
             if (errMsg.isEmpty()) {
-                outputMap.put("maxTeamPlayers", game.getMaxPlayersInTeam());
-                List<Team> teams = game.getTeams();
+                outputMap.put("maxPlayersInTeam", game.GetMaxPlayersInTeam());
+                List<Team> teams = game.GetTeams();
                 List<Map<String, String>> teamsMap = new ArrayList<>();
                 for (Team team : teams) {
                     Map<String, String> teamMap = new HashMap<>();

@@ -43,7 +43,7 @@ public class DatabaseFacade {
         if (gameCreator != null) {
             gameCreator.DeleteUnpublishedGame();
             newGame = new Game(String.valueOf(s_CurrentGameId++), i_UserId);
-            sr_Games.put(newGame.getGameId(), newGame);
+            sr_Games.put(newGame.GetGameId(), newGame);
             gameCreator.setUnpublishedGame(newGame);
         }
 

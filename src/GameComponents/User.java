@@ -58,7 +58,7 @@ public class User {
 
     public void DeleteUnpublishedGame() {
         if (m_UnpublishedGame != null) {
-            DatabaseFacade.DeleteGame(m_UnpublishedGame.getGameId());
+            DatabaseFacade.DeleteGame(m_UnpublishedGame.GetGameId());
         }
 
         m_UnpublishedGame = null;

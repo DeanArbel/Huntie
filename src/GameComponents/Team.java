@@ -25,4 +25,12 @@ public class Team {
     public int Count() {
         return r_TeamMembers.size();
     }
+
+    public int GetSize() {
+        return r_TeamMembers.size();
+    }
+
+    public void AddPlayer(User i_PlayerToAdd) {
+        r_TeamMembers.put(i_PlayerToAdd.getUserId(), i_PlayerToAdd);
+    }
 }

@@ -1,5 +1,5 @@
 /**
- * Created by Dean Arbel on 25/02/2017.
+ * Created by Dean on 25/02/2017.
  */
 
 var gameCode;
@@ -17,7 +17,17 @@ $(document).on('click', '#prevPage-btn', function() {
 
 $(document).on('click', '#game-find-btn', function() {
     //TODO: Check the given id is in the server (the server will give the right address)
-    window.location.href = SITE_URL + "/Player/GameEntry.html?gameid=" + gameCode.value;
+    $.ajax({
+        url: FIND_GAME_URL,
+        data: { gameCode: gameCode.value},
+        success: function(data) {
+            dataMap = JSON.parse(data);
+            window.location.href = SITE_URL + dataMap.url + "?gameCode=" + dataMap.gameCode;
+        },
+        error: function(errMsg) {
+            confirm(errMsg.statusText);
+        }
+    });
 });
 
 function initGlobalVars() {

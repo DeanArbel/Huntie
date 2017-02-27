@@ -1,14 +1,12 @@
 /**
- * Created by I337243 on 26/02/2017.
+ * Created by Dean on 26/02/2017.
  */
 var teamsPlayerCanJoin;
 var maxPlayersInTeam;
 var teamTable;
-var gameid;
+var gameCode;
 
 $(function () {
-    // $(".loader").hide();
-    // $(".settings-container").show();
     sessionStorage.setItem("PrevPage", "GameEntry");
     initGlobalVars();
     initPageElementsFromServer();
@@ -17,30 +15,22 @@ $(function () {
 function initGlobalVars() {
     teamsPlayerCanJoin = [];
     teamTable = $('table > tbody');
-    gameid = getParameterByName("gameid");
+    gameCode = getParameterByName("gameCode");
 }
 
 function initPageElementsFromServer() {
     $.ajax({
-        url: "GameEntry",
+        url: GAME_ENTRY_URL,
         type: 'GET',
-        data: {gameid: gameid},
-        /**
-         * gameData[0] - is player in game
-         * gameData[1] - error msg (if empty then no error)
-         * gameData[2] - teams
-         * gameData[3] - max players
-         */
+        data: {gameCode: gameCode},
         success: function(gameData) {
-            // $(".loader").hide();
-            // $(".container").show();
             if (!gameData.isPlayerInGame) {
                 if (gameData.errMsg === "") {
                     var size = gameData.teams.length;
                     if (size === 1) { // if not team game
                         registerPlayerToGame();
                     } else {
-                        maxPlayersInTeam = gameData.maxTeamPlayers;
+                        maxPlayersInTeam = gameData.maxPlayersInTeam;
                         for(var i = 0; i < size; i++) {
                             _addTeam(i, gameData.teams[i])
                         }
@@ -48,10 +38,10 @@ function initPageElementsFromServer() {
                     $(".loader").hide();
                     $(".container").show(); //TODO: Put it somewhere more logical
                 } else {
-                    confirm(gameData[1]);
+                    confirm(gameData.errMsg);
                 }
             } else {
-                window.location.href = SITE_URL + "/Player/GameLobby.html?gameid=" + gameid;
+                window.location.href = SITE_URL + "/Player/GameLobby.html?gameCode=" + gameCode;
             }
         }
     });

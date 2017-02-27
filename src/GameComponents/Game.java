@@ -17,43 +17,44 @@ public class Game {
     private final List<List<Riddle>> r_Riddles = new ArrayList<>(Riddle.MAX_APPEARANCE + 1);
     private int m_MaxPlayers = 20;
     private int m_MaxPayersInTeam = 2;
+    private int m_PlayersInGame;
     private String m_GameArea;
     private String m_TreasureType;
     private Date m_StartDate;
     private float m_Duration;
     private GameStatus m_GameStatus = GameStatus.IN_CREATION;
-    private boolean m_IsTeamGame = true;
+    private boolean m_IsTeamGame = false;
 
     public Game(String i_GameId, String i_ManagerId) {
         r_GameId = i_GameId;
         r_Managers.add(i_ManagerId);
     }
 
-    public String getGameId() {
+    public String GetGameId() {
         return r_GameId;
     }
 
-    public int getMaxPlayers() {
+    public int GetMaxPlayers() {
         return m_MaxPlayers;
     }
 
-    public void setMaxPlayers(int i_MaxPlayers) {
+    public void SetMaxPlayers(int i_MaxPlayers) {
         this.m_MaxPlayers = i_MaxPlayers;
     }
 
-    public int getMaxPlayersInTeam() {
+    public int GetMaxPlayersInTeam() {
         return m_MaxPayersInTeam;
     }
 
-    public void setMaxPayersInTeam(int i_MaxPayersInTeam) {
+    public void SetMaxPayersInTeam(int i_MaxPayersInTeam) {
         this.m_MaxPayersInTeam = i_MaxPayersInTeam;
     }
 
-    public List<Team> getTeams() {
+    public List<Team> GetTeams() {
         return r_Teams;
     }
 
-    public List<String> getTeamNames() {
+    public List<String> GetTeamNames() {
         List<String> teamNames = new ArrayList<>();
         for(Team team : r_Teams) {
             teamNames.add(team.getTeamName());
@@ -62,22 +63,22 @@ public class Game {
         return teamNames;
     }
 
-    public boolean isTeamGame() {
+    public boolean IsTeamGame() {
         return m_IsTeamGame;
     }
 
-    public void setIsTeamGame(boolean i_IsTeamGame) {
+    public void SetIsTeamGame(boolean i_IsTeamGame) {
         this.m_IsTeamGame = i_IsTeamGame;
     }
 
-    public void setTeamNames(Set<String> teamNames) {
+    public void SetTeamNames(Set<String> teamNames) {
         r_Teams.clear();
         for(String team : teamNames) {
             r_Teams.add(new Team(team));
         }
     }
 
-    public List<List<Riddle>> getRiddles() {
+    public List<List<Riddle>> GetRiddles() {
         return r_Riddles;
     }
 
@@ -101,35 +102,51 @@ public class Game {
         r_Riddles.get(appearanceNumber).remove(index);
     }
 
-    public Date getStartDate() {
+    public void AddPlayer(User i_PlayerToAdd, int i_TeamIdx) {
+        if (!IsGameFull()) {
+            Team team = r_Teams.get(i_TeamIdx);
+            if (m_IsTeamGame && team.GetSize() >= m_MaxPayersInTeam) {
+                throw new ArrayIndexOutOfBoundsException("Team has reached max size");
+            }
+            else {
+                team.AddPlayer(i_PlayerToAdd);
+                m_PlayersInGame++;
+            }
+        }
+        else {
+            throw new ArrayIndexOutOfBoundsException("Game has reached max player size");
+        }
+    }
+
+    public Date GetStartDate() {
         return m_StartDate;
     }
 
-    public void setStartDate(Date i_Date) {
+    public void SetStartDate(Date i_Date) {
         this.m_StartDate = i_Date;
     }
 
-    public float getDuration() {
+    public float GetDuration() {
         return m_Duration;
     }
 
-    public void setDuration(float i_Duration) {
+    public void SetDuration(float i_Duration) {
         this.m_Duration = i_Duration;
     }
 
-    public String getTreasureType() {
+    public String GetTreasureType() {
         return m_TreasureType;
     }
 
-    public void setTreasureType(String i_TreasureType) {
+    public void SetTreasureType(String i_TreasureType) {
         this.m_TreasureType = i_TreasureType;
     }
 
-    public GameStatus getGameStatus() {
+    public GameStatus GetGameStatus() {
         return m_GameStatus;
     }
 
-    public void setGameStatus(GameStatus i_GameStatus) {
+    public void SetGameStatus(GameStatus i_GameStatus) {
         this.m_GameStatus = i_GameStatus;
     }
 
@@ -142,5 +159,20 @@ public class Game {
             }
         }
         return result;
+    }
+
+    public boolean IsUserManager(String i_UserId) {
+        boolean result = false;
+        for (String userId : r_Managers) {
+            if (i_UserId.equals(userId)) {
+                result = true;
+                break;
+            }
+        }
+        return result;
+    }
+
+    public boolean IsGameFull() {
+        return m_PlayersInGame >= m_MaxPlayers;
     }
 }

@@ -19,7 +19,7 @@ $(document).on('click', "#createGame-btn", function() {
    });
 });
 
-$(document).on('click', "#joinGame-btn", function() {
+$(document).on('click', "#findGame-btn", function() {
     window.location.href = SITE_URL + "/Player/FindGame.html";
 });
 

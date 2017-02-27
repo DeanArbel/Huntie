@@ -20,6 +20,14 @@
         <url-pattern>/Manager/GameCreator/GameComponents</url-pattern>
     </servlet-mapping>
     <servlet>
+        <servlet-name>FindGameServlet</servlet-name>
+        <servlet-class>servlets.Game.FindGameServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>FindGameServlet</servlet-name>
+        <url-pattern>/Player/FindGame</url-pattern>
+    </servlet-mapping>
+    <servlet>
         <servlet-name>GameEntryServlet</servlet-name>
         <servlet-class>servlets.Game.GameEntryServlet</servlet-class>
     </servlet>
