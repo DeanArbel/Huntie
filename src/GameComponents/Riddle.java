@@ -1,5 +1,8 @@
 package GameComponents;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Created by Dean on 18/2/2017.
  */
@@ -12,6 +15,8 @@ public class Riddle {
     private String m_TextQuestion;
     //private ??? m_QuestionImage;
     private String m_TextAnswer;
+    private Set<String> r_SolvedByUserList = new HashSet<>();
+    private Set<String> r_SolvedByTeamList = new HashSet<>();
 
     public String getName() {
         return m_Name;
@@ -51,5 +56,18 @@ public class Riddle {
 
     public void setTextAnswer(String m_TextAnswer) {
         this.m_TextAnswer = m_TextAnswer;
+    }
+
+    public void UserSolvedRiddle(String i_Solver, String i_SolverTeam) {
+        r_SolvedByUserList.add(i_Solver);
+        r_SolvedByTeamList.add(i_SolverTeam);
+    }
+
+    public boolean IsSolvedPlayUser(String i_UserId) {
+        return r_SolvedByUserList.contains(i_UserId);
+    }
+
+    public boolean IsSolvedByTeam(String i_TeamName) {
+        return r_SolvedByTeamList.contains(i_TeamName);
     }
 }

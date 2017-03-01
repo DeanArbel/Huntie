@@ -25,6 +25,10 @@ $(document).on("click", ".table > tbody > tr", function(clickedEvent) {
     joinGameBtn[0].disabled = !isTeamAvailableArray[chosenTeamIdx];
 });
 
+$(document).on("click", "#prevPage-btn", function() {
+    window.location.href = SITE_URL + "/Home.html";
+});
+
 function initGlobalVars() {
     isTeamAvailableArray = [];
     teamTable = $('table > tbody');
@@ -49,7 +53,7 @@ function initPageElementsFromServer() {
                             _addTeam(i, gameData.teams[i])
                         }
                     }
-                    $(".loader").hide();
+                    $(".loading-area").hide();
                     $(".container").show(); //TODO: Put it somewhere more logical
                 } else {
                     confirm(gameData.errMsg);
@@ -68,7 +72,7 @@ function registerPlayerToGame() {
     $.ajax({
         url: GAME_ENTRY_URL,
         type: 'POST',
-        data: { teamIndex: chosenTeamIdx },
+        data: { gameCode: gameCode, teamIndex: chosenTeamIdx },
         success: function() {
             window.location.href = SITE_URL + "/Player/GameLobby.html?gameCode=" + gameCode;
         },

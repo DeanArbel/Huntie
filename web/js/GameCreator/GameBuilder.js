@@ -76,9 +76,15 @@ $(document).on("click", ".table > tbody > tr", function(clickedEvent) {
         var clickedRowCells = clickedEvent.currentTarget.cells,
             clickedRiddle = riddles[clickedRowCells[0].innerText][clickedRowCells[1].innerText];
         edittedRiddleDeleteButton = $(clickedRowCells[3]).children();
+        editFlag = false;
         editRiddle(clickedRiddle);
     }
 });
+
+function onAddRiddleButtonClick() {
+    resetForm();
+    editFlag = false;
+}
 
 function sendRiddleToServer(riddle) {
     $.ajax({

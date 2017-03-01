@@ -27,10 +27,10 @@
     <br>
     <h1 class="text-center">Game Builder</h1>
     <br>
-    <button type="button" id="openModal-btn" class="btn btn-success center-block" data-toggle="modal" data-target="#myModal">Add Riddle</button>
+    <button type="button" id="openModal-btn" class="btn btn-success center-block" data-toggle="modal" data-target="#myModal" onclick="onAddRiddleButtonClick()">Add Riddle</button>
     <!-- Modal -->
-    <div class="modal fade" id="myModal" role="dialog">
-        <div class="modal-dialog">
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
 
             <!-- Modal content-->
             <div class="modal-content">
@@ -43,7 +43,7 @@
                                 <label class="control-label" for="riddle-name">Riddle Name:</label>
                             </div>
                             <div class="col-xs-6">
-                                <input type="text" class="form-control" id="riddle-name" maxlength="15">
+                                <input type="text" class="form-control" id="riddle-name" maxlength="25">
                             </div>
                         </div>
                         <div class="form-group">
@@ -121,8 +121,8 @@
         <table id="riddles-table" class="table table-hover table-users">
             <thead>
             <tr>
-                <th>Appearance Number</th>
-                <th>Riddle Name</th>
+                <th class="col-xs-1"></th>
+                <th class="col-xs-9">Riddle Name</th>
                 <th></th>
             </tr>
             </thead>

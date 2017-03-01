@@ -2,10 +2,7 @@ package GameComponents;
 
 import Util.Enums.GameStatus;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by Dean on 18/2/2017.
@@ -14,7 +11,7 @@ public class Game {
     private final String r_GameId;
     private final List<String> r_Managers = new ArrayList<>();
     private final List<Team> r_Teams = new ArrayList<>();
-    private final List<List<Riddle>> r_Riddles = new ArrayList<>(Riddle.MAX_APPEARANCE + 1);
+    private List<List<Riddle>> m_Riddles = new ArrayList<>(Riddle.MAX_APPEARANCE + 1);
     private int m_MaxPlayers = 20;
     private int m_MaxPayersInTeam = 2;
     private int m_PlayersInGame;
@@ -50,14 +47,14 @@ public class Game {
         this.m_MaxPayersInTeam = i_MaxPayersInTeam;
     }
 
-    public List<Team> GetTeams() {
+    public Collection<Team> GetTeams() {
         return r_Teams;
     }
 
     public List<String> GetTeamNames() {
         List<String> teamNames = new ArrayList<>();
         for(Team team : r_Teams) {
-            teamNames.add(team.getTeamName());
+            teamNames.add(team.GetTeamName());
         }
 
         return teamNames;
@@ -79,37 +76,37 @@ public class Game {
     }
 
     public List<List<Riddle>> GetRiddles() {
-        return r_Riddles;
+        return m_Riddles;
     }
 
-    public void ClearRiddles() { r_Riddles.clear(); }
+    public void ClearRiddles() { m_Riddles.clear(); }
 
     public void AddRiddle(Riddle riddle) {
         int riddleIndex = riddle.getAppearanceNumber();
-        if (r_Riddles.size() <= riddleIndex) {
-            for (int i = r_Riddles.size(); i < riddleIndex; i++) {
-                r_Riddles.add(i, null);
+        if (m_Riddles.size() <= riddleIndex) {
+            for (int i = m_Riddles.size(); i < riddleIndex; i++) {
+                m_Riddles.add(i, null);
             }
-            r_Riddles.add(riddleIndex, new ArrayList<>());
+            m_Riddles.add(riddleIndex, new ArrayList<>());
         }
-        else if (r_Riddles.get(riddleIndex) == null) {
-            r_Riddles.add(riddleIndex, new ArrayList<>());
+        else if (m_Riddles.get(riddleIndex) == null) {
+            m_Riddles.set(riddleIndex, new ArrayList<>());
         }
-        r_Riddles.get(riddleIndex).add(riddle);
+        m_Riddles.get(riddleIndex).add(riddle);
     }
 
     public void DeleteRiddle(int appearanceNumber, int index) {
-        r_Riddles.get(appearanceNumber).remove(index);
+        m_Riddles.get(appearanceNumber).remove(index);
     }
 
     public void AddPlayer(String i_PlayerToAdd, int i_TeamIdx) {
         if (!IsGameFull()) {
             Team team = r_Teams.get(i_TeamIdx);
-            if (m_IsTeamGame && team.GetSize() >= m_MaxPayersInTeam) {
+            if (m_IsTeamGame && team.Count() >= m_MaxPayersInTeam) {
                 throw new ArrayIndexOutOfBoundsException("Team has reached max size");
             }
             else {
-                team.AddPlayer(i_PlayerToAdd);
+                team.AddPlayer(i_PlayerToAdd, m_Riddles.get(0).size());
                 m_PlayersInGame++;
             }
         }
@@ -174,5 +171,84 @@ public class Game {
 
     public boolean IsGameFull() {
         return m_PlayersInGame >= m_MaxPlayers;
+    }
+
+    public int GetRiddlesCount(int i_Idx) {
+        return m_Riddles.get(i_Idx).size();
+    }
+
+    public void PublishGame() {
+        List<List<Riddle>> condensedRiddles = new ArrayList<>();
+        for (List<Riddle> riddles: m_Riddles) {
+            if (riddles != null) {
+                condensedRiddles.add(riddles);
+            }
+        }
+        m_Riddles = condensedRiddles;
+        m_GameStatus = GameStatus.CREATION_COMPLETE;
+    }
+
+    public List<Riddle> GetUserRiddlesToSolve(String i_UserId) {
+        List<Riddle> riddlesToSolve;
+        if (m_IsTeamGame) {
+            riddlesToSolve = getUserRiddlesToSolveTeam(i_UserId);
+        }
+        else {
+            riddlesToSolve = getUserRiddlesToSolveIndividual(i_UserId);
+        }
+
+        return riddlesToSolve;
+    }
+
+    private List<Riddle> getUserRiddlesToSolveIndividual(String i_UserId) {
+        List<Riddle> riddlesToSolve = new ArrayList<>();
+        int riddleLevel = getPlayerRiddleLevel(i_UserId);
+        for(Riddle riddle : m_Riddles.get(riddleLevel)) {
+            if (!riddle.IsSolvedPlayUser(i_UserId)) {
+                riddlesToSolve.add(riddle);
+            }
+        }
+
+        return riddlesToSolve;
+    }
+
+    private List<Riddle> getUserRiddlesToSolveTeam(String i_UserId) {
+        List<Riddle> riddlesToSolve = new ArrayList<>();
+        Team playerTeam = getPlayerTeam(i_UserId);
+        for(Riddle riddle : m_Riddles.get(playerTeam.GetTeamRiddleLevel())) {
+            if (!riddle.IsSolvedByTeam(playerTeam.GetTeamName())) {
+                riddlesToSolve.add(riddle);
+            }
+        }
+
+        return riddlesToSolve;
+    }
+
+    private int getTeamRiddleLevel(String i_TeamName) {
+        int teamRiddleLevel = -1;
+        for (Team team : r_Teams) {
+            if (team.GetTeamName().equals(i_TeamName)) {
+                teamRiddleLevel = team.GetTeamRiddleLevel();
+            }
+        }
+        //TODO: Change this so it throws exception if team not found
+        return teamRiddleLevel;
+    }
+
+    private int getPlayerRiddleLevel(String i_UserId) {
+        Team playerTeam = getPlayerTeam(i_UserId);
+        return playerTeam.GetPlayerRiddleLevel(i_UserId);
+    }
+
+    private Team getPlayerTeam(String i_UserId) {
+        Team playerTeam = null;
+        for (Team team : r_Teams) {
+            if (team.IsPlayerInTeam(i_UserId)) {
+                playerTeam = team;
+                break;
+            }
+        }
+
+        return playerTeam;
     }
 }

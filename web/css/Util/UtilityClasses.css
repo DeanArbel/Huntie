@@ -27,6 +27,12 @@ svg:hover > path {
     left: 50%;
 }
 
+.centered-text-top {
+    position: fixed;
+    top: 20%;
+    left: 50%;
+}
+
 /*Loader:*/
 .loader {
     border: 16px solid #f3f3f3; /* Light grey */

@@ -3,7 +3,6 @@ package servlets.GameCreator;
 import GameComponents.Game;
 import GameComponents.Riddle;
 import Util.DatabaseFacade;
-import Util.Enums.GameStatus;
 import com.google.gson.Gson;
 import servlets.Util.ServletUtils;
 
@@ -112,7 +111,7 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
         game.SetStartDate(new Date(((Double)settingsMap.get("startTime")).longValue()));
         game.SetDuration(((Double)settingsMap.get("duration")).floatValue());
         game.SetTreasureType((String)settingsMap.get("treasureType"));
-        game.SetGameStatus(GameStatus.CREATION_COMPLETE);
+        game.PublishGame();
         //TODO: Add check that game is really ready for publish
         DatabaseFacade.getUser(userid).setUnpublishedGame(null);
     }

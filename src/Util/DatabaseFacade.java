@@ -28,6 +28,7 @@ public class DatabaseFacade {
         newUser.setUserName(i_UserName);
         newUser.setPassword(i_UserPassword);
         sr_Users.put(newUser.getUserId(), newUser);
+        MockData.CreateMockTeamGame(); //TODO: Remove this line
 
         return newUser;
     }

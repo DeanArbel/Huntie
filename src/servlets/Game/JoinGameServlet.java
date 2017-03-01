@@ -34,7 +34,7 @@ public class JoinGameServlet extends HttpServlet {
             response.sendRedirect("index.jsp"); //TODO: Change this according to login system
         } else {
             try {
-                Game game = DatabaseFacade.getGame(DatabaseFacade.getUser(userid).getUnpublishedGame().GetGameId());
+                Game game = DatabaseFacade.getGame(request.getParameter("gameCode"));
                 if (game != null) {
                     game.AddPlayer(userid, Integer.parseInt(request.getParameter("teamIndex")));
                 } else {
@@ -76,11 +76,10 @@ public class JoinGameServlet extends HttpServlet {
             outputMap.put("errMsg", errMsg);
             if (errMsg.isEmpty()) {
                 outputMap.put("maxPlayersInTeam", game.GetMaxPlayersInTeam());
-                List<Team> teams = game.GetTeams();
                 List<Map<String, String>> teamsMap = new ArrayList<>();
-                for (Team team : teams) {
+                for (Team team : game.GetTeams()) {
                     Map<String, String> teamMap = new HashMap<>();
-                    teamMap.put("name", team.getTeamName());
+                    teamMap.put("name", team.GetTeamName());
                     teamMap.put("count", Integer.toString(team.Count()));
                     teamsMap.add(teamMap);
                 }

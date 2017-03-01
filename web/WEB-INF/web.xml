@@ -35,4 +35,12 @@
         <servlet-name>GameEntryServlet</servlet-name>
         <url-pattern>/Player/GameEntry</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>GameLobbyServlet</servlet-name>
+        <servlet-class>servlets.Game.GameLobbyServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>GameLobbyServlet</servlet-name>
+        <url-pattern>/Player/GameLobby</url-pattern>
+    </servlet-mapping>
 </web-app>
