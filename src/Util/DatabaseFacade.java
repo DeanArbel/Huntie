@@ -15,7 +15,7 @@ public class DatabaseFacade {
     private static int s_CurrentGameId = 1;
     private static int s_CurrentUserId = 1;
 
-    public static User getUser(String i_UserId) {
+    public static User GetUser(String i_UserId) {
         return sr_Users.get(i_UserId);
     }
 
@@ -31,6 +31,10 @@ public class DatabaseFacade {
         MockData.CreateMockTeamGame(); //TODO: Remove this line
 
         return newUser;
+    }
+
+    public static String GetUserName(String i_UserId) {
+        return GetUser(i_UserId).getUserName();
     }
 
     public static boolean DoesUserHaveAnUnpublishedGame(String i_UserId) {

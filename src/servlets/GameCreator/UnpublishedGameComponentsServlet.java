@@ -33,7 +33,7 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
             response.sendRedirect("index.jsp"); //TODO: Change this according to login system
         } else {
             try (PrintWriter out = response.getWriter()) {
-                Game game = DatabaseFacade.getGame(DatabaseFacade.getUser(userid).getUnpublishedGame().GetGameId());
+                Game game = DatabaseFacade.getGame(DatabaseFacade.GetUser(userid).getUnpublishedGame().GetGameId());
                 if (game != null) {
                     handlePostRequest(request, response, game, userid);
                     out.println(gson.toJson(game.GetGameId()));
@@ -56,7 +56,7 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
         } else {
             ServletUtils.AssertUserInDatabase(userid);
             try (PrintWriter out = response.getWriter()) {
-                Game game = DatabaseFacade.getUser(userid).getUnpublishedGame();
+                Game game = DatabaseFacade.GetUser(userid).getUnpublishedGame();
                 if (game == null) {
                     game = DatabaseFacade.CreateNewGame(userid);
                 }
@@ -109,11 +109,11 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
     private void handleGameSettingsRequest(HttpServletRequest request, Game game, String userid) {
         HashMap<String, Object> settingsMap = gson.fromJson(request.getParameter("settings"), HashMap.class);
         game.SetStartDate(new Date(((Double)settingsMap.get("startTime")).longValue()));
-        game.SetDuration(((Double)settingsMap.get("duration")).floatValue());
+        game.SetDuration(((Double)settingsMap.get("duration")));
         game.SetTreasureType((String)settingsMap.get("treasureType"));
         game.PublishGame();
         //TODO: Add check that game is really ready for publish
-        DatabaseFacade.getUser(userid).setUnpublishedGame(null);
+        DatabaseFacade.GetUser(userid).setUnpublishedGame(null);
     }
 
     private void handleGameTypeRequest(HttpServletRequest request, Game game) {

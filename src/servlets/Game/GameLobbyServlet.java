@@ -1,6 +1,7 @@
 package servlets.Game;
 
 import GameComponents.Game;
+import GameComponents.Riddle;
 import Util.DatabaseFacade;
 import com.google.gson.Gson;
 import servlets.Util.ServletUtils;
@@ -12,6 +13,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static servlets.Util.ServletUtils.SetError;
 
@@ -45,9 +50,34 @@ public class GameLobbyServlet extends HttpServlet {
     private void handleGetRequest(HttpServletRequest request, PrintWriter out, String userid, Game game) {
         String playerReq = request.getParameter("request");
         switch(playerReq) {
-            case "getRiddles":
-                out.println(gson.toJson(game.GetUserRiddlesToSolve(userid)));
+            case "getGameInfo":
+                handleGameInfoRequest(out, userid, game);
                 break;
+            case "getPlayerTables":
+                handlePlayerTablesRequest(out, userid, game);
         }
+    }
+
+    private void handlePlayerTablesRequest(PrintWriter out, String userid, Game game) {
+        Map<String, Object> responseData = new HashMap();
+        responseData.put("isTeamGame", game.IsTeamGame());
+        if (game.IsTeamGame()) {
+            responseData.put("myTeamScore", game.GetPlayerTeamScore(userid));
+            responseData.put("otherTeamsScore", game.GetOtherTeamsScore(userid));
+        }
+        out.println(gson.toJson(responseData));
+    }
+
+    private void handleGameInfoRequest(PrintWriter out, String userid, Game game) {
+        Map<String, Object> responseData = new HashMap();
+        List<String> riddlesNames = new ArrayList();
+        for (Riddle riddle : game.GetUserRiddlesToSolve(userid)) {
+            riddlesNames.add(riddle.getName());
+        }
+        responseData.put("riddlesNames", riddlesNames);
+        responseData.put("gameName", game.GetGameName());
+        responseData.put("startTime", game.GetStartTime());
+        responseData.put("endTime", game.GetEndTime());
+        out.println(gson.toJson(responseData));
     }
 }

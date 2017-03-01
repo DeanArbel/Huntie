@@ -1,5 +1,6 @@
 package GameComponents;
 
+import Util.DatabaseFacade;
 import javafx.util.Pair;
 
 import java.util.HashMap;
@@ -11,7 +12,7 @@ import java.util.Map;
 public class Team {
     private final String r_TeamName;
     private final Map<String, Pair<Integer, Integer>> r_PlayerRiddleLevel;
-    private Pair<Integer, Integer> m_TeamRiddleLevel;
+    private Pair<Integer, Integer> m_TeamRiddleLevel; // In TeamGame this field is used for player score. In single it is used for checking player riddle level
 
     public Team(String i_TeamName) {
         r_TeamName = i_TeamName;
@@ -32,6 +33,10 @@ public class Team {
 
     public void AddPlayer(String i_PlayerToAdd, int i_RiddleCount) {
         r_PlayerRiddleLevel.put(i_PlayerToAdd, new Pair<>(0, i_RiddleCount));
+    }
+
+    public void InitTeam(int i_RiddleCount) {
+        m_TeamRiddleLevel = new Pair<>(0, i_RiddleCount);
     }
 
     public int GetPlayerRiddleLevel(String i_UserId) {
@@ -71,10 +76,11 @@ public class Team {
      * @param i_NextRiddleLevelSize
      * @return Team solved all the riddles of the game
      */
-    public boolean TeamSolvedRiddle(Integer i_NextRiddleLevelSize) {
+    public boolean TeamSolvedRiddle(String i_UserId, Integer i_NextRiddleLevelSize) {
         boolean teamHasWon = false;
         if (m_TeamRiddleLevel.getValue() == 1) {
             m_TeamRiddleLevel = new Pair<>(m_TeamRiddleLevel.getKey() + 1, i_NextRiddleLevelSize);
+            r_PlayerRiddleLevel.put(i_UserId, new Pair<>(0, r_PlayerRiddleLevel.get(i_UserId).getValue() + 1));
             if (i_NextRiddleLevelSize == null) {
                 teamHasWon = true;
             }
@@ -84,5 +90,14 @@ public class Team {
         }
 
         return teamHasWon;
+    }
+
+    public Map<String,Integer> GetTeamScores() {
+        Map<String,Integer> teamScores = new HashMap<>();
+        for (Map.Entry<String, Pair<Integer, Integer>> entry : r_PlayerRiddleLevel.entrySet()) {
+            teamScores.put(DatabaseFacade.GetUserName(entry.getKey()), entry.getValue().getValue());
+        }
+
+        return teamScores;
     }
 }

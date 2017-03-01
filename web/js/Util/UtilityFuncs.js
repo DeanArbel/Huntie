@@ -7,6 +7,7 @@ var SITE_URL = "//localhost:8080";
 var GAME_CREATOR_COMPONENTS_URL = "GameCreator/GameComponents";
 var FIND_GAME_URL = "FindGame";
 var GAME_ENTRY_URL = "GameEntry";
+var GAME_LOBBY_URL = "GameLobby";
 
 $(document).on('click', 'td > svg', function() {
     $(this).parents('tr').remove();
@@ -37,4 +38,21 @@ function getParameterByName(name, url) {
     if (!results) return null;
     if (!results[2]) return '';
     return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
+function formatDate(date, monthName) {
+    var monthNames = [
+        "January", "February", "March",
+        "April", "May", "June", "July",
+        "August", "September", "October",
+        "November", "December"
+    ];
+
+    var day = date.getDate();
+    var monthIndex = date.getMonth();
+    var year = date.getFullYear();
+    var time = date.getHours() + ':' + date.getMinutes();
+    var month = monthName ? monthNames[monthIndex] : monthIndex + 1;
+
+    return day + '/' + month + '/' + year + ' at ' + time;
 }

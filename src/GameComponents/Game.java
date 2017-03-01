@@ -18,13 +18,18 @@ public class Game {
     private String m_GameArea;
     private String m_TreasureType;
     private Date m_StartDate;
-    private float m_Duration;
+    private Date m_EndDate;
     private GameStatus m_GameStatus = GameStatus.IN_CREATION;
     private boolean m_IsTeamGame = false;
 
     public Game(String i_GameId, String i_ManagerId) {
         r_GameId = i_GameId;
         r_Managers.add(i_ManagerId);
+    }
+
+    public String GetGameName() {
+        //TODO: Add game name property
+        return "Game " + r_GameId;
     }
 
     public String GetGameId() {
@@ -106,7 +111,8 @@ public class Game {
                 throw new ArrayIndexOutOfBoundsException("Team has reached max size");
             }
             else {
-                team.AddPlayer(i_PlayerToAdd, m_Riddles.get(0).size());
+                int riddleLevel = m_IsTeamGame ? 0 : m_Riddles.get(0).size();
+                team.AddPlayer(i_PlayerToAdd, riddleLevel);
                 m_PlayersInGame++;
             }
         }
@@ -115,20 +121,22 @@ public class Game {
         }
     }
 
-    public Date GetStartDate() {
+    public Date GetStartTime() {
         return m_StartDate;
     }
+
+    public Date GetEndTime() { return m_EndDate; }
 
     public void SetStartDate(Date i_Date) {
         this.m_StartDate = i_Date;
     }
 
-    public float GetDuration() {
-        return m_Duration;
-    }
-
-    public void SetDuration(float i_Duration) {
-        this.m_Duration = i_Duration;
+    public void SetDuration(double i_Duration) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(m_StartDate);
+        calendar.add(Calendar.HOUR_OF_DAY, (int)i_Duration);
+        calendar.add(Calendar.MINUTE, (int)((((int)i_Duration) - i_Duration)*60));
+        m_EndDate = calendar.getTime();
     }
 
     public String GetTreasureType() {
@@ -185,6 +193,12 @@ public class Game {
             }
         }
         m_Riddles = condensedRiddles;
+        if (m_IsTeamGame) {
+            int firstLevelRiddlesLength = m_Riddles.get(0).size();
+            for(Team team : r_Teams) {
+                team.InitTeam(firstLevelRiddlesLength);
+            }
+        }
         m_GameStatus = GameStatus.CREATION_COMPLETE;
     }
 
@@ -200,11 +214,50 @@ public class Game {
         return riddlesToSolve;
     }
 
+    //TODO: Make a version for this function which is polymorphic (can handle both text riddles and photo riddles)
+    public boolean TryToSolveTextRiddle(String i_UserId, int i_Index, String i_Answer) {
+        List<Riddle> riddles = GetUserRiddlesToSolve(i_UserId);
+        Riddle riddleToBeSolved = riddles.get(i_Index);
+        boolean userSolvedRiddle = false;
+        assertTextRiddleCanBeSolved(riddleToBeSolved, i_UserId); // Al
+        if (riddleToBeSolved.CheckTextAnswer(i_Answer)) {
+            Team playerTeam = getPlayerTeam(i_UserId);
+            if (m_IsTeamGame) {
+                // Updates riddles solved and to be solved for team
+                if (!riddles.get(i_Index).IsSolvedByTeam(playerTeam.GetTeamName())) {
+                    Integer nextRiddleSetSize = playerTeam.GetTeamRiddleLevel() + 1;
+                    nextRiddleSetSize = m_Riddles.size() > nextRiddleSetSize ? nextRiddleSetSize : null;
+                    playerTeam.TeamSolvedRiddle(i_UserId, nextRiddleSetSize);
+                }
+            }
+            // Updates riddles solved and to be solved for player
+            else {
+                Integer nextRiddleSetSize = playerTeam.GetPlayerRiddleLevel(i_UserId);
+                nextRiddleSetSize = m_Riddles.size() > nextRiddleSetSize ? nextRiddleSetSize : null;
+                playerTeam.PlayerSolvedRiddle(i_UserId, nextRiddleSetSize);
+            }
+
+            riddleToBeSolved.UserSolvedRiddle(i_UserId, playerTeam.GetTeamName());
+            userSolvedRiddle = true;
+        }
+
+        return userSolvedRiddle;
+    }
+
+    private void assertTextRiddleCanBeSolved(Riddle i_RiddleToBeSolved, String i_UserId) {
+        if (!i_RiddleToBeSolved.isIsTextType()) {
+            throw new IllegalStateException("Riddle is not text type!");
+        }
+        else if (i_RiddleToBeSolved.IsSolvedPlayer(i_UserId)) {
+            throw new IllegalStateException("User had already solved the riddle!");
+        }
+    }
+
     private List<Riddle> getUserRiddlesToSolveIndividual(String i_UserId) {
         List<Riddle> riddlesToSolve = new ArrayList<>();
         int riddleLevel = getPlayerRiddleLevel(i_UserId);
         for(Riddle riddle : m_Riddles.get(riddleLevel)) {
-            if (!riddle.IsSolvedPlayUser(i_UserId)) {
+            if (!riddle.IsSolvedPlayer(i_UserId)) {
                 riddlesToSolve.add(riddle);
             }
         }
@@ -250,5 +303,22 @@ public class Game {
         }
 
         return playerTeam;
+    }
+
+    public Map<String,Integer> GetPlayerTeamScore(String i_Userid) {
+        Team team = getPlayerTeam(i_Userid);
+        return team.GetTeamScores();
+    }
+
+    public Map<String, Integer> GetOtherTeamsScore(String i_Userid) {
+        Team playerTeam = getPlayerTeam(i_Userid);
+        Map<String, Integer> teamsScores = new HashMap<>();
+        for (Team team : r_Teams) {
+            if (team != playerTeam) {
+                teamsScores.put(team.GetTeamName(), team.GetTeamRiddleLevel());
+            }
+        }
+
+        return teamsScores;
     }
 }

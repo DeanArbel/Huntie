@@ -63,11 +63,15 @@ public class Riddle {
         r_SolvedByTeamList.add(i_SolverTeam);
     }
 
-    public boolean IsSolvedPlayUser(String i_UserId) {
+    public boolean IsSolvedPlayer(String i_UserId) {
         return r_SolvedByUserList.contains(i_UserId);
     }
 
     public boolean IsSolvedByTeam(String i_TeamName) {
         return r_SolvedByTeamList.contains(i_TeamName);
+    }
+
+    public boolean CheckTextAnswer(String i_Answer) {
+        return m_TextQuestion.toLowerCase().equals(i_Answer.toLowerCase());
     }
 }

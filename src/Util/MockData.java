@@ -20,16 +20,17 @@ public class MockData {
             game.SetIsTeamGame(true);
             game.SetTeamNames(new HashSet<String>(Arrays.asList("Team Blue", "Team Yellow", "Team Red")));
             int riddleLevel = 0;
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < 3; i++) {
+                game.AddRiddle(createMockRiddle(riddleLevel));
                 game.AddRiddle(createMockRiddle(riddleLevel++));
             }
+            game.SetStartDate(new Date());
             game.SetDuration(5.0f);
             game.SetMaxPayersInTeam(2);
             game.SetMaxPlayers(20);
-            game.SetStartDate(new Date());
             game.SetTreasureType("Treasure Chest");
             game.PublishGame();
-            DatabaseFacade.getUser("1").setUnpublishedGame(null);
+            DatabaseFacade.GetUser("1").setUnpublishedGame(null);
         }
     }
 
