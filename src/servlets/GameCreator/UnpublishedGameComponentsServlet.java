@@ -159,6 +159,7 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
         String name = (String)i_Riddle.get("name");
         String questionText = (String)i_Riddle.get("questionText");
         String answerText = (String)i_Riddle.get("answerText");
+        String optionalImage = (String)i_Riddle.get("questionOptionalImage");
         int appearanceNumber = ((Double)i_Riddle.get("appearanceNumber")).intValue();
         boolean isTextType = !"Photo Type".equals(i_Riddle.get("type"));
         //TODO: Add image support
@@ -170,6 +171,7 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
         riddle.setTextQuestion(questionText);
         riddle.setIsTextType(isTextType);
         if (isTextType) {
+            riddle.SetOptionalQuestionImage(optionalImage);
             riddle.setTextAnswer(answerText);
         }
         //TODO: Add image support here as well

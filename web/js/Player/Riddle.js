@@ -34,8 +34,11 @@ function initPageElementsFromServer() {
         type: 'GET',
         data: {gameCode: mGameCode, riddleCode: mRiddleCode},
         success: function(gameData) {
+            // var optImg = new Image();
+            // optImg.src = gameData.optionalImage;
             mRiddleName[0].innerText = gameData.name;
             mQuestionBody[0].innerText = gameData.question;
+            mQuestionBody.append(atob(gameData.optionalImage));
             //TODO: Handle picture
             $(".loading-area").hide();
             $(".container").show();

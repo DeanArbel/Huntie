@@ -13,7 +13,7 @@ public class Riddle {
     private int m_AppearanceNumber;
     private boolean m_IsTextType;
     private String m_TextQuestion;
-    //private ??? m_QuestionImage;
+    private String m_OptionalQuestionImage;
     private String m_TextAnswer;
     private Set<String> r_SolvedByUserList = new HashSet<>();
     private Set<String> r_SolvedByTeamList = new HashSet<>();
@@ -56,6 +56,14 @@ public class Riddle {
 
     public void setTextAnswer(String m_TextAnswer) {
         this.m_TextAnswer = m_TextAnswer;
+    }
+
+    public String GetOptionalQuestionImage() {
+        return m_OptionalQuestionImage;
+    }
+
+    public void SetOptionalQuestionImage(String i_Image) {
+        this.m_OptionalQuestionImage = i_Image;
     }
 
     public void UserSolvedRiddle(String i_Solver, String i_SolverTeam) {

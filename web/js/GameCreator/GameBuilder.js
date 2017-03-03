@@ -54,7 +54,7 @@ $(document).on('click', '#nextPage-btn', function() {
 });
 
 $(document).on("click", "#riddle-submit-btn", function() {
-    var riddleAndErr = getRiddleInTableFormat();
+    var riddleAndErr = getRiddleInServerFormat();
     if (riddleAndErr[1] === "") {
         //TODO: add loading screen to prevent user from using page
         if (editFlag) {
@@ -271,13 +271,13 @@ function checkRiddleErrors(riddle) {
     return errMsg;
 }
 
-function getRiddleInTableFormat() {
+function getRiddleInServerFormat() {
     var riddle = {
         name: riddleNameInput.value,
         appearanceNumber: parseInt(riddleAppearanceInput.value),
         type: riddleType.innerText,
         questionText: riddleTextQuestion.value,
-        questionOptionalImage: riddleOptionalImage, //TODO: Debug this
+        questionOptionalImage: null, //btoa(riddleOptionalImage.src), //TODO: Fix this
         answerText: riddleTextAnswer.value
         //TODO: after google maps add location
         //TODO: Add here question and answer
