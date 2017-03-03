@@ -236,7 +236,7 @@ public class Game {
             }
             // Updates riddles solved and to be solved for player
             else {
-                Integer nextRiddleSetSize = playerTeam.GetPlayerRiddleLevel(i_UserId);
+                Integer nextRiddleSetSize = playerTeam.GetPlayerRiddleLevel(i_UserId) + 1;
                 nextRiddleSetSize = m_Riddles.size() > nextRiddleSetSize ? nextRiddleSetSize : null;
                 playerTeam.PlayerSolvedRiddle(i_UserId, nextRiddleSetSize);
             }
@@ -259,10 +259,13 @@ public class Game {
 
     private List<Riddle> getUserRiddlesToSolveIndividual(String i_UserId) {
         List<Riddle> riddlesToSolve = new ArrayList<>();
-        int riddleLevel = getPlayerRiddleLevel(i_UserId);
-        for(Riddle riddle : m_Riddles.get(riddleLevel)) {
-            if (!riddle.IsSolvedPlayer(i_UserId)) {
-                riddlesToSolve.add(riddle);
+        Team playerTeam = getPlayerTeam(i_UserId);
+        if (!playerTeam.HasPlayerWon(i_UserId)) {
+            Integer riddleLevel = playerTeam.GetPlayerRiddleLevel(i_UserId);
+            for (Riddle riddle : m_Riddles.get(riddleLevel)) {
+                if (!riddle.IsSolvedPlayer(i_UserId)) {
+                    riddlesToSolve.add(riddle);
+                }
             }
         }
 
@@ -272,9 +275,11 @@ public class Game {
     private List<Riddle> getUserRiddlesToSolveTeam(String i_UserId) {
         List<Riddle> riddlesToSolve = new ArrayList<>();
         Team playerTeam = getPlayerTeam(i_UserId);
-        for(Riddle riddle : m_Riddles.get(playerTeam.GetTeamRiddleLevel())) {
-            if (!riddle.IsSolvedByTeam(playerTeam.GetTeamName())) {
-                riddlesToSolve.add(riddle);
+        if (!playerTeam.HasTeamWon()) {
+            for (Riddle riddle : m_Riddles.get(playerTeam.GetTeamRiddleLevel())) {
+                if (!riddle.IsSolvedByTeam(playerTeam.GetTeamName())) {
+                    riddlesToSolve.add(riddle);
+                }
             }
         }
 
@@ -292,7 +297,7 @@ public class Game {
         return teamRiddleLevel;
     }
 
-    private int getPlayerRiddleLevel(String i_UserId) {
+    private Integer getPlayerRiddleLevel(String i_UserId) {
         Team playerTeam = getPlayerTeam(i_UserId);
         return playerTeam.GetPlayerRiddleLevel(i_UserId);
     }
@@ -324,5 +329,15 @@ public class Game {
         }
 
         return teamsScores;
+    }
+
+    public boolean HasPlayerWon(String i_UserId) {
+        Team playerTeam = getPlayerTeam(i_UserId);
+        if (m_IsTeamGame) {
+            return playerTeam.HasTeamWon();
+        }
+        else {
+            return playerTeam.HasPlayerWon(i_UserId);
+        }
     }
 }

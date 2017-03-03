@@ -5,6 +5,7 @@ var mGameEndedMessage;
 var mGameName;
 var mPlayerMessage;
 var mGameTimeMessage;
+var mPlayerWonMessage;
 var mTeamTable;
 var mOthersTable;
 var mRiddleTable;
@@ -44,6 +45,7 @@ function initGlobalVars() {
     mGameName = $('#game-name');
     mPlayerMessage = $("#player-message");
     mGameTimeMessage = $('#game-start-time');
+    mPlayerWonMessage = $('#player-message-won');
     mTeamTable = $('#table-my-score');
     mOthersTable = $('#table-others-score');
     mRiddleTable = $('#riddle-table > tbody');
@@ -52,10 +54,6 @@ function initGlobalVars() {
 }
 
 function initPageElementsFromServer() {
-    getCrucialPageElementsFromServer();
-}
-
-function getCrucialPageElementsFromServer() {
     $.ajax({
         url: GAME_LOBBY_URL,
         type: 'GET',
@@ -70,6 +68,9 @@ function getCrucialPageElementsFromServer() {
             mGameTimeMessage[0].innerText = mHasGameStarted ? "Game End Time: " + formatDate(endTime) : "Game Start Time: " + formatDate(startTime);
             $(".loading-area").hide();
             $(".lobby-container").show();
+            if (gameData.playerHasWon) {
+                mPlayerWonMessage.show();
+            }
             if (mIsGameActive && mHasGameStarted) {
                 initRiddleTable(gameData.riddlesNames);
             }
@@ -94,6 +95,7 @@ function getNonCrucialPageElementsFromServer() {
         data: {request: "getPlayerTables", gameCode: mGameCode},
         success: function(gameData) {
             if (gameData.isTeamGame) {
+                $('.score-content').show();
                 initTeamTable(gameData.myTeamScore);
                 initOthersTable(gameData.otherTeamsScore);
             }
@@ -103,12 +105,14 @@ function getNonCrucialPageElementsFromServer() {
 
 function initRiddleTable(riddleNames) {
     var size = riddleNames.length;
-    $('#riddle-table').show();
-    mRiddleTable.show();
-    for (var i = 0; i < size; i++) {
-        var $eRow = $('<tr>');
-        $eRow.append('<td>' + riddleNames[i] + '</td>');
-        mRiddleTable.append($eRow);
+    if (size > 0) {
+        $('.riddle-content').show();
+        mRiddleTable.show();
+        for (var i = 0; i < size; i++) {
+            var $eRow = $('<tr>');
+            $eRow.append('<td>' + riddleNames[i] + '</td>');
+            mRiddleTable.append($eRow);
+        }
     }
 }
 

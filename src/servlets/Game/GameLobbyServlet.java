@@ -13,10 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static servlets.Util.ServletUtils.SetError;
 
@@ -69,11 +66,17 @@ public class GameLobbyServlet extends HttpServlet {
     }
 
     private void handleGameInfoRequest(PrintWriter out, String userid, Game game) {
+        Date now = new Date();
+        Date endTime = game.GetEndTime();
+        boolean playerHasWon = game.HasPlayerWon(userid);
         Map<String, Object> responseData = new HashMap();
         List<String> riddlesNames = new ArrayList();
-        for (Riddle riddle : game.GetUserRiddlesToSolve(userid)) {
-            riddlesNames.add(riddle.getName());
+        if (!playerHasWon && endTime.after(now)) {
+            for (Riddle riddle : game.GetUserRiddlesToSolve(userid)) {
+                riddlesNames.add(riddle.getName());
+            }
         }
+        responseData.put("playerHasWon", playerHasWon);
         responseData.put("riddlesNames", riddlesNames);
         responseData.put("gameName", game.GetGameName());
         responseData.put("startTime", game.GetStartTime());

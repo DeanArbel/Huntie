@@ -16,7 +16,7 @@ $(function () {
 });
 
 $(document).on("click", "#prevPage-btn", function() {
-    window.location.href = SITE_URL + "/Player/GameLobby.html?gameCode=" + mGameCode;
+    goBackToLobby();
 });
 
 function initGlobalVars() {
@@ -51,6 +51,7 @@ function onAnswerInput() {
 }
 
 function submitAnswer() {
+    mSubmitBtn.disabled = true;
     $.ajax({
         url: RIDDLE_URL,
         type: 'POST',
@@ -60,9 +61,11 @@ function submitAnswer() {
                 confirm("You got to answer right!");
                 mSubmitBtn.disabled = true;
                 mAnswerBox.disabled = true;
+                goBackToLobby();
             }
             else {
                 confirm("Nice try, but wrong answer!");
+                mSubmitBtn.disabled = false;
             }
         },
         error: function(err) {
@@ -70,4 +73,8 @@ function submitAnswer() {
             window.location.reload();
         }
     });
+}
+
+function goBackToLobby() {
+    window.location.href = SITE_URL + "/Player/GameLobby.html?gameCode=" + mGameCode;
 }

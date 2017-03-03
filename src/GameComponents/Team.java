@@ -61,9 +61,7 @@ public class Team {
         Pair<Integer, Integer> playerPrevRiddleLevel = r_PlayerRiddleLevel.get(i_UserId);
         if (playerPrevRiddleLevel.getValue() == 1) {
             r_PlayerRiddleLevel.put(i_UserId, new Pair<>(playerPrevRiddleLevel.getKey() + 1, i_NextRiddleLevelSize));
-            if (i_NextRiddleLevelSize == null) {
-                playerHasWon = true;
-            }
+            playerHasWon = i_NextRiddleLevelSize == null;
         }
         else {
             r_PlayerRiddleLevel.put(i_UserId, new Pair<>(playerPrevRiddleLevel.getKey(), playerPrevRiddleLevel.getValue() - 1));
@@ -80,9 +78,7 @@ public class Team {
         boolean teamHasWon = false;
         if (m_TeamRiddleLevel.getValue() == 1) {
             m_TeamRiddleLevel = new Pair<>(m_TeamRiddleLevel.getKey() + 1, i_NextRiddleLevelSize);
-            if (i_NextRiddleLevelSize == null) {
-                teamHasWon = true;
-            }
+            teamHasWon = i_NextRiddleLevelSize == null;
         }
         else {
             m_TeamRiddleLevel = new Pair<>(m_TeamRiddleLevel.getKey(), m_TeamRiddleLevel.getValue() - 1);
@@ -99,5 +95,13 @@ public class Team {
         }
 
         return teamScores;
+    }
+
+    public boolean HasTeamWon() {
+        return m_TeamRiddleLevel.getValue() == null;
+    }
+
+    public boolean HasPlayerWon(String i_UserId) {
+        return r_PlayerRiddleLevel.get(i_UserId).getValue() == null;
     }
 }
