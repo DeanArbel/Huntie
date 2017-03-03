@@ -80,7 +80,6 @@ public class Team {
         boolean teamHasWon = false;
         if (m_TeamRiddleLevel.getValue() == 1) {
             m_TeamRiddleLevel = new Pair<>(m_TeamRiddleLevel.getKey() + 1, i_NextRiddleLevelSize);
-            r_PlayerRiddleLevel.put(i_UserId, new Pair<>(0, r_PlayerRiddleLevel.get(i_UserId).getValue() + 1));
             if (i_NextRiddleLevelSize == null) {
                 teamHasWon = true;
             }
@@ -88,6 +87,7 @@ public class Team {
         else {
             m_TeamRiddleLevel = new Pair<>(m_TeamRiddleLevel.getKey(), m_TeamRiddleLevel.getValue() - 1);
         }
+        r_PlayerRiddleLevel.put(i_UserId, new Pair<>(0, r_PlayerRiddleLevel.get(i_UserId).getValue() + 1));
 
         return teamHasWon;
     }

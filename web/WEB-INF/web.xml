@@ -43,4 +43,12 @@
         <servlet-name>GameLobbyServlet</servlet-name>
         <url-pattern>/Player/GameLobby</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>RiddleServlet</servlet-name>
+        <servlet-class>servlets.Game.RiddleServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>RiddleServlet</servlet-name>
+        <url-pattern>/Player/Riddle</url-pattern>
+    </servlet-mapping>
 </web-app>

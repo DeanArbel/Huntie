@@ -214,6 +214,10 @@ public class Game {
         return riddlesToSolve;
     }
 
+    public Riddle GetUserRiddleByIndex(String i_UserId, int i_Index) {
+        return GetUserRiddlesToSolve(i_UserId).get(i_Index);
+    }
+
     //TODO: Make a version for this function which is polymorphic (can handle both text riddles and photo riddles)
     public boolean TryToSolveTextRiddle(String i_UserId, int i_Index, String i_Answer) {
         List<Riddle> riddles = GetUserRiddlesToSolve(i_UserId);

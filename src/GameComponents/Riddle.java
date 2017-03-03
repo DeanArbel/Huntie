@@ -72,6 +72,6 @@ public class Riddle {
     }
 
     public boolean CheckTextAnswer(String i_Answer) {
-        return m_TextQuestion.toLowerCase().equals(i_Answer.toLowerCase());
+        return m_TextAnswer.toLowerCase().equals(i_Answer.toLowerCase());
     }
 }

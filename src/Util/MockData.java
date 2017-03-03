@@ -39,7 +39,7 @@ public class MockData {
         riddle.setIsTextType(true);
         riddle.setName("Cerberus Heads");
         riddle.setAppearanceNumber(riddleLevel);
-        riddle.setTextAnswer("How many heads does Cereberus have?");
+        riddle.setTextQuestion("How many heads does Cereberus have?");
         riddle.setTextAnswer("Three");
         return riddle;
     }

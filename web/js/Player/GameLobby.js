@@ -13,6 +13,7 @@ var mChosenRiddleIdx;
 var mGameCode;
 var mIsGameActive;
 var mHasGameStarted;
+var mSolveRiddleBtn;
 
 $(function () {
     sessionStorage.setItem("PrevPage", "GameLobby");
@@ -20,17 +21,22 @@ $(function () {
     initPageElementsFromServer();
 });
 
-$(document).on("click", ".table > tbody > tr", function(clickedEvent) {
+$(document).on("click", "#riddle-table > tbody > tr", function(clickedEvent) {
     if (mClickedRow) {
         mClickedRow.classList.remove("active");
     }
     mClickedRow = clickedEvent.currentTarget;
     mClickedRow.classList.add("active");
     mChosenRiddleIdx = clickedEvent.currentTarget.rowIndex - 1;
+    mSolveRiddleBtn.disabled = false;
 });
 
 $(document).on("click", "#prevPage-btn", function() {
     window.location.href = SITE_URL + "/Home.html";
+});
+
+$(document).on("click", "#solveRiddle-btn", function() {
+   window.location.href = SITE_URL + "/Player/Riddle.html?gameCode=" + mGameCode + "&riddle=" + mChosenRiddleIdx;
 });
 
 function initGlobalVars() {
@@ -42,6 +48,7 @@ function initGlobalVars() {
     mOthersTable = $('#table-others-score');
     mRiddleTable = $('#riddle-table > tbody');
     mGameCode = getParameterByName("gameCode");
+    mSolveRiddleBtn = $("#solveRiddle-btn")[0];
 }
 
 function initPageElementsFromServer() {

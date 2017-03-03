@@ -8,6 +8,7 @@ var GAME_CREATOR_COMPONENTS_URL = "GameCreator/GameComponents";
 var FIND_GAME_URL = "FindGame";
 var GAME_ENTRY_URL = "GameEntry";
 var GAME_LOBBY_URL = "GameLobby";
+var RIDDLE_URL = "Riddle";
 
 $(document).on('click', 'td > svg', function() {
     $(this).parents('tr').remove();
