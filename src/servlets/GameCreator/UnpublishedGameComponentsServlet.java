@@ -33,7 +33,7 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
             response.sendRedirect("index.jsp"); //TODO: Change this according to login system
         } else {
             try (PrintWriter out = response.getWriter()) {
-                Game game = DatabaseFacade.getGame(DatabaseFacade.GetUser(userid).getUnpublishedGame().GetGameId());
+                Game game = DatabaseFacade.getGame(DatabaseFacade.GetUser(userid).GetUnpublishedGame().GetGameId());
                 if (game != null) {
                     handlePostRequest(request, response, game, userid);
                     out.println(gson.toJson(game.GetGameId()));
@@ -54,9 +54,9 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
         if (userid == null) {
             response.sendRedirect("index.jsp"); //TODO: Change this according to login system
         } else {
-            ServletUtils.AssertUserInDatabase(userid);
             try (PrintWriter out = response.getWriter()) {
-                Game game = DatabaseFacade.GetUser(userid).getUnpublishedGame();
+                ServletUtils.AssertUserInDatabase(userid);
+                Game game = DatabaseFacade.GetUser(userid).GetUnpublishedGame();
                 if (game == null) {
                     game = DatabaseFacade.CreateNewGame(userid);
                 }
@@ -111,9 +111,10 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
         game.SetStartDate(new Date(((Double)settingsMap.get("startTime")).longValue()));
         game.SetDuration(((Double)settingsMap.get("duration")));
         game.SetTreasureType((String)settingsMap.get("treasureType"));
+        game.SetGameName((String)settingsMap.get("gameName"));
         game.PublishGame();
         //TODO: Add check that game is really ready for publish
-        DatabaseFacade.GetUser(userid).setUnpublishedGame(null);
+        DatabaseFacade.GetUser(userid).SetUnpublishedGame(null);
     }
 
     private void handleGameTypeRequest(HttpServletRequest request, Game game) {

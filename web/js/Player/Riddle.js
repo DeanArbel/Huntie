@@ -38,8 +38,7 @@ function initPageElementsFromServer() {
             // optImg.src = gameData.optionalImage;
             mRiddleName[0].innerText = gameData.name;
             mQuestionBody[0].innerText = gameData.question;
-            mQuestionBody.append(atob(gameData.optionalImage));
-            //TODO: Handle picture
+            //mQuestionBody.append(atob(gameData.optionalImage)); //TODO: Handle picture
             $(".loading-area").hide();
             $(".container").show();
         },

@@ -83,7 +83,7 @@ function registerPlayerToGame() {
 }
 
 function _addTeam(index, teamData) {
-    isTeamAvailableArray[index] = teamData.count !== maxPlayersInTeam;
+    isTeamAvailableArray[index] = parseInt(teamData.count) !== maxPlayersInTeam;
     _addRow(teamData);
 }
 

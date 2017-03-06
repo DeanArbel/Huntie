@@ -12,8 +12,9 @@ import java.util.HashSet;
  */
 public class MockData {
     private static boolean isMockTeamGameSet = false;
+    private static int mockUserNumber = 1;
 
-    public static void CreateMockTeamGame() {
+    public static void CreateMockTeamGame() throws Exception {
         if (!isMockTeamGameSet) {
             isMockTeamGameSet = true;
             Game game = DatabaseFacade.CreateNewGame("1");
@@ -29,8 +30,16 @@ public class MockData {
             game.SetMaxPayersInTeam(2);
             game.SetMaxPlayers(20);
             game.SetTreasureType("Treasure Chest");
+            game.SetGameName("Greek Mythology Game");
             game.PublishGame();
-            DatabaseFacade.GetUser("1").setUnpublishedGame(null);
+
+            String userToSolveRiddles = createMockUser();
+            game.AddPlayer(userToSolveRiddles, 0);
+            game.AddPlayer(createMockUser(), 0);
+            game.AddPlayer(createMockUser(), 1);
+            game.TryToSolveTextRiddle(userToSolveRiddles, 0, "three");
+            game.TryToSolveTextRiddle(userToSolveRiddles, 0, "three");
+            DatabaseFacade.GetUser("1").SetUnpublishedGame(null);
         }
     }
 
@@ -42,5 +51,9 @@ public class MockData {
         riddle.setTextQuestion("How many heads does Cereberus have?");
         riddle.setTextAnswer("Three");
         return riddle;
+    }
+
+    private static String createMockUser() throws Exception {
+        return DatabaseFacade.createUser("Mock User " + mockUserNumber, "123", "mock@email.com" + mockUserNumber++).GetUserId();
     }
 }

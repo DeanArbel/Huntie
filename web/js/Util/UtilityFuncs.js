@@ -9,6 +9,7 @@ var FIND_GAME_URL = "FindGame";
 var GAME_ENTRY_URL = "GameEntry";
 var GAME_LOBBY_URL = "GameLobby";
 var RIDDLE_URL = "Riddle";
+var PROFILE_URL = "User/Profile";
 
 $(document).on('click', 'td > svg', function() {
     $(this).parents('tr').remove();
@@ -52,7 +53,7 @@ function formatDate(date, monthName) {
     var day = date.getDate();
     var monthIndex = date.getMonth();
     var year = date.getFullYear();
-    var time = date.getHours() + ':' + date.getMinutes();
+    var time = date.getHours() + ':' + ("0" + date.getMinutes()).slice(-2);
     var month = monthName ? monthNames[monthIndex] : monthIndex + 1;
 
     return day + '/' + month + '/' + year + ' at ' + time;

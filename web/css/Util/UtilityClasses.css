@@ -78,4 +78,6 @@ svg:hover > path {
     z-index:3;
 }
 
+.small-table > tbody { display: block; height: 200px; overflow: auto;}
+
 /*End of Loader*/

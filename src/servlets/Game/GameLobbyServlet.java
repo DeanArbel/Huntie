@@ -31,8 +31,8 @@ public class GameLobbyServlet extends HttpServlet {
         if (userid == null) {
             response.sendRedirect("index.jsp"); //TODO: Change this according to login system
         } else {
-            ServletUtils.AssertUserInDatabase(userid);
             try (PrintWriter out = response.getWriter()) {
+                ServletUtils.AssertUserInDatabase(userid);
                 Game game = DatabaseFacade.getGame(request.getParameter("gameCode"));
                 if (game == null) {
                     throw new ServletException("No game was found");

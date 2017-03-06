@@ -6,11 +6,12 @@ var TROPHY = "Trophy";
 var MAX_DURATION = 72;
 var MIN_DURATION = 1;
 
-var treasureType;
-var treasureLocation;
-var gameDuration;
-var startDate;
-var startTime;
+var mTreasureType;
+var mTreasureLocation;
+var mGameName;
+var mGameDuration;
+var mStartDate;
+var mStartTime;
 
 $(function () {
     $(".loader").hide();
@@ -45,22 +46,24 @@ $(document).on('click', '#nextPage-btn', function() {
 });
 
 function initGlobalVars() {
-    treasureType = $('#settings-type');
-    //TODO: assign treasureLocation
-    gameDuration = $('#settings-duration');
-    startDate = $('#settings-start-date');
-    startTime = $('#settings-start-time');
+    mTreasureType = $('#settings-type');
+    //TODO: assign mTreasureLocation
+    mGameName = $('#settings-name');
+    mGameDuration = $('#settings-duration');
+    mStartDate = $('#settings-start-date');
+    mStartTime = $('#settings-start-time');
 }
 
 function buildGameSettings() {
     var errMsg = "",
         settings = {};
-    settings.treasureType = treasureType[0].innerText;
-    settings.duration = parseFloat(gameDuration[0].value);
+    settings.treasureType = mTreasureType[0].innerText;
+    settings.gameName = mGameName[0].value;
+    settings.duration = parseFloat(mGameDuration[0].value);
     if (!settings.duration || settings.duration > MAX_DURATION || settings.duration < MIN_DURATION) {
         errMsg += "- Game duration should be between " + MIN_DURATION + "-" + MAX_DURATION + " hours\n";
     }
-    settings.startTime = new Date(startDate[0].value + " " + startTime[0].value).getTime();
+    settings.startTime = new Date(mStartDate[0].value + " " + mStartTime[0].value).getTime();
     if (!isDateOk(settings.startTime)) {
         errMsg += "- Please give a valid start date and time\n";
     }

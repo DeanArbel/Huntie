@@ -1,5 +1,6 @@
 package GameComponents;
 
+import Util.DatabaseFacade;
 import Util.Enums.GameStatus;
 
 import java.util.*;
@@ -15,6 +16,7 @@ public class Game {
     private int m_MaxPlayers = 20;
     private int m_MaxPayersInTeam = 2;
     private int m_PlayersInGame;
+    private String m_GameName;
     private String m_GameArea;
     private String m_TreasureType;
     private Date m_StartDate;
@@ -28,8 +30,16 @@ public class Game {
     }
 
     public String GetGameName() {
-        //TODO: Add game name property
-        return "Game " + r_GameId;
+        return m_GameName;
+    }
+
+    public void SetGameName(String i_GameName) {
+        if (i_GameName == null || i_GameName.isEmpty()) {
+            m_GameName = "Game " + r_GameId;
+        }
+        else {
+            m_GameName = i_GameName;
+        }
     }
 
     public String GetGameId() {
@@ -199,6 +209,10 @@ public class Game {
                 team.InitTeam(firstLevelRiddlesLength);
             }
         }
+        for (String managerId : r_Managers) {
+            DatabaseFacade.GetUser(managerId).AddGameToManagerList(r_GameId, m_GameName);
+        }
+
         m_GameStatus = GameStatus.CREATION_COMPLETE;
     }
 

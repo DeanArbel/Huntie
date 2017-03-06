@@ -2,7 +2,6 @@ package servlets.Util;
 
 import Util.DatabaseFacade;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -14,8 +13,11 @@ public class ServletUtils {
         response.addHeader("errorText", errorMessage);
     }
 
-    public static void AssertUserInDatabase(String i_UserId) throws ServletException {
+    public static void AssertUserInDatabase(String i_UserId) throws Exception {
         //TODO: Change implementation upon login implementation
-        DatabaseFacade.createUser("tmp", "tmp");
+        if (DatabaseFacade.IsUserNameUnique("tmp user")) {
+            DatabaseFacade.createUser("tmp user", "123", "tmp@email.com");
+        }
+        DatabaseFacade.GetUser(i_UserId);
     }
 }

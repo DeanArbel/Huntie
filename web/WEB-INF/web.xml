@@ -51,4 +51,12 @@
         <servlet-name>RiddleServlet</servlet-name>
         <url-pattern>/Player/Riddle</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>ProfileServlet</servlet-name>
+        <servlet-class>servlets.UserActions.ProfileServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ProfileServlet</servlet-name>
+        <url-pattern>/User/Profile</url-pattern>
+    </servlet-mapping>
 </web-app>

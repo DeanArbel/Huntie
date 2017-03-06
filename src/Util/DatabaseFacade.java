@@ -23,22 +23,24 @@ public class DatabaseFacade {
         return sr_Games.get(i_GameId);
     }
 
-    public static User createUser(String i_UserName, String i_UserPassword) {
-        User newUser = new User(String.valueOf(s_CurrentUserId++));
-        newUser.setUserName(i_UserName);
+    public static User createUser(String i_UserName, String i_UserPassword, String i_Email) throws Exception {
+        User newUser = new User(String.valueOf(s_CurrentUserId));
+        newUser.SetUserName(i_UserName);
         newUser.setPassword(i_UserPassword);
-        sr_Users.put(newUser.getUserId(), newUser);
+        newUser.SetEmailAddress(i_Email);
+        sr_Users.put(newUser.GetUserId(), newUser);
+        s_CurrentUserId++;
         MockData.CreateMockTeamGame(); //TODO: Remove this line
 
         return newUser;
     }
 
     public static String GetUserName(String i_UserId) {
-        return GetUser(i_UserId).getUserName();
+        return GetUser(i_UserId).GetUserName();
     }
 
     public static boolean DoesUserHaveAnUnpublishedGame(String i_UserId) {
-        return sr_Users.get(i_UserId).getUnpublishedGame() != null;
+        return sr_Users.get(i_UserId).GetUnpublishedGame() != null;
     }
 
     //TODO: Adjust username or id depending on login implementation
@@ -49,7 +51,7 @@ public class DatabaseFacade {
             gameCreator.DeleteUnpublishedGame();
             newGame = new Game(String.valueOf(s_CurrentGameId++), i_UserId);
             sr_Games.put(newGame.GetGameId(), newGame);
-            gameCreator.setUnpublishedGame(newGame);
+            gameCreator.SetUnpublishedGame(newGame);
         }
 
         return newGame;
@@ -57,5 +59,27 @@ public class DatabaseFacade {
 
     public static void DeleteGame(String i_GameId) {
         sr_Games.remove(i_GameId);
+    }
+
+    public static boolean IsUserNameUnique(String i_UserName) {
+        boolean nameIsUnique = true;
+        for (User user : sr_Users.values()) {
+            if (user.GetUserName().toLowerCase().equals(i_UserName.toLowerCase())) {
+                nameIsUnique = false;
+                break;
+            }
+        }
+        return nameIsUnique;
+    }
+
+    public static boolean IsEmailUnique(String i_Email) {
+        boolean emailIsUnique = true;
+        for (User user : sr_Users.values()) {
+            if (user.GetEmailAddress().toLowerCase().equals(i_Email.toLowerCase())) {
+                emailIsUnique = false;
+                break;
+            }
+        }
+        return emailIsUnique;
     }
 }
