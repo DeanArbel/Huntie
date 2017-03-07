@@ -12,6 +12,7 @@ import java.util.Map;
 public class DatabaseFacade {
     private static final Map<String, Game> sr_Games = new HashMap<>();
     private static final Map<String, User> sr_Users = new HashMap<>();
+    private static final Map<String, String> sr_UseerMap = new HashMap<>();
     private static int s_CurrentGameId = 1;
     private static int s_CurrentUserId = 1;
 
@@ -37,6 +38,10 @@ public class DatabaseFacade {
 
     public static String GetUserName(String i_UserId) {
         return GetUser(i_UserId).GetUserName();
+    }
+
+    public static int Verify(String i_UserEmail, String i_UserPassword){
+        return 0;
     }
 
     public static boolean DoesUserHaveAnUnpublishedGame(String i_UserId) {

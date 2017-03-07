@@ -12,7 +12,7 @@ import static servlets.Util.ServletUtils.SetError;
 /**
  * Created by Dean on 18/2/2017.
  */
-@WebServlet(name = "NewGameSevlet")
+@WebServlet(name = "NewGameServlet")
 public class NewGameServlet extends javax.servlet.http.HttpServlet {
     protected void doPost(javax.servlet.http.HttpServletRequest request, javax.servlet.http.HttpServletResponse response) throws javax.servlet.ServletException, IOException {
         response.setContentType("application/json");
