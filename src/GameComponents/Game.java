@@ -243,8 +243,8 @@ public class Game {
             if (m_IsTeamGame) {
                 // Updates riddles solved and to be solved for team
                 if (!riddles.get(i_Index).IsSolvedByTeam(playerTeam.GetTeamName())) {
-                    Integer nextRiddleSetSize = playerTeam.GetTeamRiddleLevel() + 1;
-                    nextRiddleSetSize = m_Riddles.size() > nextRiddleSetSize ? nextRiddleSetSize : null;
+                    int nextLevel = playerTeam.GetTeamRiddleLevel() + 1;
+                    Integer nextRiddleSetSize = m_Riddles.size() > nextLevel ? m_Riddles.get(nextLevel).size() : null;
                     playerTeam.TeamSolvedRiddle(i_UserId, nextRiddleSetSize);
                 }
             }

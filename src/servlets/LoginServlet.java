@@ -16,10 +16,10 @@ public class LoginServlet {
         if(userEmail == null || password == null){
             response.setStatus(400);
         }
-
-        if(!isValidUser(userEmail)){
-            response.setStatus(400);
-        }
+//
+//        if(!isValidUser(userEmail)){
+//            response.setStatus(400);
+//        }
 
 
     }
