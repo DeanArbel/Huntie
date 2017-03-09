@@ -26,6 +26,7 @@ public class GameLobbyServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
         //String username = SessionUtils.getUsername(request);
         String userid = "1";
         if (userid == null) {
