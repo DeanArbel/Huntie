@@ -89,7 +89,7 @@ function onAddRiddleButtonClick() {
 function sendRiddleToServer(riddle) {
     $.ajax({
         url: GAME_CREATOR_COMPONENTS_URL,
-        data: {requestType: "GameBuilder", action:"add", riddle: JSON.stringify(riddle)},
+        data: "requestType=GameBuilder&action=add&riddle=" + JSON.stringify(riddle),
         type: 'POST',
         success: onSuccessfulRiddlePost(riddle),
         error: function(err) {
@@ -277,7 +277,7 @@ function getRiddleInServerFormat() {
         appearanceNumber: parseInt(riddleAppearanceInput.value),
         type: riddleType.innerText,
         questionText: riddleTextQuestion.value,
-        questionOptionalImage: null, //btoa(riddleOptionalImage.src), //TODO: Fix this
+        questionOptionalImage: riddleOptionalImage.src, //TODO: Fix this
         answerText: riddleTextAnswer.value
         //TODO: after google maps add location
         //TODO: Add here question and answer

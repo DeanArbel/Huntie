@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import servlets.Util.ServletUtils;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +23,7 @@ import static servlets.Util.ServletUtils.SetError;
 /**
  * Created by Dean on 18/2/2017.
  */
+@MultipartConfig
 @WebServlet(name = "UnpublishedGameComponentsServlet")
 public class UnpublishedGameComponentsServlet extends HttpServlet {
     private static Gson gson = new Gson();
@@ -141,7 +143,7 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
         game.SetTeamNames(teamMap.keySet());
     }
 
-    private void handleGameBuilderRequest(HttpServletRequest request, Game game) throws ServletException {
+    private void handleGameBuilderRequest(HttpServletRequest request, Game game) throws ServletException, IOException {
         String gameBuilderRequest = request.getParameter("action");
         HashMap<String, Object> riddleMap = gson.fromJson(request.getParameter("riddle"), HashMap.class);
         if ("delete".equals(gameBuilderRequest)) {
@@ -161,7 +163,7 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
         String name = (String)i_Riddle.get("name");
         String questionText = (String)i_Riddle.get("questionText");
         String answerText = (String)i_Riddle.get("answerText");
-        String optionalImage = (String)i_Riddle.get("questionOptionalImage");
+        String optionalImage = ((String)i_Riddle.get("questionOptionalImage")).replaceAll(" ", "+");
         int appearanceNumber = ((Double)i_Riddle.get("appearanceNumber")).intValue();
         boolean isTextType = !"Photo Type".equals(i_Riddle.get("type"));
         //TODO: Add image support
