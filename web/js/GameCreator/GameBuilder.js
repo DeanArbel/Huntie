@@ -277,12 +277,11 @@ function getRiddleInServerFormat() {
         appearanceNumber: parseInt(riddleAppearanceInput.value),
         type: riddleType.innerText,
         questionText: riddleTextQuestion.value,
-        questionOptionalImage: riddleOptionalImage.src, //TODO: Fix this
+        questionOptionalImage: getBase64Image(riddleOptionalImage),
         answerText: riddleTextAnswer.value
         //TODO: after google maps add location
         //TODO: Add here question and answer
     }, errMsg = checkRiddleErrors(riddle);
-    //TODO: Add checks here, if one fails return null
     return [riddle, errMsg];
 }
 

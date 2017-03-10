@@ -10,6 +10,7 @@ var GAME_ENTRY_URL = "GameEntry";
 var GAME_LOBBY_URL = "GameLobby";
 var RIDDLE_URL = "Riddle";
 var PROFILE_URL = "User/Profile";
+var maxImageRatioSize = 300;
 
 $(document).on('click', 'td > svg', function() {
     $(this).parents('tr').remove();
@@ -61,10 +62,12 @@ function formatDate(date, monthName) {
 
 function getBase64Image(imgElem) {
     var canvas = document.createElement("canvas");
-    canvas.width = imgElem.clientWidth;
-    canvas.height = imgElem.clientHeight;
+    var imgWidth = (imgElem.clientWidth / imgElem.clientHeight) * maxImageRatioSize;
+    canvas.width = imgElem.clientWidth < imgWidth ? imgElem.clientWidth : imgWidth;
+    canvas.height = imgElem.clientHeight < maxImageRatioSize ? imgElem.clientHeight : maxImageRatioSize;
     var ctx = canvas.getContext("2d");
-    ctx.drawImage(imgElem, 0, 0);
+    ctx.drawImage(imgElem, 0, 0, canvas.width, canvas.height);
     var dataURL = canvas.toDataURL("image/png");
-    return dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
+    return dataURL;
+    // return dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
 }

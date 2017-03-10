@@ -38,7 +38,10 @@ function initPageElementsFromServer() {
             optImg.src = gameData.optionalImage;
             mRiddleName[0].innerText = gameData.name;
             mQuestionBody[0].innerText = gameData.question;
-            mQuestionBody.append(optImg); //TODO: Handle picture
+            if (optImg.src) {
+                mQuestionBody.append('<br>');
+                mQuestionBody.append(optImg);
+            }
             $(".loading-area").hide();
             $(".container").show();
         },
