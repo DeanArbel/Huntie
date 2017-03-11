@@ -46,29 +46,13 @@ function initPageElementsFromServer() {
     $.ajax({
         url: PROFILE_URL,
         type: 'GET',
+        data: {request: "UserInfo"},
         success: function(gameData) {
-            var now = new Date();
-            var startTime = new Date(gameData.startTime);
-            var endTime = new Date(gameData.endTime);
-            mIsGameActive = endTime >= now;
-            mHasGameStarted = startTime <= now;
-            mGameName[0].innerText = gameData.gameName;
-            mGameTimeMessage[0].innerText = mHasGameStarted ? "Game End Time: " + formatDate(endTime) : "Game Start Time: " + formatDate(startTime);
+            mUsername[0].value = gameData.username;
+            mEmail[0].value = gameData.email;
             $(".loading-area").hide();
             $(".lobby-container").show();
-            if (gameData.playerHasWon) {
-                mPlayerWonMessage.show();
-            }
-            if (mIsGameActive && mHasGameStarted) {
-                initRiddleTable(gameData.riddlesNames);
-            }
-            else if (!mHasGameStarted) {
-                mPlayerMessage[0].innerText = "The Game hasn't started yet, please come again later";
-            }
-            else {
-                mGameEndedMessage.show();
-            }
-            getNonCrucialPageElementsFromServer();
+            getGameTablesFromServer();
         },
         error: function(err) {
             alert(err);
@@ -76,52 +60,32 @@ function initPageElementsFromServer() {
     });
 }
 
-function getNonCrucialPageElementsFromServer() {
+function getGameTablesFromServer() {
     $.ajax({
-        url: GAME_LOBBY_URL,
+        url: PROFILE_URL,
         type: 'GET',
-        data: {request: "getPlayerTables", gameCode: mGameCode},
+        data: {request: "Tables"},
         success: function(gameData) {
-            if (gameData.isTeamGame) {
-                $('.score-content').show();
-                initTeamTable(gameData.myTeamScore);
-                initOthersTable(gameData.otherTeamsScore);
-            }
+            initTables(gameData);
         }
     });
 }
 
-function initRiddleTable(riddleNames) {
-    var size = riddleNames.length;
+function initTables(data) {
+    initGameTable(mManagerGamesTable, data.myGames);
+    initGameTable(mPlayerGamesTable, data.playedGames);
+}
+
+function initGameTable(table, gamesObject) {
+    var keys = Object.keys(gamesObject);
+    var size = keys.length;
     if (size > 0) {
-        $('.riddle-content').show();
-        mRiddleTable.show();
         for (var i = 0; i < size; i++) {
             var $eRow = $('<tr>');
-            $eRow.append('<td>' + riddleNames[i] + '</td>');
-            mRiddleTable.append($eRow);
+            $eRow.append('<td>' + gamesObject[keys[i]] + '</td>');
+            $eRow.append('<td hidden>' + keys[i] + '</td>');
+            table.append($eRow);
         }
-    }
-}
-
-function initTeamTable(teamScores) {
-    var tableBody = $('#table-my-score > tbody');
-    mTeamTable.show();
-    initTeamsTable(teamScores, tableBody);
-}
-
-function initOthersTable(otherTeamsScore) {
-    var tableBody = $('#table-others-score > tbody');
-    mOthersTable.show();
-    initTeamsTable(otherTeamsScore, tableBody);
-}
-
-function initTeamsTable(teamMap, tableBody) {
-    for (var name in teamMap) {
-        var $eRow = $('<tr>');
-        $eRow.append('<td>' + name + '</td>');
-        $eRow.append('<td>' + teamMap[name] + '</td>');
-        tableBody.append($eRow);
     }
 }
 

@@ -117,6 +117,7 @@ public class Game {
     public void AddPlayer(String i_PlayerToAdd, int i_TeamIdx) {
         if (!IsGameFull()) {
             Team team = r_Teams.get(i_TeamIdx);
+            User player = DatabaseFacade.GetUser(i_PlayerToAdd);
             if (m_IsTeamGame && team.Count() >= m_MaxPayersInTeam) {
                 throw new ArrayIndexOutOfBoundsException("Team has reached max size");
             }
@@ -125,6 +126,7 @@ public class Game {
                 team.AddPlayer(i_PlayerToAdd, riddleLevel);
                 m_PlayersInGame++;
             }
+            player.JoinGameAsPlayer(r_GameId, m_GameName);
         }
         else {
             throw new ArrayIndexOutOfBoundsException("Game has reached max player size");

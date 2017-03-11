@@ -23,6 +23,10 @@ $(document).on('click', "#findGame-btn", function() {
     window.location.href = SITE_URL + "/Player/FindGame.html";
 });
 
+$(document).on('click', "#profile-btn", function() {
+    window.location.href = SITE_URL + "/MyProfile.html";
+});
+
 $(document).on('click', '#modal-yes-btn', function() { window.location.href = SITE_URL + "/Manager/GameType.html"; });
 $(document).on('click', '#modal-no-btn', function() {
     $.ajax({
