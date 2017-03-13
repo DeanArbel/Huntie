@@ -24,35 +24,7 @@
             fjs.parentNode.insertBefore(js, fjs);
         }(document, 'script', 'facebook-jssdk'));
 
-        function checkLoginState(data) {
-            data = data || {}
-            if (data.status === "connected") {
-                var auth = data.authResponse
-                var accessToken  = auth.accessToken
-                var userID  = auth.userID
-                var loginURL = "https://graph.facebook.com/v2.8/" + userID +"?access_token=" + accessToken+"&fields=name,email"
-                // loginURL = "Login"
-                //todo move to server and use my url
-                //$.post(loginURL,
-                $.get(loginURL,
-                    function() {
-                        debugger;
-                        // alert( "success" );
-                    })
-                    .done(function() {
-                        debugger;
-                        // alert( "second success" );
-                    })
-                    .fail(function() {
-                        debugger;
-                        // alert( "error" );
-                    });
 
-            }
-            else {
-                console.log('checkLoginState fail')
-            }
-        }
     </script>
 </head>
 <body>
