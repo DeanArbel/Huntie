@@ -19,14 +19,18 @@ $(function () {
     initPageElementsFromServer();
 });
 
-$(document).on("click", "tbody > tr", function(clickedEvent) {
-    if (mClickedRow) {
-        mClickedRow.classList.remove("active");
+$(document).on("click", "#profile-table-manager > tbody > tr", function(clickedEvent) {
+    if (tableRowClicked(clickedEvent)) {
+        //TODO: Change implementation after login system works
+        window.location.href = SITE_URL + "/Player/GameLobby.html?gameCode=" + mChosenGameId;
     }
-    mClickedRow = clickedEvent.currentTarget;
-    mClickedRow.classList.add("active");
-    //mChosenGameId = mClickedRow. //TODO: Check this row to know how to access the game id
-    //mSolveRiddleBtn.disabled = false;
+});
+
+$(document).on("click", "#profile-table-played > tbody > tr", function(clickedEvent) {
+    if (tableRowClicked(clickedEvent)) {
+        //TODO: Change implementation after login system works
+        window.location.href = SITE_URL + "/Player/GameLobby.html?gameCode=" + mChosenGameId;
+    }
 });
 
 $(document).on("click", "#prevPage-btn", function() {
@@ -92,4 +96,14 @@ function initGameTable(table, gamesObject) {
 function resetPasswordFields() {
     mOldPassword[0].value = "";
     mNewPassword[0].value = "";
+}
+
+function tableRowClicked(clickedEvent) {
+    if (mClickedRow) {
+        mClickedRow.classList.remove("active");
+    }
+    mClickedRow = clickedEvent.currentTarget;
+    mClickedRow.classList.add("active");
+    mChosenGameId = mClickedRow.lastChild.innerText;
+    return confirm("Would you like to go to game page?");
 }
