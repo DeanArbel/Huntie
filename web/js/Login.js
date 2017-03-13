@@ -7,6 +7,7 @@ $("#sign-in-btn").on('click', function() {
         type: 'POST',
         data: {email: $("textInputUserEmail").value, password: $("textInputPassword").value},
         success: function() {
+            //todo get token
             window.location.href = SITE_URL + "/Home.html";
         },
         error: function() {
@@ -46,6 +47,7 @@ function checkLoginState(data) {
             type: 'POST',
             data: {userID: userID, accessToken: accessToken},
             success:function () {
+                //todo get token
                 window.location.href = SITE_URL + "/Home.html";
             },
             error: function () {

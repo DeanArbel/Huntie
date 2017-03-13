@@ -3,6 +3,8 @@ package servlets;
 import javax.servlet.annotation.WebServlet;
 import java.io.IOException;
 
+import static Util.DatabaseFacade.Login;
+
 /**
  * Created by dan on 2/24/2017.
  */
@@ -12,15 +14,19 @@ public class LoginServlet {
         response.setContentType("application/json");
         String userEmail = request.getParameter("email");
         String password = request.getParameter("password");
+        int token;
 
         if(userEmail == null || password == null){
             response.setStatus(400);
         }
-//
-//        if(!isValidUser(userEmail)){
-//            response.setStatus(400);
-//        }
+        else{
+            token = Login(userEmail,password);
+            if(token != 0){
 
-
+            }
+            else{
+                response.setStatus(400);
+            }
+        }
     }
 }
