@@ -5,7 +5,7 @@ $("#sign-in-btn").on('click', function() {
     $.ajax({
         url: "Login",
         type: 'POST',
-        data: {email: $("textInputUserEmail").value, password: $("textInputPassword").value},
+        data: {email: $("#textInputUserEmail").value, password: $("#textInputPassword").value},
         success: function() {
             //todo get token
             window.location.href = SITE_URL + "/Home.html";

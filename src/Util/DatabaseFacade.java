@@ -116,4 +116,23 @@ public class DatabaseFacade {
         token = generateToken();
         return token;
     }
+
+    public static int SignUp(String i_UserEmail, String i_UserPassword, String i_UserName){
+        if(!IsEmailUnique(i_UserEmail)){
+            return -1;
+        }
+
+        if(!IsUserNameUnique(i_UserName)){
+            return -2;
+        }
+
+        try {
+            User user = createUser(i_UserName, i_UserPassword, i_UserEmail);
+            sr_UseerMap.put(i_UserEmail,user.GetUserId());
+        }
+        catch (Exception e){
+
+        }
+        return 0;
+    }
 }
