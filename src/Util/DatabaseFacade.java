@@ -87,4 +87,52 @@ public class DatabaseFacade {
         }
         return emailIsUnique;
     }
+
+    public static int Login(String i_UserEmail, String i_UserPassword){
+        int token=0;
+        String userId;
+
+        if(sr_UseerMap.containsKey(i_UserEmail)) {
+            userId = sr_UseerMap.get(i_UserEmail);
+            if (sr_Users.get(userId).GetPassword().equals(i_UserPassword)) {
+                token = generateToken();
+            }
+        }
+
+        return token;
+    }
+
+    private static int generateToken(){
+        return 1;
+    }
+
+    public static int FaceBookLogin(String i_AccessToken, Integer i_UserID){
+        int token = 0;
+
+        if(!sr_UseerMap.containsKey(i_AccessToken)) {
+            User user = new User(i_UserID.toString());
+            sr_Users.put(i_AccessToken,user);
+        }
+        token = generateToken();
+        return token;
+    }
+
+    public static int SignUp(String i_UserEmail, String i_UserPassword, String i_UserName){
+        if(!IsEmailUnique(i_UserEmail)){
+            return -1;
+        }
+
+        if(!IsUserNameUnique(i_UserName)){
+            return -2;
+        }
+
+        try {
+            User user = createUser(i_UserName, i_UserPassword, i_UserEmail);
+            sr_UseerMap.put(i_UserEmail,user.GetUserId());
+        }
+        catch (Exception e){
+
+        }
+        return 0;
+    }
 }

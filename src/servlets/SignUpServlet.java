@@ -1,32 +1,30 @@
 package servlets;
 
+/**
+ * Created by dan on 3/14/2017.
+ */
+
 import javax.servlet.annotation.WebServlet;
 import java.io.IOException;
+import static Util.DatabaseFacade.SignUp;
 
-import static Util.DatabaseFacade.Login;
-
-/**
- * Created by dan on 2/24/2017.
- */
-@WebServlet(name = "LoginServlet")
-public class LoginServlet {
+@WebServlet(name = "SignUpServlet")
+public class SignUpServlet {
     protected void doPost(javax.servlet.http.HttpServletRequest request, javax.servlet.http.HttpServletResponse response) throws javax.servlet.ServletException, IOException {
         response.setContentType("application/json");
         String userEmail = request.getParameter("email");
         String password = request.getParameter("password");
-        int token;
+        String userame = request.getParameter("username");
+        int res = SignUp(userEmail,password,userame);
 
-        if(userEmail == null || password == null){
-            response.setStatus(400);
+        if(res == 0){
+
+        }
+        else if(res == -1){
+
         }
         else{
-            token = Login(userEmail,password);
-            if(token != 0){
 
-            }
-            else{
-                response.setStatus(400);
-            }
         }
     }
 }
