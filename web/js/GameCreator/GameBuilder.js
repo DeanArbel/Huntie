@@ -3,6 +3,8 @@
  */
 var TEXT_ANSWER = "Text Answer";
 var PHOTO_ANSWER = "Photo Answer";
+var RIDDLE_LVL_ID_FORMAT = 'riddle-table-level-';
+var ADD_TO_LVL_BTN_ID_FORMAT = 'add-riddle-level-';
 var MAX_IMG_WIDTH = 200;
 var MAX_IMG_HEIGHT = 300;
 
@@ -40,6 +42,10 @@ function initGlobalVars() {
     riddleLocationCheckBox = $("#riddle-location-checkbox")[0];
     //TODO: Add this after google maps integration: riddleLocation = $("#riddle-location")[0];
     riddleModal = $("#myModal");
+
+    // NEW ELEMENTS: //TODO: Organize this in refactor
+    meRiddleLevelTable = $("#table-riddles");
+    miNextRiddleLvl = 1;
 }
 
 $(document).on('click', '#prevPage-btn', function() {
@@ -86,6 +92,7 @@ $(document).on("click", ".table > tbody > tr", function(clickedEvent) {
 function onAddRiddleButtonClick() {
     resetForm();
     editFlag = false;
+    riddleAppearanceInput.disabled = false;
 }
 
 function sendRiddleToServer(riddle) {
@@ -108,6 +115,7 @@ function onSuccessfulRiddlePost(riddle) {
     }
     riddles[riddle.appearanceNumber][riddles[riddle.appearanceNumber].length] = riddle;
     updateRiddlesTable();
+    addRiddleToRiddleLevelTable(riddle);
     riddleModal.modal("toggle");
     resetForm();
 }
@@ -301,3 +309,42 @@ function getRiddleInServerFormat() {
 $(document).on('change', '#riddle-location-checkbox', function (event) {
     $('.location-info').toggle();
 });
+
+// NEW IMPLEMENTATION:
+// todo: Functions here should be move upward at refactoring stage
+
+// Page Elements:
+var meRiddleLevelTable;
+// Global vars
+var miNextRiddleLvl;
+var miCurrEditedRiddleLvl;
+
+function onAddLevelClick() {
+    var $levelRow = $('<tr id="' + RIDDLE_LVL_ID_FORMAT + miNextRiddleLvl + '">');
+    var $levelTable = $('<table></table>');
+    $levelTable.append($('<thead><tr><th>Level ' + miNextRiddleLvl + '</th><th></th></tr></thead>'));
+    $levelTable.append($('<tbody>' +
+                            '<tr>' +
+                                '<td></td>' +
+                                    '<td>' +
+                                        '<button id="' + ADD_TO_LVL_BTN_ID_FORMAT + miNextRiddleLvl + '" onclick="addRiddleRow(this)" data-toggle="modal" data-target="#myModal">Add Riddle</button>' +
+                                    '</td></tr></tbody>'));
+    $levelRow.append($levelTable);
+    meRiddleLevelTable.append($levelRow);
+
+    miNextRiddleLvl++;
+}
+
+function addRiddleRow(eButton) {
+    var btnID = eButton.id;
+    var formatLen = ADD_TO_LVL_BTN_ID_FORMAT.length;
+    miCurrEditedRiddleLvl = btnID.substr(formatLen, btnID.length - formatLen);
+    resetForm();
+    editFlag = false;
+    riddleAppearanceInput.value = miCurrEditedRiddleLvl;
+    riddleAppearanceInput.disabled = true;
+}
+
+function addRiddleToRiddleLevelTable(riddle) {
+
+}

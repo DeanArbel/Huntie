@@ -28,6 +28,7 @@
     <h1 class="text-center">Game Builder</h1>
     <br>
     <button type="button" id="openModal-btn" class="btn btn-success center-block" data-toggle="modal" data-target="#myModal" onclick="onAddRiddleButtonClick()">Add Riddle</button>
+    <button type="button" id="btn-add-riddle" class="btn btn-success center-block" onclick="onAddLevelClick()">Add Level</button>
     <!-- Modal -->
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
@@ -126,6 +127,12 @@
                 <th></th>
             </tr>
             </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    <div class="center-block">
+        <table id="table-riddles" class="table table-hover">
             <tbody>
             </tbody>
         </table>
