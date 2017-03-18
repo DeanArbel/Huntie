@@ -1,9 +1,8 @@
+</html>
 <head>
     <script src="js/jquery-3.1.1.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/Util/UtilityFuncs.js"></script>
-    <script src="js/User/Home.js"></script>
-    <script src="js/SignUp.js"></script>
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/SignUp.css">
     <link rel="stylesheet" href="css/Util/UtilityClasses.css">
@@ -13,16 +12,18 @@
     <div class="container">
         <div class="row" style="margin-bottom:50px;">
             <div class="col-md-5 col-md-offset-4">
-                <form action="r" method="post" accept-charset="utf-8" class="form" role="form">
+                <div accept-charset="utf-8" class="form" role="form">
                     <legend style="font-family:"helvetica",sans serif;">Sign Up</legend>
-                    <input style="border-radius:2px;" type="text" name="UserName" value="" class="form-control input-lg" placeholder="UserName"  />
-                    <input style="border-radius:2px;" type="text" name="email" value="" class="form-control input-lg" placeholder="Email"  />
-                    <input style="border-radius:2px;" type="password" name="password" value="" class="form-control input-lg" placeholder="Password"  />
-                    <input style="border-radius:2px;" type="password" name="confirm_password" value="" class="form-control input-lg" placeholder="Confirm Password"  />
-                    <button style="border-radius:2px;" class="btn btn-lg btn-primary btn-block signUp-btn" type="submit">Submit</button>
-                </form>
+                    <input style="border-radius:2px;" type="text" name="UserName" id="UserName" value="" class="form-control input-lg" placeholder="UserName"  />
+                    <input style="border-radius:2px;" type="text" name="email" id="email" value="" class="form-control input-lg" placeholder="Email"  />
+                    <input style="border-radius:2px;" type="password" name="password" id="password" value="" class="form-control input-lg" placeholder="Password"  />
+                    <input style="border-radius:2px;" type="password" id="confirm_password" name="confirm_password" value="" class="form-control input-lg" placeholder="Confirm Password"  />
+                    <button style="border-radius:2px;" class="btn btn-lg btn-primary btn-block signUp-btn" id="submit" type="submit">Submit</button>
+                </div>
             </div>
         </div>
     </div>
 </div>
+<script src="js/SignUp.js"></script>
 </body>
+<html>

@@ -59,4 +59,20 @@
         <servlet-name>ProfileServlet</servlet-name>
         <url-pattern>/User/Profile</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>SignUpServlet</servlet-name>
+        <servlet-class>servlets.SignUpServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SignUpServlet</servlet-name>
+        <url-pattern>/SignUp</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>LoginServlet</servlet-name>
+        <servlet-class>servlets.LoginServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>LoginServlet</servlet-name>
+        <url-pattern>/Login</url-pattern>
+    </servlet-mapping>
 </web-app>

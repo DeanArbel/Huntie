@@ -6,25 +6,30 @@ package servlets;
 
 import javax.servlet.annotation.WebServlet;
 import java.io.IOException;
+import java.io.PrintWriter;
+
 import static Util.DatabaseFacade.SignUp;
+import static servlets.Util.ServletUtils.SetError;
 
 @WebServlet(name = "SignUpServlet")
-public class SignUpServlet {
+public class SignUpServlet extends javax.servlet.http.HttpServlet  {
     protected void doPost(javax.servlet.http.HttpServletRequest request, javax.servlet.http.HttpServletResponse response) throws javax.servlet.ServletException, IOException {
         response.setContentType("application/json");
         String userEmail = request.getParameter("email");
         String password = request.getParameter("password");
-        String userame = request.getParameter("username");
-        int res = SignUp(userEmail,password,userame);
+        String username = request.getParameter("username");
+        PrintWriter out = response.getWriter();
+        int res = SignUp(userEmail,password,username);
 
         if(res == 0){
-
+            out.print(res);
+            out.flush();
         }
         else if(res == -1){
-
+            SetError(response,400,"Email already in use");
         }
         else{
-
+            SetError(response,400,"username already in use");
         }
     }
 }

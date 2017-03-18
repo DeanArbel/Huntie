@@ -3,17 +3,17 @@
  */
 
 $("#submit").on('click', function () {
-    if($("#email").value !== null && $("#UserName").value !== null && $("#password").value !== null && $("#confirm_password").value !== null) {
-        if ($("#password").value === $("#confirm_password").value) {
+    if($("#email").val() !== null && $("#UserName").value !== null && $("#password").val() !== null && $("#confirm_password").val() !== null) {
+        if ($("#password").val() === $("#confirm_password").val()) {
             $.ajax({
                 url: "SignUp",
                 type: 'POST',
-                data: {email: $("#email").value, username: $("#UserName").value, password: $("#password").value},
+                data: {email: $("#email").val(), username: $("#UserName").val(), password: $("#password").val()},
                 success: function () {
                     window.location.href = SITE_URL + "/Login.html";
                 },
-                error: function () {
-                    //todo alert what is already in use
+                error: function (data) {
+                    alert(data);
                 }
             });
         }
