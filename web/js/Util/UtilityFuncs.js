@@ -13,7 +13,7 @@ var PROFILE_URL = "User/Profile";
 var maxImageRatioSize = 300;
 
 $(document).on('click', 'td > svg', function() {
-    $(this).parents('tr').remove();
+    $(this).parent().parent().remove();
     // This function can be implemented in specific script
     rowWasRemoved(this);
 });

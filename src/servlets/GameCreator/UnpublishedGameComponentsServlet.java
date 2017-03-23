@@ -147,7 +147,7 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
         String gameBuilderRequest = request.getParameter("action");
         HashMap<String, Object> riddleMap = gson.fromJson(request.getParameter("riddle"), HashMap.class);
         if ("delete".equals(gameBuilderRequest)) {
-            deleteRiddle(game, ((Double)riddleMap.get("appearanceNumber")).intValue(), ((Double)riddleMap.get("index")).intValue());
+            deleteRiddle(game, ((Double)riddleMap.get("level")).intValue(), ((Double)riddleMap.get("index")).intValue());
         }
         else if ("add".equals(gameBuilderRequest)) {
             Riddle riddle = buildRiddle(riddleMap);
@@ -164,7 +164,7 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
         String questionText = (String)i_Riddle.get("questionText");
         String answerText = (String)i_Riddle.get("answerText");
         String optionalImage = ((String)i_Riddle.get("questionOptionalImage")).replaceAll(" ", "+");
-        int appearanceNumber = ((Double)i_Riddle.get("appearanceNumber")).intValue();
+        int appearanceNumber = ((Double)i_Riddle.get("level")).intValue();
         boolean isTextType = !"Photo Type".equals(i_Riddle.get("type"));
         //TODO: Add image support
         if (name == null || questionText == null || answerText == null && appearanceNumber > Riddle.MAX_APPEARANCE && appearanceNumber < Riddle.MIN_APPEARANCE) {

@@ -32,7 +32,7 @@ $(function() {
 });
 
 function initGlobalVars() {
-    riddlesTable = $("tbody");
+    riddlesTable = $("#riddles-table > tbody");
     riddleNameInput = $("#riddle-name")[0];
     riddleAppearanceInput = $("#riddle-appearance-number")[0];
     riddleType = $(".dropdown-btn")[0];
@@ -44,8 +44,8 @@ function initGlobalVars() {
     riddleModal = $("#myModal");
 
     // NEW ELEMENTS: //TODO: Organize this in refactor
-    meRiddleLevelTable = $("#table-riddles");
-    miNextRiddleLvl = 1;
+    m_eRiddleLevelTable = $("#table-riddles > tbody");
+    m_iNextRiddleLvl = 1;
 }
 
 $(document).on('click', '#prevPage-btn', function() {
@@ -110,12 +110,12 @@ function sendRiddleToServer(riddle) {
 function onSuccessfulRiddlePost(riddle) {
     //TODO: Close loading screen
     editFlag = false;
-    if (!riddles[riddle.appearanceNumber]) {
-        riddles[riddle.appearanceNumber] = [];
+    if (!riddles[riddle.level]) {
+        riddles[riddle.level] = [];
     }
-    riddles[riddle.appearanceNumber][riddles[riddle.appearanceNumber].length] = riddle;
+    riddles[riddle.level][riddles[riddle.level].length] = riddle;
     updateRiddlesTable();
-    addRiddleToRiddleLevelTable(riddle);
+    //addRiddleToRiddleLevelTable(riddle);
     riddleModal.modal("toggle");
     resetForm();
 }
@@ -157,7 +157,7 @@ function initPageElementsFromServer() {
 
 function convertRiddleToClientFormat(serverRiddle) {
     var riddle = {};
-    riddle.appearanceNumber = serverRiddle.m_AppearanceNumber;
+    riddle.level = serverRiddle.m_AppearanceNumber;
     riddle.name = serverRiddle.m_Name;
     riddle.questionText = serverRiddle.m_TextQuestion;
     if (serverRiddle.m_IsTextType) {
@@ -171,21 +171,25 @@ function convertRiddleToClientFormat(serverRiddle) {
 
 function updateRiddlesTable() {
     riddlesTable.empty();
+    m_eRiddleLevelTable.empty();
+    m_iNextRiddleLvl = 1;
     var riddlesArrSize = riddles.length;
-    for (var i = 0; i < riddlesArrSize; i++) {
+    for (var i = 1; i < riddlesArrSize; i++) {
+        addLevelToRiddleTable();
         if (riddles[i]) {
             var riddleArrSize = riddles[i].length;
             for (var j = 0; j < riddleArrSize; j++) {
                 riddles[i][j].index = j;
                 addRow(riddles[i][j]);
+                addRiddleToRiddleLevelTable(riddles[i][j]);
             }
         }
     }
 }
 
 function addRow(riddle) {
-    var $eRow = $('<tr class="iIndex' + riddle.appearanceNumber + '">');
-    $eRow.append('<td>' + riddle.appearanceNumber + '</td>');
+    var $eRow = $('<tr class="iIndex' + riddle.level + '">');
+    $eRow.append('<td>' + riddle.level + '</td>');
     $eRow.append('<td hidden>' + riddle.index + '</td>');
     $eRow.append('<td>' + riddle.name + '</td>');
     $eRow.append(REMOVE_BUTTON_SVG);
@@ -195,7 +199,7 @@ function addRow(riddle) {
 function editRiddle(riddle) {
     if (!editFlag) {
         riddleNameInput.value = riddle.name;
-        riddleAppearanceInput.value = riddle.appearanceNumber;
+        riddleAppearanceInput.value = riddle.level;
         riddleTextQuestion.value = riddle.questionText;
         riddleTextAnswer.value = riddle.answerText;
         updateDropdownValue(riddle.type);
@@ -260,6 +264,8 @@ function rowWasRemoved(that) {
                 rowTable[i].children[1].innerText = i;
                 riddles[removedFirstIdx][i].index = i;
             }
+            //todo remove row below
+            updateRiddlesTable();
             if (editFlag) {
                 sendRiddleToServer(edittedRiddle);
             }
@@ -273,7 +279,7 @@ function rowWasRemoved(that) {
 
 function checkRiddleErrors(riddle) {
     var errMsg = "";
-    if (!riddle.appearanceNumber || riddle.appearanceNumber > 99 || riddle.appearanceNumber < 1) {
+    if (!riddle.level || riddle.level > 99 || riddle.level < 1) {
         errMsg += "- Appearance number should be between 1 and 99\n";
     }
     if (riddle.questionText === "") {
@@ -295,7 +301,7 @@ function checkRiddleErrors(riddle) {
 function getRiddleInServerFormat() {
     var riddle = {
         name: riddleNameInput.value,
-        appearanceNumber: parseInt(riddleAppearanceInput.value),
+        level: parseInt(riddleAppearanceInput.value),
         type: riddleType.innerText,
         questionText: riddleTextQuestion.value,
         questionOptionalImage: getBase64Image(riddleOptionalImage),
@@ -314,37 +320,44 @@ $(document).on('change', '#riddle-location-checkbox', function (event) {
 // todo: Functions here should be move upward at refactoring stage
 
 // Page Elements:
-var meRiddleLevelTable;
+var m_eRiddleLevelTable;
 // Global vars
-var miNextRiddleLvl;
-var miCurrEditedRiddleLvl;
+var m_iNextRiddleLvl;
 
 function onAddLevelClick() {
-    var $levelRow = $('<tr id="' + RIDDLE_LVL_ID_FORMAT + miNextRiddleLvl + '">');
-    var $levelTable = $('<table></table>');
-    $levelTable.append($('<thead><tr><th>Level ' + miNextRiddleLvl + '</th><th></th></tr></thead>'));
-    $levelTable.append($('<tbody>' +
-                            '<tr>' +
-                                '<td></td>' +
-                                    '<td>' +
-                                        '<button id="' + ADD_TO_LVL_BTN_ID_FORMAT + miNextRiddleLvl + '" onclick="addRiddleRow(this)" data-toggle="modal" data-target="#myModal">Add Riddle</button>' +
-                                    '</td></tr></tbody>'));
-    $levelRow.append($levelTable);
-    meRiddleLevelTable.append($levelRow);
+    addLevelToRiddleTable();
+}
 
-    miNextRiddleLvl++;
+function addLevelToRiddleTable() {
+    var $levelRow = $('<tr></tr>');
+    var $levelTable = $('<table class="table"></table>');
+    $levelTable.append($('<thead><tr><th>Level ' + m_iNextRiddleLvl + '</th></tr></thead>'));
+    $levelTable.append($('<tbody id="' + RIDDLE_LVL_ID_FORMAT + m_iNextRiddleLvl + '">' +
+        '<tr>' +
+        '<td>' +
+        '<button id="' + ADD_TO_LVL_BTN_ID_FORMAT + m_iNextRiddleLvl + '" onclick="addRiddleRow(this)" data-toggle="modal" data-target="#myModal">Add Riddle</button>' +
+        '</td></tr></tbody>'));
+    $levelRow.append($levelTable);
+    m_eRiddleLevelTable.append($levelRow);
+
+    m_iNextRiddleLvl++;
 }
 
 function addRiddleRow(eButton) {
     var btnID = eButton.id;
     var formatLen = ADD_TO_LVL_BTN_ID_FORMAT.length;
-    miCurrEditedRiddleLvl = btnID.substr(formatLen, btnID.length - formatLen);
     resetForm();
     editFlag = false;
-    riddleAppearanceInput.value = miCurrEditedRiddleLvl;
+    riddleAppearanceInput.value = btnID.substr(formatLen, btnID.length - formatLen);
     riddleAppearanceInput.disabled = true;
 }
 
 function addRiddleToRiddleLevelTable(riddle) {
-
+    var eBodyToAddTo = $('#' + RIDDLE_LVL_ID_FORMAT + riddle.level + ' > tr').last();
+    var $eRow = $('<tr class="iIndex' + riddle.level + '">'); //TODO: Remove redundant class
+    $eRow.append('<td hidden>' + riddle.level + '</td>');
+    $eRow.append('<td hidden>' + riddle.index + '</td><td></td>');
+    $eRow.append('<td>' + riddle.name + '</td>');
+    $eRow.append(REMOVE_BUTTON_SVG);
+    eBodyToAddTo.before($eRow);
 }
