@@ -5,13 +5,13 @@ $("#sign-in-btn").on('click', function() {
     $.ajax({
         url: "Login",
         type: 'POST',
-        data: {email: $("#textInputUserEmail").value, password: $("#textInputPassword").value},
-        success: function() {
-            //todo get token
+        data: {email: $("#textInputUserEmail").val(), password: $("#textInputPassword").val()},
+        success: function(data) {
+            sessionStorage.setItem("access token",data);
             window.location.href = SITE_URL + "/Home.html";
         },
-        error: function() {
-            alert("UserName/Password entered incorrect")
+        error: function(msg) {
+            alert(msg);
         }
     });
 });

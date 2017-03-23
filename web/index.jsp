@@ -11,6 +11,6 @@
     <title>Huntie</title>
   </head>
   <body>
-    <meta http-equiv="refresh" content="0; url=Home.html">
+    <meta http-equiv="refresh" content="0; url=Login.html">
   </body>
 </html>

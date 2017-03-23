@@ -118,13 +118,13 @@ public class DatabaseFacade {
     }
 
     public static int SignUp(String i_UserEmail, String i_UserPassword, String i_UserName){
-        if(!IsEmailUnique(i_UserEmail)){
-            return -1;
-        }
+        //if(!IsEmailUnique(i_UserEmail)){
+          //  return -1;
+        //}
 
-        if(!IsUserNameUnique(i_UserName)){
-            return -2;
-        }
+        //if(!IsUserNameUnique(i_UserName)){
+          //  return -2;
+        //}
 
         try {
             User user = createUser(i_UserName, i_UserPassword, i_UserEmail);
