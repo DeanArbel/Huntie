@@ -14,7 +14,7 @@ public class Riddle {
     private boolean m_IsTextType;
     private String m_TextQuestion;
     private String m_OptionalQuestionImage;
-    private String m_TextAnswer;
+    private String m_Answer;
     private Set<String> r_SolvedByUserList = new HashSet<>();
     private Set<String> r_SolvedByTeamList = new HashSet<>();
 
@@ -51,11 +51,11 @@ public class Riddle {
     }
 
     public String getTextAnswer() {
-        return m_TextAnswer;
+        return m_Answer;
     }
 
-    public void setTextAnswer(String m_TextAnswer) {
-        this.m_TextAnswer = m_TextAnswer;
+    public void setAnswer(String m_TextAnswer) {
+        this.m_Answer = m_TextAnswer;
     }
 
     public String GetOptionalQuestionImage() {
@@ -80,6 +80,6 @@ public class Riddle {
     }
 
     public boolean CheckTextAnswer(String i_Answer) {
-        return m_TextAnswer.toLowerCase().equals(i_Answer.toLowerCase());
+        return m_Answer.toLowerCase().equals(i_Answer.toLowerCase());
     }
 }

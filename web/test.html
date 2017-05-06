@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>tracking.js - first tracking</title>
+    <script src="js/jquery-3.1.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/Util/UtilityFuncs.js"></script>
+    <script src="js/trackingjs/build/tracking-min.js"></script>
+    <script src="js/Util/imageUtil.js"></script>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/Home/home.css">
+    <link rel="stylesheet" href="css/Util/UtilityClasses.css">
+
+</head>
+<body>
+<div>
+    <video id="myVideo" width="400" height="300" preload autoplay loop muted></video>
+    <input type='file' id="riddle-question-optionalimage-uploadbtn" onchange="readPictureURL(this);" />
+    <img hidden id="riddle-question-optionalimage" src="#" alt="your image" />
+    <canvas id="canvas" width="400" height="300"></canvas>
+    <button onclick="updateCanvas('riddle-question-optionalimage', 'canvas')">Update</button>
+    <input type='file' id="riddle-question-optionalimage-uploadbtn1" onchange="readPictureURL1(this);" />
+    <img hidden id="riddle-question-optionalimage1" src="#" alt="your image" />
+    <canvas id="canvas1" width="400" height="300"></canvas>
+    <button onclick="updateCanvas('riddle-question-optionalimage1', 'canvas1')">Update</button>
+    <button onclick="pictureComparison(document.getElementById('riddle-question-optionalimage'), document.getElementById('riddle-question-optionalimage1'))">Click for compare</button>
+</div>
+<!--<script>-->
+    <!--var colors = new tracking.ColorTracker(['magenta', 'cyan', 'yellow']);-->
+
+    <!--colors.on('track', function(event) {-->
+        <!--if (event.data.length === 0) {-->
+            <!--// No colors were detected in this frame.-->
+        <!--} else {-->
+            <!--event.data.forEach(function(rect) {-->
+                <!--console.log(rect.x, rect.y, rect.height, rect.width, rect.color);-->
+            <!--});-->
+        <!--}-->
+    <!--});-->
+
+    <!--tracking.track('#myVideo', colors, { camera: true });-->
+<!--</script>-->
+</body>
+</html>

@@ -16,6 +16,7 @@ var riddleType;
 var riddleTextQuestion;
 var riddleOptionalImage;
 var riddleTextAnswer;
+var riddleImageAnswer;
 var riddleLocationCheckBox;
 var riddleLocation;
 var riddleModal;
@@ -38,6 +39,7 @@ function initGlobalVars() {
     riddleType = $(".dropdown-btn")[0];
     riddleTextQuestion = $("#riddle-question-text")[0];
     riddleOptionalImage = $("#riddle-question-optionalimage")[0];
+    riddleImageAnswer = $("#riddle-photo-answer-image")[0];
     riddleTextAnswer = $("#riddle-answer-text")[0];
     riddleLocationCheckBox = $("#riddle-location-checkbox")[0];
     //TODO: Add this after google maps integration: riddleLocation = $("#riddle-location")[0];
@@ -122,11 +124,16 @@ function onSuccessfulRiddlePost(riddle) {
 
 function resetForm() {
     document.getElementById("riddle-form").reset();
-    var image = document.getElementById('riddle-question-optionalimage');
-    image.src = "";
-    image.hidden = true;
+    resetImage('riddle-question-optionalimage');
+    resetImage('riddle-photo-answer-image');
     $('.location-info').show();
     //TODO: Remove location
+}
+
+function resetImage(imageId) {
+    var image = document.getElementById(imageId);
+    image.src = "";
+    image.hidden = true;
 }
 
 function initPageElementsFromServer() {
@@ -160,10 +167,9 @@ function convertRiddleToClientFormat(serverRiddle) {
     riddle.level = serverRiddle.m_AppearanceNumber;
     riddle.name = serverRiddle.m_Name;
     riddle.questionText = serverRiddle.m_TextQuestion;
-    if (serverRiddle.m_IsTextType) {
-        riddle.type = TEXT_ANSWER;
-        riddle.answerText = serverRiddle.m_TextAnswer;
-    }
+    riddle.answer = serverRiddle.m_Answer;
+    riddle.type = serverRiddle.m_IsTextType ? TEXT_ANSWER : PHOTO_ANSWER;
+    riddle.optImg = serverRiddle.m_OptionalQuestionImage;
     return riddle;
     //TODO: Add support for optional image
     //TODO: Add here photo support
@@ -201,7 +207,17 @@ function editRiddle(riddle) {
         riddleNameInput.value = riddle.name;
         riddleAppearanceInput.value = riddle.level;
         riddleTextQuestion.value = riddle.questionText;
-        riddleTextAnswer.value = riddle.answerText;
+        if (riddle.type === TEXT_ANSWER) {
+            riddleTextAnswer.value = riddle.answer;
+            riddleImageAnswer.hidden = true;
+        } else {
+            riddleImageAnswer.src = riddle.answer;
+            riddleImageAnswer.hidden = false;
+        }
+        if (riddle.optImg && riddle.optImg !== 'data:,') {
+            riddleOptionalImage.src = riddle.optImg;
+            riddleOptionalImage.hidden = false;
+        }
         updateDropdownValue(riddle.type);
         editFlag = true;
         riddleModal.modal("toggle");
@@ -209,12 +225,12 @@ function editRiddle(riddle) {
     }
 }
 
-function readPictureURL(input) {
+function readPictureURL(input, imgId) {
     if (input.files && input.files[0]) {
         var reader = new FileReader();
 
         reader.onload = function (e) {
-            var image = $('#riddle-question-optionalimage');
+            var image = $(imgId);
             var imgProp;
             image.removeAttr("width").removeAttr("height");
             image.attr('src', e.target.result)[0].hidden = false;
@@ -285,13 +301,8 @@ function checkRiddleErrors(riddle) {
     if (riddle.questionText === "") {
         errMsg += "- Riddle must have a question\n";
     }
-    if (riddle.type !== PHOTO_ANSWER) {
-        if (riddle.answerText === "") {
-            errMsg += "- Riddle must have an answer\n";
-        }
-        else {
-            //TODO: Add check if photo riddle has an answer
-        }
+    if (riddle.answer === "") {
+        errMsg += "- Riddle must have an answer\n";
     }
     //TODO: Add checks for map location
 
@@ -305,10 +316,10 @@ function getRiddleInServerFormat() {
         type: riddleType.innerText,
         questionText: riddleTextQuestion.value,
         questionOptionalImage: getBase64Image(riddleOptionalImage),
-        answerText: riddleTextAnswer.value
         //TODO: after google maps add location
-        //TODO: Add here question and answer
-    }, errMsg = checkRiddleErrors(riddle);
+    }, errMsg;
+    riddle.answer = riddle.type === TEXT_ANSWER ? riddleTextAnswer.value : getBase64Image(riddleImageAnswer);
+    errMsg = checkRiddleErrors(riddle);
     return [riddle, errMsg];
 }
 

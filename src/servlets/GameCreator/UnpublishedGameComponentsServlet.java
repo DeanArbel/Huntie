@@ -160,24 +160,22 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
 
     private Riddle buildRiddle(Map i_Riddle) throws ServletException {
         Riddle riddle = new Riddle();
+        boolean isTextType = !"Photo Answer".equals(i_Riddle.get("type"));
+        int appearanceNumber = ((Double)i_Riddle.get("level")).intValue();
+        String answer = isTextType ? (String)i_Riddle.get("answer") : ((String)i_Riddle.get("answer")).replaceAll(" ", "+");
         String name = (String)i_Riddle.get("name");
         String questionText = (String)i_Riddle.get("questionText");
-        String answerText = (String)i_Riddle.get("answerText");
         String optionalImage = ((String)i_Riddle.get("questionOptionalImage")).replaceAll(" ", "+");
-        int appearanceNumber = ((Double)i_Riddle.get("level")).intValue();
-        boolean isTextType = !"Photo Type".equals(i_Riddle.get("type"));
         //TODO: Add image support
-        if (name == null || questionText == null || answerText == null && appearanceNumber > Riddle.MAX_APPEARANCE && appearanceNumber < Riddle.MIN_APPEARANCE) {
+        if (name == null || questionText == null || answer == null && appearanceNumber > Riddle.MAX_APPEARANCE && appearanceNumber < Riddle.MIN_APPEARANCE) {
             throw new ServletException("Received illegal parameters");
         }
         riddle.setName(name);
         riddle.setAppearanceNumber(appearanceNumber);
         riddle.setTextQuestion(questionText);
         riddle.setIsTextType(isTextType);
-        if (isTextType) {
-            riddle.SetOptionalQuestionImage(optionalImage);
-            riddle.setTextAnswer(answerText);
-        }
+        riddle.SetOptionalQuestionImage(optionalImage);
+        riddle.setAnswer(answer);
         //TODO: Add image support here as well
         return riddle;
     }
