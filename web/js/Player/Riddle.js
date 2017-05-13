@@ -7,6 +7,7 @@ var mRiddleName;
 var mQuestionBody;
 var mAnswerBox;
 var mSubmitBtn;
+var mAnswer;
 
 $(function () {
     sessionStorage.setItem("PrevPage", "Riddle");
@@ -42,6 +43,8 @@ function initPageElementsFromServer() {
                 mQuestionBody.append('<br>');
                 mQuestionBody.append(optImg);
             }
+            mAnswer = gameData.answer;
+            //TODO: adjust the page accoridingly to: if mAnswer -> answer input will be through picture
             $(".loading-area").hide();
             $(".container").show();
         },

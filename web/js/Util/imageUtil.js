@@ -21,7 +21,8 @@ function readPictureURL(input) {
     }
 }
 
-function updateCanvas(imgId, canvasId) {
+//
+function drawImgCornersOnCanvas(imgId, canvasId) {
     tracking.Fast.THRESHOLD = 30;
     var img = document.getElementById(imgId);
     var canvas = document.getElementById(canvasId);

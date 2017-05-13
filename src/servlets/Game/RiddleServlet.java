@@ -77,6 +77,9 @@ public class RiddleServlet extends HttpServlet {
         dataMap.put("name", riddle.getName());
         dataMap.put("question", riddle.getTextQuestion());
         dataMap.put("optionalImage", riddle.GetOptionalQuestionImage());
+        if (!riddle.isIsTextType()) {
+            dataMap.put("answer", riddle.getAnswer());
+        }
         out.println(gson.toJson(dataMap));
     }
 }

@@ -115,6 +115,7 @@ public class Game {
     }
 
     public void AddPlayer(String i_PlayerToAdd, int i_TeamIdx) {
+        //TODO: In the future add not manager check
         if (!IsGameFull()) {
             Team team = r_Teams.get(i_TeamIdx);
             User player = DatabaseFacade.GetUser(i_PlayerToAdd);

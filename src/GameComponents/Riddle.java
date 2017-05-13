@@ -50,7 +50,7 @@ public class Riddle {
         this.m_TextQuestion = m_TextQuestion;
     }
 
-    public String getTextAnswer() {
+    public String getAnswer() {
         return m_Answer;
     }
 
