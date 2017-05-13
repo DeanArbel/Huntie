@@ -37,8 +37,8 @@ public class MockData {
             game.AddPlayer(userToSolveRiddles, 0);
             game.AddPlayer(createMockUser(), 0);
             game.AddPlayer(createMockUser(), 1);
-            game.TryToSolveTextRiddle(userToSolveRiddles, 0, "three");
-            game.TryToSolveTextRiddle(userToSolveRiddles, 0, "three");
+            game.TryToSolveRiddle(userToSolveRiddles, 0, "three");
+            game.TryToSolveRiddle(userToSolveRiddles, 0, "three");
             DatabaseFacade.GetUser("1").SetUnpublishedGame(null);
         }
     }

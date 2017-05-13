@@ -231,20 +231,20 @@ function readPictureURL(input, imgId) {
 
         reader.onload = function (e) {
             var image = $(imgId);
-            var imgProp;
             image.removeAttr("width").removeAttr("height");
             image.attr('src', e.target.result)[0].hidden = false;
-            //image.style.width = image.style.height = 100%;
-            if (image[0].width > MAX_IMG_WIDTH) {
-                imgProp = image[0].height / image[0].width;
-                image[0].style.width = MAX_IMG_WIDTH;
-                image[0].height = imgProp * MAX_IMG_WIDTH;
-            }
-            if (image[0].height > MAX_IMG_HEIGHT) {
-                imgProp = image[0].width / image[0].height;
-                image[0].height = MAX_IMG_HEIGHT;
-                image[0].width = imgProp * MAX_IMG_HEIGHT;
-            }
+            image[0].width = 200;
+            // //image.style.width = image.style.height = 100%;
+            // if (image[0].width > MAX_IMG_WIDTH) {
+            //     imgProp = image[0].height / image[0].width;
+            //     image[0].style.width = MAX_IMG_WIDTH;
+            //     image[0].height = imgProp * MAX_IMG_WIDTH;
+            // }
+            // if (image[0].height > MAX_IMG_HEIGHT) {
+            //     imgProp = image[0].width / image[0].height;
+            //     image[0].height = MAX_IMG_HEIGHT;
+            //     image[0].width = imgProp * MAX_IMG_HEIGHT;
+            // }
         };
 
         reader.readAsDataURL(input.files[0]);

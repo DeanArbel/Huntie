@@ -6,12 +6,13 @@ var mRiddleCode;
 var mRiddleName;
 var mQuestionBody;
 var mAnswerBox;
+var mPhotoAnswer;
 var mSubmitBtn;
-var mAnswer;
+var mServerAnswer;
 
 $(function () {
     sessionStorage.setItem("PrevPage", "Riddle");
-    document.getElementById('riddle-answer').oninput = onAnswerInput;
+    document.getElementById('riddle-answer-text').oninput = onTextAnswerInput;
     initGlobalVars();
     initPageElementsFromServer();
 });
@@ -25,7 +26,8 @@ function initGlobalVars() {
     mRiddleCode = getParameterByName("riddle");
     mRiddleName = $('#riddle-name');
     mQuestionBody = $('#riddle-question-body');
-    mAnswerBox = $('#riddle-answer')[0];
+    mAnswerBox = $('#riddle-answer-text')[0];
+    mPhotoAnswer = $('#riddle-answer-photo-image')[0];
     mSubmitBtn = $("#riddle-submit-btn")[0];
 }
 
@@ -43,10 +45,16 @@ function initPageElementsFromServer() {
                 mQuestionBody.append('<br>');
                 mQuestionBody.append(optImg);
             }
-            mAnswer = gameData.answer;
-            //TODO: adjust the page accoridingly to: if mAnswer -> answer input will be through picture
+
             $(".loading-area").hide();
             $(".container").show();
+            if (gameData.answer) {
+                mServerAnswer = new Image();
+                mServerAnswer.src = gameData.answer;
+                $(".riddle-answer-photo-area").show();
+            } else {
+                $(".riddle-answer-text-area").show();
+            }
         },
         error: function(err) {
             alert(err);
@@ -54,16 +62,21 @@ function initPageElementsFromServer() {
     });
 }
 
-function onAnswerInput() {
+function onTextAnswerInput() {
     mSubmitBtn.disabled = mAnswerBox.value === "";
 }
 
+function onPhotoAnswerInput() {
+    mSubmitBtn.disabled = !mPhotoAnswer.src;
+}
+
 function submitAnswer() {
+    var answer = mServerAnswer ? pictureComparison(mServerAnswer, mPhotoAnswer) : mAnswerBox.value;
     mSubmitBtn.disabled = true;
     $.ajax({
         url: RIDDLE_URL,
         type: 'POST',
-        data: {gameCode: mGameCode, riddleCode: mRiddleCode, answer: mAnswerBox.value},
+        data: {gameCode: mGameCode, riddleCode: mRiddleCode, answer: answer},
         success: function(data) {
             if (data) {
                 confirm("You got to answer right!");

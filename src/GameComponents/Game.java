@@ -235,13 +235,12 @@ public class Game {
         return GetUserRiddlesToSolve(i_UserId).get(i_Index);
     }
 
-    //TODO: Make a version for this function which is polymorphic (can handle both text riddles and photo riddles)
-    public boolean TryToSolveTextRiddle(String i_UserId, int i_Index, String i_Answer) {
+    public boolean TryToSolveRiddle(String i_UserId, int i_Index, String i_Answer) {
         List<Riddle> riddles = GetUserRiddlesToSolve(i_UserId);
         Riddle riddleToBeSolved = riddles.get(i_Index);
         boolean userSolvedRiddle = false;
-        assertTextRiddleCanBeSolved(riddleToBeSolved, i_UserId); // Al
-        if (riddleToBeSolved.CheckTextAnswer(i_Answer)) {
+        assertRiddleCanBeSolved(riddleToBeSolved, i_UserId); // Al
+        if (riddleToBeSolved.CheckAnswer(i_Answer)) {
             Team playerTeam = getPlayerTeam(i_UserId);
             if (m_IsTeamGame) {
                 // Updates riddles solved and to be solved for team
@@ -265,11 +264,8 @@ public class Game {
         return userSolvedRiddle;
     }
 
-    private void assertTextRiddleCanBeSolved(Riddle i_RiddleToBeSolved, String i_UserId) {
-        if (!i_RiddleToBeSolved.isIsTextType()) {
-            throw new IllegalStateException("Riddle is not text type!");
-        }
-        else if (i_RiddleToBeSolved.IsSolvedPlayer(i_UserId)) {
+    private void assertRiddleCanBeSolved(Riddle i_RiddleToBeSolved, String i_UserId) {
+        if (i_RiddleToBeSolved.IsSolvedPlayer(i_UserId)) {
             throw new IllegalStateException("User had already solved the riddle!");
         }
     }

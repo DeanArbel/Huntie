@@ -79,7 +79,14 @@ public class Riddle {
         return r_SolvedByTeamList.contains(i_TeamName);
     }
 
-    public boolean CheckTextAnswer(String i_Answer) {
+    public boolean CheckAnswer(String i_Answer) {
+        if (m_IsTextType) {
+            return checkTextAnswer(i_Answer);
+        }
+        return i_Answer.equals("true");
+    }
+
+    private boolean checkTextAnswer(String i_Answer) {
         return m_Answer.toLowerCase().equals(i_Answer.toLowerCase());
     }
 }

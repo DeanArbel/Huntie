@@ -47,7 +47,8 @@ public class RiddleServlet extends HttpServlet {
 
     private void handlePostRequest(HttpServletRequest request, String userid, PrintWriter out, Game game) {
         //TODO: Handle photo riddle
-        out.println(gson.toJson(game.TryToSolveTextRiddle(userid, Integer.parseInt(request.getParameter("riddleCode")), request.getParameter("answer"))));
+
+        out.println(gson.toJson(game.TryToSolveRiddle(userid, Integer.parseInt(request.getParameter("riddleCode")), request.getParameter("answer"))));
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
