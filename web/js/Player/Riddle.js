@@ -79,7 +79,7 @@ function submitAnswer() {
         data: {gameCode: mGameCode, riddleCode: mRiddleCode, answer: answer},
         success: function(data) {
             if (data) {
-                confirm("You got to answer right!");
+                confirm("You got the right answer right!");
                 mSubmitBtn.disabled = true;
                 mAnswerBox.disabled = true;
                 goBackToLobby();

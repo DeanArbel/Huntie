@@ -169,10 +169,8 @@ function convertRiddleToClientFormat(serverRiddle) {
     riddle.questionText = serverRiddle.m_TextQuestion;
     riddle.answer = serverRiddle.m_Answer;
     riddle.type = serverRiddle.m_IsTextType ? TEXT_ANSWER : PHOTO_ANSWER;
-    riddle.optImg = serverRiddle.m_OptionalQuestionImage;
+    riddle.questionOptionalImage = serverRiddle.m_OptionalQuestionImage;
     return riddle;
-    //TODO: Add support for optional image
-    //TODO: Add here photo support
 }
 
 function updateRiddlesTable() {
@@ -214,8 +212,8 @@ function editRiddle(riddle) {
             riddleImageAnswer.src = riddle.answer;
             riddleImageAnswer.hidden = false;
         }
-        if (riddle.optImg && riddle.optImg !== 'data:,') {
-            riddleOptionalImage.src = riddle.optImg;
+        if (riddle.questionOptionalImage && riddle.questionOptionalImage !== 'data:,') {
+            riddleOptionalImage.src = riddle.questionOptionalImage;
             riddleOptionalImage.hidden = false;
         }
         updateDropdownValue(riddle.type);
