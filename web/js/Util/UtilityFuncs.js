@@ -71,3 +71,15 @@ function getBase64Image(imgElem) {
     return dataURL !== 'data:,' ? dataURL : "";
     // return dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
 }
+
+function minisizeImg(img, maxHeight, maxWidth) {
+    var ratio = img.height / img.width;
+    if (img.height > maxHeight) {
+        img.height = maxHeight;
+        img.width = maxHeight / ratio;
+    }
+    if (img.width > maxWidth) {
+        img.width = maxWidth;
+        img.height = maxWidth * ratio;
+    }
+};

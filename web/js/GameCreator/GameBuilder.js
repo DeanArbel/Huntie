@@ -231,18 +231,8 @@ function readPictureURL(input, imgId) {
             var image = $(imgId);
             image.removeAttr("width").removeAttr("height");
             image.attr('src', e.target.result)[0].hidden = false;
+            // minisizeImg(image[0], MAX_IMG_HEIGHT, MAX_IMG_WIDTH);
             image[0].width = 200;
-            // //image.style.width = image.style.height = 100%;
-            // if (image[0].width > MAX_IMG_WIDTH) {
-            //     imgProp = image[0].height / image[0].width;
-            //     image[0].style.width = MAX_IMG_WIDTH;
-            //     image[0].height = imgProp * MAX_IMG_WIDTH;
-            // }
-            // if (image[0].height > MAX_IMG_HEIGHT) {
-            //     imgProp = image[0].width / image[0].height;
-            //     image[0].height = MAX_IMG_HEIGHT;
-            //     image[0].width = imgProp * MAX_IMG_HEIGHT;
-            // }
         };
 
         reader.readAsDataURL(input.files[0]);
@@ -339,11 +329,18 @@ function onAddLevelClick() {
 
 function addLevelToRiddleTable() {
     var $levelRow = $('<tr></tr>');
-    var $levelTable = $('<table class="table"></table>');
-    $levelTable.append($('<thead><tr><th>Level ' + m_iNextRiddleLvl + '</th></tr></thead>'));
+    var $levelTable = $('<table class="table table-hover"></table>');
+    $levelTable.append($('<thead>' +
+        '<tr>' +
+            '<th style="font-size: 125%" class="col-xs-1">Level ' + m_iNextRiddleLvl + '</th>' +
+            '<th class="col-xs-2">Name</th>' +
+            '<th class="col-xs-4">Question</th>' +
+            '<th class="col-xs-4">Answer</th>' +
+            '<th class="col-xs-1"></th>' +
+        '</tr></thead>'));
     $levelTable.append($('<tbody id="' + RIDDLE_LVL_ID_FORMAT + m_iNextRiddleLvl + '">' +
         '<tr>' +
-        '<td>' +
+        '<td style="border: 0px">' +
         '<button id="' + ADD_TO_LVL_BTN_ID_FORMAT + m_iNextRiddleLvl + '" onclick="addRiddleRow(this)" data-toggle="modal" data-target="#myModal">Add Riddle</button>' +
         '</td></tr></tbody>'));
     $levelRow.append($levelTable);
@@ -367,6 +364,17 @@ function addRiddleToRiddleLevelTable(riddle) {
     $eRow.append('<td hidden>' + riddle.level + '</td>');
     $eRow.append('<td hidden>' + riddle.index + '</td><td></td>');
     $eRow.append('<td>' + riddle.name + '</td>');
+    $eRow.append('<td>' + riddle.questionText + '</td>');
+    if (riddle.type === TEXT_ANSWER) {
+        $eRow.append('<td>' + riddle.answer + '</td>');
+    } else {
+        var $td = $('<td></td>');
+        var img = new Image();
+        img.src = riddle.answer;
+        img.onLoad = minisizeImg(img, 80, 100);
+        $td.append(img);
+        $eRow.append($td);
+    }
     $eRow.append(REMOVE_BUTTON_SVG);
     eBodyToAddTo.before($eRow);
 }
