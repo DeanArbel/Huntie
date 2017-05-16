@@ -215,6 +215,9 @@ function editRiddle(riddle) {
         if (riddle.questionOptionalImage && riddle.questionOptionalImage !== 'data:,') {
             riddleOptionalImage.src = riddle.questionOptionalImage;
             riddleOptionalImage.hidden = false;
+        } else {
+            riddleOptionalImage.src = "";
+            riddleOptionalImage.hidden = true;
         }
         updateDropdownValue(riddle.type);
         editFlag = true;
@@ -371,7 +374,8 @@ function addRiddleToRiddleLevelTable(riddle) {
         var $td = $('<td></td>');
         var img = new Image();
         img.src = riddle.answer;
-        img.onLoad = minisizeImg(img, 80, 100);
+        img.height = 100;
+        //img.onLoad = minisizeImg(img, 80, 100);
         $td.append(img);
         $eRow.append($td);
     }
