@@ -83,11 +83,13 @@ $(document).on("click", "#riddle-reset-btn", resetForm);
 
 $(document).on("click", ".table > tbody > tr", function(clickedEvent) {
     if (!rowIsMidRemoval) {
-        var clickedRowCells = clickedEvent.currentTarget.cells,
-            clickedRiddle = riddles[clickedRowCells[0].innerText][clickedRowCells[1].innerText];
-        edittedRiddleDeleteButton = $(clickedRowCells[3]).children();
-        editFlag = false;
-        editRiddle(clickedRiddle);
+        var clickedRowCells = clickedEvent.currentTarget.cells;
+        if (clickedRowCells.length > 0) {
+            var clickedRiddle = riddles[clickedRowCells[0].innerText][clickedRowCells[1].innerText];
+            edittedRiddleDeleteButton = $(clickedRowCells[clickedRowCells.length - 1]).children();
+            editFlag = false;
+            editRiddle(clickedRiddle);
+        }
     }
 });
 
