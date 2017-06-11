@@ -353,4 +353,9 @@ public class Game {
             return playerTeam.HasPlayerWon(i_UserId);
         }
     }
+
+    public String GetPlayerTeamName(String i_Userid) {
+        Team team = getPlayerTeam(i_Userid);
+        return team.GetTeamName();
+    }
 }

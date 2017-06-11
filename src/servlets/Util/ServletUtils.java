@@ -15,8 +15,8 @@ public class ServletUtils {
 
     public static void AssertUserInDatabase(String i_UserId) throws Exception {
         //TODO: Change implementation upon login implementation
-        if (DatabaseFacade.IsUserNameUnique("tmp user")) {
-            DatabaseFacade.createUser("tmp user", "123", "tmp@email.com");
+        if (DatabaseFacade.IsUserNameUnique("Eden")) {
+            DatabaseFacade.createUser("Eden", "123", "tmp@email.com");
         }
         DatabaseFacade.GetUser(i_UserId);
     }

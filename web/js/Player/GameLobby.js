@@ -65,7 +65,7 @@ function initPageElementsFromServer() {
             mIsGameActive = endTime >= now;
             mHasGameStarted = startTime <= now;
             mGameName[0].innerText = gameData.gameName;
-            mGameTimeMessage[0].innerText = mHasGameStarted ? "Game End Time: " + formatDate(endTime) : "Game Start Time: " + formatDate(startTime);
+            mGameTimeMessage[0].innerText = mHasGameStarted ? "End Time: " + formatDate(endTime) : "Start Time: " + formatDate(startTime);
             $(".loading-area").hide();
             $(".lobby-container").show();
             if (gameData.playerHasWon) {
@@ -96,6 +96,7 @@ function getNonCrucialPageElementsFromServer() {
         success: function(gameData) {
             if (gameData.isTeamGame) {
                 $('.score-content').show();
+                $('#message-my-team-score')[0].innerHTML = gameData.myTeamName + " Player Scores";
                 initTeamTable(gameData.myTeamScore);
                 initOthersTable(gameData.otherTeamsScore);
             }

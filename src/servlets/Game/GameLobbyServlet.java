@@ -60,6 +60,7 @@ public class GameLobbyServlet extends HttpServlet {
         Map<String, Object> responseData = new HashMap();
         responseData.put("isTeamGame", game.IsTeamGame());
         if (game.IsTeamGame()) {
+            responseData.put("myTeamName", game.GetPlayerTeamName(userid));
             responseData.put("myTeamScore", game.GetPlayerTeamScore(userid));
             responseData.put("otherTeamsScore", game.GetOtherTeamsScore(userid));
         }
