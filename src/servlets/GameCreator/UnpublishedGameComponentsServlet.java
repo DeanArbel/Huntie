@@ -166,7 +166,7 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
         String name = (String)i_Riddle.get("name");
         String questionText = (String)i_Riddle.get("questionText");
         String optionalImage = ((String)i_Riddle.get("questionOptionalImage")).replaceAll(" ", "+");
-        //TODO: Add image support
+        String location = ((String)i_Riddle.get("location"));
         if (name == null || questionText == null || answer == null && appearanceNumber > Riddle.MAX_APPEARANCE && appearanceNumber < Riddle.MIN_APPEARANCE) {
             throw new ServletException("Received illegal parameters");
         }
@@ -176,7 +176,7 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
         riddle.setIsTextType(isTextType);
         riddle.SetOptionalQuestionImage(optionalImage);
         riddle.setAnswer(answer);
-        //TODO: Add image support here as well
+        riddle.setM_Location(location);
         return riddle;
     }
 

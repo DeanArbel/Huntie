@@ -15,6 +15,7 @@ public class Riddle {
     private String m_TextQuestion;
     private String m_OptionalQuestionImage;
     private String m_Answer;
+    private String m_Location;
     private Set<String> r_SolvedByUserList = new HashSet<>();
     private Set<String> r_SolvedByTeamList = new HashSet<>();
 
@@ -88,5 +89,13 @@ public class Riddle {
 
     private boolean checkTextAnswer(String i_Answer) {
         return m_Answer.toLowerCase().equals(i_Answer.toLowerCase());
+    }
+
+    public String getM_Location() {
+        return m_Location;
+    }
+
+    public void setM_Location(String m_Location) {
+        this.m_Location = m_Location;
     }
 }

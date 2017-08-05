@@ -18,12 +18,13 @@ var riddleOptionalImage;
 var riddleTextAnswer;
 var riddleImageAnswer;
 var riddleLocationCheckBox;
-var riddleLocation;
+var mapHolder;
 var riddleModal;
 var editFlag = false;
 var edittedRiddle;
 var edittedRiddleDeleteButton;
 var rowIsMidRemoval;
+var locationCoords;
 
 $(function() {
     sessionStorage.setItem("PrevPage", "GameBuilder");
@@ -42,6 +43,7 @@ function initGlobalVars() {
     riddleImageAnswer = $("#riddle-photo-answer-image")[0];
     riddleTextAnswer = $("#riddle-answer-text")[0];
     riddleLocationCheckBox = $("#riddle-location-checkbox")[0];
+    mapHolder = $("#mapholder")[0];
     //TODO: Add this after google maps integration: riddleLocation = $("#riddle-location")[0];
     riddleModal = $("#myModal");
 
@@ -128,8 +130,14 @@ function resetForm() {
     document.getElementById("riddle-form").reset();
     resetImage('riddle-question-optionalimage');
     resetImage('riddle-photo-answer-image');
-    $('.location-info').show();
+    resetLocation();
     //TODO: Remove location
+}
+
+function resetLocation() {
+    riddleLocationCheckBox.checked = true;
+    $('.location-info').show();
+    getLocation();
 }
 
 function resetImage(imageId) {
@@ -172,6 +180,7 @@ function convertRiddleToClientFormat(serverRiddle) {
     riddle.answer = serverRiddle.m_Answer;
     riddle.type = serverRiddle.m_IsTextType ? TEXT_ANSWER : PHOTO_ANSWER;
     riddle.questionOptionalImage = serverRiddle.m_OptionalQuestionImage;
+    riddle.location = serverRiddle.m_Location;
     return riddle;
 }
 
@@ -220,6 +229,8 @@ function editRiddle(riddle) {
         } else {
             riddleOptionalImage.src = "";
             riddleOptionalImage.hidden = true;
+        } if (riddle.location) {
+            showPosition1(riddle.location);
         }
         updateDropdownValue(riddle.type);
         editFlag = true;
@@ -309,7 +320,7 @@ function getRiddleInServerFormat() {
         type: riddleType.innerText,
         questionText: riddleTextQuestion.value,
         questionOptionalImage: getBase64Image(riddleOptionalImage),
-        //TODO: after google maps add location
+        location: riddleLocationCheckBox.checked ? locationCoords : null
     }, errMsg;
     riddle.answer = riddle.type === TEXT_ANSWER ? riddleTextAnswer.value : getBase64Image(riddleImageAnswer);
     errMsg = checkRiddleErrors(riddle);
@@ -383,4 +394,20 @@ function addRiddleToRiddleLevelTable(riddle) {
     }
     $eRow.append(REMOVE_BUTTON_SVG);
     eBodyToAddTo.before($eRow);
+}
+
+function showPosition1(position) {
+    //TODO: Change the size of the map to be more dynamic
+    locationCoords = position;
+    var img_url = "https://maps.googleapis.com/maps/api/staticmap?center="
+        +position+"&zoom=14&size=400x300&sensor=false&key=AIzaSyAsfLflI-UcGro_hBwjIQyIFVndLphZjOE";
+
+    mapHolder.innerHTML = "<img src='"+img_url+"'>";
+    riddleLocationCheckBox.checked = true;
+    $('.location-info').show();
+}
+
+function showPosition(position) {
+    var location = position.coords.latitude + "," + position.coords.longitude;
+    showPosition1(location)
 }
