@@ -66,6 +66,7 @@ public class RiddleServlet extends HttpServlet {
                     throw new ServletException("No game was found");
                 }
                 Riddle riddle = game.GetUserRiddleByIndex(userid, Integer.parseInt(request.getParameter("riddleCode")));
+                // TODO: Prevent user from accessing riddle unless he's in area
                 handleGetRequest(out, userid, riddle);
             } catch (Exception e) {
                 SetError(response, 400, e.getMessage());

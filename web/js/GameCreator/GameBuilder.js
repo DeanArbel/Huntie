@@ -135,8 +135,6 @@ function resetForm() {
 }
 
 function resetLocation() {
-    riddleLocationCheckBox.checked = true;
-    $('.location-info').show();
     getLocation();
 }
 
@@ -399,15 +397,19 @@ function addRiddleToRiddleLevelTable(riddle) {
 function showPosition1(position) {
     //TODO: Change the size of the map to be more dynamic
     locationCoords = position;
-    var img_url = "https://maps.googleapis.com/maps/api/staticmap?center="
+    var img_url = "https://maps.googleapis.com/maps/api/staticmap?markers=color:blue%7Clabel:S%7C"
         +position+"&zoom=14&size=400x300&sensor=false&key=AIzaSyAsfLflI-UcGro_hBwjIQyIFVndLphZjOE";
 
     mapHolder.innerHTML = "<img src='"+img_url+"'>";
-    riddleLocationCheckBox.checked = true;
-    $('.location-info').show();
+    showLocationElems();
 }
 
 function showPosition(position) {
     var location = position.coords.latitude + "," + position.coords.longitude;
     showPosition1(location)
+}
+
+function showLocationElems() {
+    riddleLocationCheckBox.checked = true;
+    $('.location-info').show();
 }

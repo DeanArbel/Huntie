@@ -60,18 +60,23 @@
             </div>
         </div>
     </div>
-    <h3 hidden class="text-center riddle-content" id="player-message">Please choose a riddle to solve:</h3>
-    <div class="col-xs-offset-2 col-xs-8">
-        <table hidden id="riddle-table" class="table table-hover riddle-content">
-            <thead>
-            <tr>
-                <th>Riddle Name</th>
-            </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
+    <div class="riddle-content">
+        <h3 class="text-center" id="player-message">Please choose a riddle to solve:</h3>
+        <div class="col-xs-offset-2 col-xs-8">
+            <h4 class="text-center">Riddles Locations</h4>
+            <div id="map" style="width:100%;height:500px" class="map-content"></div>
+            <table id="riddle-table" class="table table-hover">
+                <thead>
+                <tr>
+                    <th>Riddle Name</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAsfLflI-UcGro_hBwjIQyIFVndLphZjOE&callback=initMap"></script>
 </body>
 </html>
