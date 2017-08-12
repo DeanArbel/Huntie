@@ -53,12 +53,12 @@ function initGlobalVars() {
 }
 
 $(document).on('click', '#prevPage-btn', function() {
-    window.location.href = SITE_URL + "/Manager/GameArea.html";
+    window.location.href =   "/Manager/GameArea.html";
 });
 
 $(document).on('click', '#nextPage-btn', function() {
         if ($("tbody > tr").length > 0) {
-        window.location.href = SITE_URL + "/Manager/GameSettings.html";
+        window.location.href =   "/Manager/GameSettings.html";
     }
     else {
         confirm("Game must have at least 1 riddle");
@@ -153,6 +153,7 @@ function initPageElementsFromServer() {
         success: function(serverRiddles) {
             $(".loader").hide();
             $(".container").show();
+            $(".temp").hide();
             if (serverRiddles.length > 0) {
                 var riddleArrSize = serverRiddles.length;
                 for (var i = 0; i < riddleArrSize; i++) {
@@ -318,7 +319,7 @@ function getRiddleInServerFormat() {
         type: riddleType.innerText,
         questionText: riddleTextQuestion.value,
         questionOptionalImage: getBase64Image(riddleOptionalImage),
-        location: riddleLocationCheckBox.checked ? locationCoords : null
+        location: riddleLocationCheckBox.checked ? locationCoords : ""
     }, errMsg;
     riddle.answer = riddle.type === TEXT_ANSWER ? riddleTextAnswer.value : getBase64Image(riddleImageAnswer);
     errMsg = checkRiddleErrors(riddle);
@@ -346,7 +347,7 @@ function addLevelToRiddleTable() {
     var $levelTable = $('<table class="table table-hover"></table>');
     $levelTable.append($('<thead>' +
         '<tr>' +
-            '<th style="font-size: 125%" class="col-xs-1">Level ' + m_iNextRiddleLvl + '</th>' +
+            '<th style="font-size: 110%" class="col-xs-1">Level ' + m_iNextRiddleLvl + '</th>' +
             '<th class="col-xs-2">Name</th>' +
             '<th class="col-xs-4">Question</th>' +
             '<th class="col-xs-4">Answer</th>' +

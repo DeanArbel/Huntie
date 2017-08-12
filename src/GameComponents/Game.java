@@ -225,7 +225,7 @@ public class Game {
             riddlesToSolve = getUserRiddlesToSolveTeam(i_UserId);
         }
         else {
-            riddlesToSolve = getUserRiddlesToSolveIndividual(i_UserId);
+            riddlesToSolve = getUserRiddlesToSolveSolo(i_UserId);
         }
 
         return riddlesToSolve;
@@ -270,7 +270,7 @@ public class Game {
         }
     }
 
-    private List<Riddle> getUserRiddlesToSolveIndividual(String i_UserId) {
+    private List<Riddle> getUserRiddlesToSolveSolo(String i_UserId) {
         List<Riddle> riddlesToSolve = new ArrayList<>();
         Team playerTeam = getPlayerTeam(i_UserId);
         if (!playerTeam.HasPlayerWon(i_UserId)) {

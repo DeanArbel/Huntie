@@ -14,7 +14,9 @@
 <body>
 <div class="loader centered"></div>
 <nav class="navbar navbar-inverse navbar-fixed-top">
-    <a class="navbar-brand" href="#">Huntie</a>
+    <a class="brand" href="/index.jsp">
+        <img src="/assets/images/MiniLogo.png" class="huntie-logo" alt="Huntie">
+    </a>
     <ul class="nav navbar-nav">
         <li><a id="prevPage-btn" href="#"><span class="glyphicon glyphicon-chevron-left"></span>Game Area</a></li>
     </ul>
@@ -27,7 +29,7 @@
     <br>
     <h1 class="text-center">Game Builder</h1>
     <br>
-    <button type="button" id="openModal-btn" class="btn btn-success center-block" data-toggle="modal" data-target="#myModal" onclick="onAddRiddleButtonClick()">Add Riddle</button>
+    <button type="button" id="openModal-btn" class="btn btn-success center-block temp" data-toggle="modal" data-target="#myModal" onclick="onAddRiddleButtonClick()">Add Riddle</button>
     <button type="button" id="btn-add-riddle" class="btn btn-success center-block" onclick="onAddLevelClick()">Add Level</button>
     <!-- Modal -->
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog">
@@ -47,7 +49,7 @@
                                 <input type="text" class="form-control" id="riddle-name" maxlength="25">
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div hidden class="form-group">
                             <div class="col-xs-6">
                                 <label for="riddle-appearance-number">Riddle Apperance Number:</label>
                                 <p class="col-xs-offset-1"><i>*riddles with the same number will appear at the same time</i></p>
@@ -127,7 +129,7 @@
             </div>
         </div>
     </div>
-    <div class="center-block">
+    <div class="center-block temp">
         <table id="riddles-table" class="table table-hover table-users">
             <thead>
             <tr>

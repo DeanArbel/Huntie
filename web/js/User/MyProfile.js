@@ -22,19 +22,19 @@ $(function () {
 $(document).on("click", "#profile-table-manager > tbody > tr", function(clickedEvent) {
     if (tableRowClicked(clickedEvent)) {
         //TODO: Change implementation after login system works
-        window.location.href = SITE_URL + "/Player/JoinGame.html?gameCode=" + mChosenGameId;
+        window.location.href =   "/Player/JoinGame.html?gameCode=" + mChosenGameId;
     }
 });
 
 $(document).on("click", "#profile-table-played > tbody > tr", function(clickedEvent) {
     if (tableRowClicked(clickedEvent)) {
         //TODO: Change implementation after login system works
-        window.location.href = SITE_URL + "/Player/JoinGame.html?gameCode=" + mChosenGameId;
+        window.location.href =   "/Player/JoinGame.html?gameCode=" + mChosenGameId;
     }
 });
 
 $(document).on("click", "#prevPage-btn", function() {
-    window.location.href = SITE_URL + "/Home.html";
+    window.location.href =   "/Home.html";
 });
 
 function initGlobalVars() {

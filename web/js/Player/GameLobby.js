@@ -36,11 +36,11 @@ $(document).on("click", "#riddle-table > tbody > tr", function(clickedEvent) {
 });
 
 $(document).on("click", "#prevPage-btn", function() {
-    window.location.href = SITE_URL + "/Home.html";
+    window.location.href =   "/Home.html";
 });
 
 $(document).on("click", "#solveRiddle-btn", function() {
-   window.location.href = SITE_URL + "/Player/Riddle.html?gameCode=" + mGameCode + "&riddle=" + mChosenRiddleIdx;
+   window.location.href =   "/Player/Riddle.html?gameCode=" + mGameCode + "&riddle=" + mChosenRiddleIdx;
 });
 
 function initGlobalVars() {
@@ -116,8 +116,7 @@ function initRiddleTable(riddlesNameAndLocations) {
         $('.riddle-content').show();
         mRiddleTable.show();
         for (var name in riddlesNameAndLocations) {
-            if (
-                +[name]) {
+            if (riddlesNameAndLocations[name] !== "") {
                 var positionArr = stringToLatLng(riddlesNameAndLocations[name]);
                 addIconToMap(name, positionArr[0], positionArr[1]);
                 if (isPlayerInAreaRadius(positionArr[0], positionArr[1])) {
@@ -160,7 +159,7 @@ function initTeamsTable(teamMap, tableBody) {
 function initMap() {
     var map_container = $('#map');
     var mapWidth = map_container.width();
-    var mapHeight = mapWidth < 200 ? 200 : 400;
+    var mapHeight = mapWidth < 500 ? 250 : 500;
     map_container.height(mapHeight);
     eMap = new google.maps.Map(map_container[0], {
         center: {lat: 32.109333, lng: 34.855499},
@@ -175,16 +174,26 @@ function showPosition(position) {
         lat: position.coords.latitude,
         lng: position.coords.longitude
     };
-
+    // playerPos = {
+    //     lat: 32.048000,
+    //     lng: 34.760889
+    // };
     infoWindow.setPosition(playerPos);
     infoWindow.setContent('You Are Here');
     infoWindow.open(eMap);
+    var icon = {
+        url: "/assets/images/locationCircle.png", // url
+        scaledSize: new google.maps.Size(20, 20), // scaled size
+        origin: new google.maps.Point(0,0), // origin
+        anchor: new google.maps.Point(10, 10) // anchor
+    };
+    var marker = new google.maps.Marker({position:playerPos, icon: icon});
+    marker.setMap(eMap);
     eMap.setCenter(playerPos);
 }
 
 function addIconToMap(name, lat, lng) {
     var iconPos = new google.maps.LatLng(lat, lng);
-    var marker = new google.maps.Marker({position:iconPos, label:name});
     var circle = new google.maps.Circle({
         center:iconPos,
         radius:RADIUS_LEN,
@@ -192,13 +201,12 @@ function addIconToMap(name, lat, lng) {
         strokeOpacity:0.8,
         strokeWeight:2,
         fillColor:"#0000FF",
-        fillOpacity:0.4
+        fillOpacity:0.2
     });
-    marker.setMap(eMap);
     circle.setMap(eMap);
 }
 
 function isPlayerInAreaRadius(lat, lng) {
     if (!playerPos) getLocation();
-    return isLocationWithinDistanceFromOtherLocation(playerPos.lat, playerPos.lng, lat, lng, RADIUS_LEN);
+    return playerPos && isLocationWithinDistanceFromOtherLocation(playerPos.lat, playerPos.lng, lat, lng, RADIUS_LEN);
 }

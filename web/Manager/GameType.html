@@ -15,7 +15,9 @@
 <body>
     <div class="loader centered"></div>
     <nav class="navbar navbar-inverse navbar-fixed-top">
-        <a class="navbar-brand" href="#">Huntie</a>
+        <a class="brand" href="/index.jsp">
+            <img src="/assets/images/MiniLogo.png" class="huntie-logo" alt="Huntie">
+        </a>
         <ul class="nav navbar-nav">
             <li><a id="prevPage-btn" href="#"><span class="glyphicon glyphicon-chevron-left"></span>Home</a></li>
         </ul>
@@ -28,23 +30,23 @@
         <br>
         <h3 class="text-center">Please Select the Game Type</h3>
         <div class="dropdown">
-            <button class="btn btn-primary dropdown-toggle dropdown-btn btn-wide" type="button" data-toggle="dropdown">Individual Game
+            <button class="btn btn-primary dropdown-toggle dropdown-btn btn-wide" type="button" data-toggle="dropdown">Solo Game
                 <span class="caret"></span></button>
             <ul class="dropdown-menu">
-                <li><a href="#" class="dropdown-selection">Individual Game</a></li>
+                <li><a href="#" class="dropdown-selection">Solo Game</a></li>
                 <li><a href="#" class="dropdown-selection">Team Game</a></li>
             </ul>
         </div>
         <br>
-        <div class="show-individual">
-            <label for="maxPlayersIndividual">Max Players:</label>
-            <input type="number" class="form-control short-input" id="maxPlayersIndividual" value="10" min="1" max="999">
+        <div class="show-solo">
+            <label for="maxPlayersSingle" class="text-center">Max Players:</label>
+            <input type="number" class="form-control short-input center-block" id="maxPlayersSingle" value="10" min="1" max="999">
         </div>
         <div class="show-team">
             <label for="maxPlayersTeam">Max Players Per Team:</label>
-            <input type="number" class="form-control short-input" id="maxPlayersTeam" value="1" min="1" max="99">
+            <input type="number" class="form-control short-input center-block" id="maxPlayersTeam" value="1" min="1" max="99">
             <br>
-            <button type="button" id="openModal-btn" class="btn btn-success" data-toggle="modal" data-target="#myModal">Add Team</button>
+            <button type="button" id="openModal-btn" class="btn btn-success center-block" data-toggle="modal" data-target="#myModal">Add Team</button>
             <!-- Modal -->
             <div class="modal fade" id="myModal" role="dialog">
                 <div class="modal-dialog">

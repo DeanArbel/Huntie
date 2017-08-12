@@ -19,7 +19,9 @@
 </div>
 <div hidden class="container">
     <nav class="navbar navbar-inverse navbar-fixed-top">
-        <a class="navbar-brand" href="#">Huntie</a>
+        <a class="brand" href="/index.jsp">
+            <img src="/assets/images/MiniLogo.png" class="huntie-logo" alt="Huntie">
+        </a>
         <ul class="nav navbar-nav">
             <li><a id="prevPage-btn" href="#"><span class="glyphicon glyphicon-chevron-left"></span>Game Lobby</a></li>
         </ul>
@@ -28,7 +30,7 @@
     <div class="form-group">
         <label for="riddle-question-body">Question:</label>
         <div class="panel panel-default">
-            <div class="panel-body text-center" id="riddle-question-body">
+            <div class="panel-body text-center" id="riddle-question-body" style="font-size:20px">
             </div>
         </div>
     </div>
@@ -39,7 +41,7 @@
         </div>
         <div hidden class="riddle-answer-photo-area">
             <label for="riddle-answer-photo-button">Your Answer:</label>
-            <div class="panel panel-default">
+            <div hidden class="panel panel-default">
                 <div class="panel-body text-center ">
                     <input type='file' id="riddle-answer-photo-button" onchange="readPictureURL(this, '#riddle-answer-photo-image'); onPhotoAnswerInput();" />
                     <br>
@@ -47,6 +49,7 @@
                 </div>
             </div>
         </div>
+        <button disabled class="btn btn-info" id="riddle-tmp-btn" onclick="submitAnswer()">Choose Photo</button>
     </div>
     <div class="text-center">
         <button disabled class="btn btn-success" id="riddle-submit-btn" onclick="submitAnswer()">Submit Answer</button>

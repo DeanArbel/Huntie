@@ -22,12 +22,13 @@ public class MockData {
             game.SetTeamNames(new HashSet<String>(Arrays.asList("Team Water", "Team Ground", "Team Air")));
             int riddleLevel = 0;
             for (int i = 0; i < 3; i++) {
-                game.AddRiddle(createMockRiddle(riddleLevel, "The First Riddle"));
-                game.AddRiddle(createMockRiddle(riddleLevel, "Clocktower Conundrum"));
-                game.AddRiddle(createMockRiddle(riddleLevel, "Find the Flee"));
-                game.AddRiddle(createMockRiddle(riddleLevel, "All Aboard"));
-                game.AddRiddle(createMockRiddle(riddleLevel, "Quest for Knowledge"));
-                game.AddRiddle(createMockRiddle(riddleLevel++, "The Special Dish"));
+                game.AddRiddle(createMockRiddleWithLocation(riddleLevel, "The First Riddle", ""));
+                game.AddRiddle(createMockRiddleWithLocation(riddleLevel, "Clocktower Conundrum", "32.055235, 34.756172"));
+                game.AddRiddle(createMockRiddleWithLocation(riddleLevel, "Find the Flee", "32.053115, 34.756848"));
+                game.AddRiddle(createMockRiddleWithLocation(riddleLevel, "All Aboard", "32.052320, 34.749615"));
+                game.AddRiddle(createMockRiddleWithLocation(riddleLevel, "Quest for Knowledge", "32.048000, 34.760889"));
+//                game.AddRiddle(createMockRiddleWithLocation(riddleLevel, "Quest for Knowledge", "32.048000, 34.88954"));
+                game.AddRiddle(createMockRiddleWithLocation(riddleLevel++, "The Special Dish", "34.7572, 32.0514"));
             }
             game.SetStartDate(new Date());
             game.SetDuration(5.0f);
@@ -65,6 +66,12 @@ public class MockData {
         riddle.setAppearanceNumber(riddleLevel);
         riddle.setTextQuestion("How many heads does Cereberus have?");
         riddle.setAnswer("Three");
+        return riddle;
+    }
+
+    private static Riddle createMockRiddleWithLocation(int riddleLevel, String riddldeName, String location) {
+        Riddle riddle = createMockRiddle(riddleLevel, riddldeName);
+        riddle.setM_Location(location);
         return riddle;
     }
 

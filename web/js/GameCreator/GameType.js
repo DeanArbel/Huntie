@@ -2,12 +2,12 @@
  * Created by Dean on 17/2/2017.
  */
 var TEAM_GAME = "Team Game";
-var INDIVIDUAL_GAME = "Individual Game";
+var SOLO_GAME = "Solo Game";
 var MAX_GROUPS = 10;
 var mTeams = {};
 var sCurGameType;
 var teamNameInput;
-var maxPlayerIndividualInput;
+var maxPlayerSoloInput;
 var maxPlayerTeamInput;
 
 $(function() {
@@ -17,10 +17,10 @@ $(function() {
     else {
         dropdownChange($('.dropdown-btn')[0].innerText);
         document.getElementById('teamName').oninput = onTeamNameInput;
-        document.getElementById('maxPlayersIndividual').oninput = onMaxPlayersIndividualInput;
+        document.getElementById('maxPlayersSingle').oninput = onMaxPlayersSingleInput;
         document.getElementById('maxPlayersTeam').oninput = onMaxPlayersTeamInput;
         teamNameInput = $('#teamName')[0];
-        maxPlayerIndividualInput = $('#maxPlayersIndividual')[0];
+        maxPlayerSoloInput = $('#maxPlayersSingle')[0];
         maxPlayerTeamInput = $('#maxPlayersTeam')[0];
         initPageElementsFromServer();
     }
@@ -38,7 +38,7 @@ function initPageElementsFromServer() {
             if(previousGameType[0]) {
                 updateDropdownValue($('.dropdown-selection')[1].innerText);
             }
-            maxPlayerIndividualInput.value = previousGameType[1];
+            maxPlayerSoloInput.value = previousGameType[1];
             maxPlayerTeamInput.value = previousGameType[2];
             //TODO: Add teamName (previousGameType[3]) support
             var size = previousGameType[3].length;
@@ -54,8 +54,8 @@ function onTeamNameInput() {
     $('#addTeam-btn')[0].disabled = mTeams[inputValue];
 }
 
-function onMaxPlayersIndividualInput() {
-    _inputLimiter(maxPlayerIndividualInput, 3);
+function onMaxPlayersSingleInput() {
+    _inputLimiter(maxPlayerSoloInput, 3);
 }
 
 function onMaxPlayersTeamInput() {
@@ -72,11 +72,11 @@ function dropdownChange(innerText) {
     sCurGameType = innerText;
     if (innerText === TEAM_GAME) {
         $('.show-team').show();
-        $('.show-individual').hide();
+        $('.show-Single').hide();
     }
     else {
         $('.show-team').hide();
-        $('.show-individual').show();
+        $('.show-Single').show();
     }
 }
 
@@ -100,7 +100,7 @@ function _addTeam(inputValue) {
 }
 
 $(document).on('click', '#prevPage-btn', function() {
-    window.location.href = SITE_URL + "/Home.html";
+    window.location.href =   "/Home.html";
 });
 
 $(document).on('click', '#nextPage-btn', function() {
@@ -113,12 +113,12 @@ $(document).on('click', '#nextPage-btn', function() {
             data: {
                 requestType: "GameType",
                 teams: JSON.stringify(mTeams),
-                maxPlayers: maxPlayerIndividualInput.value,
+                maxPlayers: maxPlayerSoloInput.value,
                 maxPlayersInTeam: maxPlayerTeamInput.value,
                 gameType: gameType
             },
             success: function (response) {
-                window.location.href = SITE_URL + "/Manager/GameArea.html";
+                window.location.href =   "/Manager/GameArea.html";
             },
             error: function(e) {
                 console.log(JSON.stringify(e));
@@ -140,7 +140,7 @@ function checkErrorsBeforeSubmit(gameType) {
             errMsg += "- Team game should have at least two teams\n"
         }
     } else {
-        if (maxPlayerIndividualInput.value === "" || parseInt(maxPlayerIndividualInput.value) < 1) {
+        if (maxPlayerSoloInput.value === "" || parseInt(maxPlayerSoloInput.value) < 1) {
             errMsg += "- Max players should be greater than zero\n";
         }
     }

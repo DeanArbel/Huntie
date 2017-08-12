@@ -22,7 +22,7 @@ $(function () {
 });
 
 $(document).on('click', '#prevPage-btn', function() {
-    window.location.href = SITE_URL + "/Manager/GameBuilder.html";
+    window.location.href =   "/Manager/GameBuilder.html";
 });
 
 $(document).on('click', '#nextPage-btn', function() {
@@ -36,7 +36,7 @@ $(document).on('click', '#nextPage-btn', function() {
             success: function(gameId) {
                 //TODO: Show dialog that will take you back home and will contain all the data you need
                 confirm("Game settings for have been set, your game code is: " + gameId);
-                window.location.href = SITE_URL + "/Home.html";
+                window.location.href =   "/Home.html";
             }
         });
     }
