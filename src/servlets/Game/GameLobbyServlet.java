@@ -5,8 +5,6 @@ import GameComponents.Riddle;
 import GameComponents.User;
 import Util.DatabaseFacade;
 import com.google.gson.Gson;
-import com.objectdb.o.LKM;
-import servlets.Util.ServletUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;

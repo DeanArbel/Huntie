@@ -5,7 +5,6 @@ import GameComponents.Riddle;
 import GameComponents.User;
 import Util.DatabaseFacade;
 import com.google.gson.Gson;
-import servlets.Util.ServletUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -17,7 +16,6 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
-import static servlets.Util.ServletUtils.SetError;
 
 /**
  * Created by Dean on 03/03/2017.

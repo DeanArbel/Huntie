@@ -11,6 +11,7 @@
         <class>GameComponents.Riddle</class>
         <class>GameComponents.Team</class>
         <class>GameComponents.Level</class>
+        <class>GameComponents.SessionToken</class>
 
         <properties>
             <property name="javax.persistence.jdbc.url"

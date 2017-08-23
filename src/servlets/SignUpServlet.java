@@ -10,7 +10,6 @@ import javax.servlet.annotation.WebServlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import static servlets.Util.ServletUtils.SetError;
 
 @WebServlet(name = "SignUpServlet")
 public class SignUpServlet extends javax.servlet.http.HttpServlet  {

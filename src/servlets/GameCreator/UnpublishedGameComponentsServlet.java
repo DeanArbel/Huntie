@@ -1,11 +1,9 @@
 package servlets.GameCreator;
 
 import GameComponents.Game;
-import GameComponents.Level;
 import GameComponents.Riddle;
 import Util.DatabaseFacade;
 import com.google.gson.Gson;
-import servlets.Util.ServletUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -19,7 +17,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static servlets.Util.ServletUtils.SetError;
 
 /**
  * Created by Dean on 18/2/2017.
@@ -61,7 +58,6 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
             response.sendRedirect("index.jsp"); //TODO: Change this according to login system
         } else {
             try (PrintWriter out = response.getWriter()) {
-                ServletUtils.AssertUserInDatabase(userid);
                 DatabaseFacade databaseFacade =(DatabaseFacade) getServletContext().getAttribute("databaseFacade");
                 //Game game = DatabaseFacade.GetUser(userid).GetUnpublishedGame();
                 Game game = databaseFacade.GetUser(userid).GetUnpublishedGame();

@@ -4,7 +4,6 @@ import GameComponents.Game;
 import GameComponents.User;
 import Util.DatabaseFacade;
 import com.google.gson.Gson;
-import servlets.Util.ServletUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,7 +15,6 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
-import static servlets.Util.ServletUtils.SetError;
 
 /**
  * Created by Dean on 06/03/2017.
@@ -38,7 +36,6 @@ public class ProfileServlet extends HttpServlet {
             response.sendRedirect("index.jsp"); //TODO: Change this according to login system
         } else {
             try (PrintWriter out = response.getWriter()) {
-                ServletUtils.AssertUserInDatabase(userid);
                 handleGetRequest(request.getParameter("request"), out, userid);
             } catch (Exception e) {
                 SetError(response, 400, e.getMessage());

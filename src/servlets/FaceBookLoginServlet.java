@@ -1,9 +1,12 @@
 package servlets;
 
+import GameComponents.SessionToken;
+import Util.DatabaseFacade;
+
 import javax.servlet.annotation.WebServlet;
 import java.io.IOException;
+import java.io.PrintWriter;
 
-import static Util.DatabaseFacade.FaceBookLogin;
 
 /**
  * Created by dan on 3/13/2017.
@@ -12,13 +15,20 @@ import static Util.DatabaseFacade.FaceBookLogin;
 public class FaceBookLoginServlet extends javax.servlet.http.HttpServlet{
     protected void doPost(javax.servlet.http.HttpServletRequest request, javax.servlet.http.HttpServletResponse response) throws javax.servlet.ServletException, IOException {
         response.setContentType("application/json");
+        PrintWriter out = response.getWriter();
         String accessToken = request.getParameter("accessToken");
-        String userID = request.getParameter("userID");
-        int token;
+        String userEmail = request.getParameter("userEmail");
+        String userName = request.getParameter("userName");
+        DatabaseFacade databaseFacade = (DatabaseFacade) getServletContext().getAttribute("databaseFacade");
+        SessionToken token;
 
-        token = FaceBookLogin(accessToken, Integer.parseInt(userID));
-        if(token == 0){
+        token = databaseFacade.FaceBookLogin(accessToken, userEmail, userName);
+        if(token.GetToken().equals("")){
             response.setStatus(400);
+        }
+        else{
+            out.print(token.GetToken());
+            out.flush();
         }
     }
 }
