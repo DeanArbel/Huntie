@@ -1,33 +1,43 @@
 package GameComponents;
 
-import Util.DatabaseFacade;
 import Util.Enums.GameStatus;
 
+import javax.persistence.*;
 import java.util.*;
 
 /**
  * Created by Dean on 18/2/2017.
  */
+@Entity
 public class Game {
-    private final String r_GameId;
-    private final List<String> r_Managers = new ArrayList<>();
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int m_GameId;//was final String
+
+    @OneToMany
+    private final List<User> r_Managers = new ArrayList<>();
+
+    @OneToMany
     private final List<Team> r_Teams = new ArrayList<>();
-    private List<List<Riddle>> m_Riddles = new ArrayList<>(Riddle.MAX_APPEARANCE + 1);
+
+    @OneToMany
+    private List<Level> m_Levels = new ArrayList<>(Riddle.MAX_APPEARANCE + 1);
+
     private int m_MaxPlayers = 20;
     private int m_MaxPayersInTeam = 2;
     private int m_PlayersInGame;
     private String m_GameName;
-    private String m_GameArea;
     private String m_TreasureType;
     private Date m_StartDate;
     private Date m_EndDate;
     private GameStatus m_GameStatus = GameStatus.IN_CREATION;
     private boolean m_IsTeamGame = false;
 
-    public Game(String i_GameId, String i_ManagerId) {
-        r_GameId = i_GameId;
-        r_Managers.add(i_ManagerId);
+    public Game(User i_Manager) {//String i_GameId,
+        r_Managers.add(i_Manager);
     }
+
+    public Game(){}
 
     public String GetGameName() {
         return m_GameName;
@@ -35,15 +45,15 @@ public class Game {
 
     public void SetGameName(String i_GameName) {
         if (i_GameName == null || i_GameName.isEmpty()) {
-            m_GameName = "Game " + r_GameId;
+            m_GameName = "Game " + m_GameId;
         }
         else {
             m_GameName = i_GameName;
         }
     }
 
-    public String GetGameId() {
-        return r_GameId;
+    public int GetGameId() {
+        return m_GameId;
     }
 
     public int GetMaxPlayers() {
@@ -84,50 +94,100 @@ public class Game {
     }
 
     public void SetTeamNames(Set<String> teamNames) {
+        Team tempTeam;
         r_Teams.clear();
         for(String team : teamNames) {
-            r_Teams.add(new Team(team));
+            tempTeam = new Team();
+            tempTeam.SetTeamName(team);
+            r_Teams.add(tempTeam);
         }
     }
 
-    public List<List<Riddle>> GetRiddles() {
-        return m_Riddles;
+    public List<Level> GetRiddles() {
+        return m_Levels;
     }
 
-    public void ClearRiddles() { m_Riddles.clear(); }
+    public void ClearRiddles() { m_Levels.clear(); }
 
-    public void AddRiddle(Riddle riddle) {
-        int riddleIndex = riddle.getAppearanceNumber();
-        if (m_Riddles.size() <= riddleIndex) {
-            for (int i = m_Riddles.size(); i < riddleIndex; i++) {
-                m_Riddles.add(i, null);
+    public void ClearLevel(int i_LevelNum){
+        for(Level level:m_Levels){
+            if(level.GetIndex()==i_LevelNum){
+                level.ClearRiddles();
+                break;
             }
-            m_Riddles.add(riddleIndex, new ArrayList<>());
         }
-        else if (m_Riddles.get(riddleIndex) == null) {
-            m_Riddles.set(riddleIndex, new ArrayList<>());
-        }
-        m_Riddles.get(riddleIndex).add(riddle);
     }
 
-    public void DeleteRiddle(int appearanceNumber, int index) {
-        m_Riddles.get(appearanceNumber).remove(index);
+    public void RemoveLevel(int i_LevelNum){
+        for(Level level:m_Levels){
+            if(level.GetIndex() == i_LevelNum){
+                m_Levels.remove(level);
+                break;
+            }
+        }
     }
 
-    public void AddPlayer(String i_PlayerToAdd, int i_TeamIdx) {
+    public void AddRiddle(Riddle riddle, int i_LevelNum) {
+        Level level = findOrAddLevel(i_LevelNum, true);
+        if(!level.IsRiddleInLevel(riddle)) {
+            level.AddRiddle(riddle);
+            level.SortRiddles();
+        }
+//        int riddleIndex = riddle.getAppearanceNumber();
+//        if (m_Levels.size() <= riddleIndex) {
+//            for (int i = m_Levels.size(); i < riddleIndex; i++) {
+//                m_Levels.add(i, null);
+//            }
+//            m_Levels.add(riddleIndex, new ArrayList<>());
+//        }
+//        else if (m_Levels.get(riddleIndex) == null) {
+//            m_Levels.set(riddleIndex, new ArrayList<>());
+//        }
+//        m_Levels.get(riddleIndex).add(riddle);
+    }
+
+    private Level findOrAddLevel(int i_LevelNum, boolean i_IsAddOn){
+        for(Level level:m_Levels){
+            if(level.GetIndex() == i_LevelNum)
+                return level;
+        }
+
+        Level level = null;
+        if(i_IsAddOn) {
+            level = new Level();
+            level.SetIndex(i_LevelNum);
+        }
+        return level;
+    }
+
+    public void AddLevel(Level i_Level){
+        if(!m_Levels.contains(i_Level)) {
+            m_Levels.add(i_Level);
+        }
+    }
+
+    public void DeleteRiddle(int i_AppearanceNumber, int i_LevelNum) {
+        Level level = findOrAddLevel(i_LevelNum,false);
+        if(level != null){
+            level.RemoveRiddle(i_AppearanceNumber);
+        }
+//        m_Levels.get(appearanceNumber).remove(index);
+    }
+
+    public void AddPlayer(User i_PlayerToAdd, int i_TeamIdx) {
         //TODO: In the future add not manager check
         if (!IsGameFull()) {
             Team team = r_Teams.get(i_TeamIdx);
-            User player = DatabaseFacade.GetUser(i_PlayerToAdd);
+            //User player = DatabaseFacade.GetUser(i_PlayerToAdd);
             if (m_IsTeamGame && team.Count() >= m_MaxPayersInTeam) {
                 throw new ArrayIndexOutOfBoundsException("Team has reached max size");
             }
-            else {
-                int riddleLevel = m_IsTeamGame ? 0 : m_Riddles.get(0).size();
-                team.AddPlayer(i_PlayerToAdd, riddleLevel);
+            else if (m_IsTeamGame) {
+//                int riddleLevel = m_IsTeamGame ? 0 : m_Levels.get(0).size();
+                team.AddPlayer(i_PlayerToAdd, m_Levels.get(0));//was i_playerToAdd
                 m_PlayersInGame++;
             }
-            player.JoinGameAsPlayer(r_GameId, m_GameName);
+            i_PlayerToAdd.JoinGameAsPlayer(this);//was m_GameId
         }
         else {
             throw new ArrayIndexOutOfBoundsException("Game has reached max player size");
@@ -168,7 +228,18 @@ public class Game {
         this.m_GameStatus = i_GameStatus;
     }
 
-    public boolean IsPlayerInGame(String i_UserId) {
+    public boolean IsPlayerInGame(User i_User) {
+        boolean result = false;
+        for (Team team : r_Teams) {
+            if (team.IsPlayerInTeam(i_User)) {
+                result = true;
+                break;
+            }
+        }
+        return result;
+    }
+
+    public Boolean IsPlayerInGame(String i_UserId){
         boolean result = false;
         for (Team team : r_Teams) {
             if (team.IsPlayerInTeam(i_UserId)) {
@@ -179,10 +250,10 @@ public class Game {
         return result;
     }
 
-    public boolean IsUserManager(String i_UserId) {
+    public boolean IsUserManager(String i_UserEmail) {
         boolean result = false;
-        for (String userId : r_Managers) {
-            if (i_UserId.equals(userId)) {
+        for (User user : r_Managers) {
+            if (i_UserEmail.equals(user.GetEmailAddress())) {
                 result = true;
                 break;
             }
@@ -194,106 +265,107 @@ public class Game {
         return m_PlayersInGame >= m_MaxPlayers;
     }
 
-    public int GetRiddlesCount(int i_Idx) {
-        return m_Riddles.get(i_Idx).size();
+    public int GetRiddlesInLevelCount(int i_Idx) {
+        return m_Levels.get(i_Idx).GetRiddlesCount();
+    }
+
+    public int GetRiddlesCount(){
+        int buffer=0;
+
+        for(int i=0;i<m_Levels.size();i++){
+            buffer+=GetRiddlesInLevelCount(i);
+        }
+
+        return buffer;
     }
 
     public void PublishGame() {
-        List<List<Riddle>> condensedRiddles = new ArrayList<>();
-        for (List<Riddle> riddles: m_Riddles) {
-            if (riddles != null) {
-                condensedRiddles.add(riddles);
+        List<Level> condensedRiddles = new ArrayList<>();
+        for (Level level: m_Levels) {
+            if (level != null && level.GetRiddlesCount() > 0) {
+                condensedRiddles.add(level);
             }
         }
-        m_Riddles = condensedRiddles;
-        if (m_IsTeamGame) {
-            int firstLevelRiddlesLength = m_Riddles.get(0).size();
-            for(Team team : r_Teams) {
-                team.InitTeam(firstLevelRiddlesLength);
-            }
-        }
-        for (String managerId : r_Managers) {
-            DatabaseFacade.GetUser(managerId).AddGameToManagerList(r_GameId, m_GameName);
+        m_Levels = condensedRiddles;
+//        if (m_IsTeamGame) {
+//            int firstLevelRiddlesLength = m_Levels.get(0).GetRiddlesCount();
+//            for(Team team : r_Teams) {
+//                team.InitTeam(firstLevelRiddlesLength);
+//            }
+//        }
+        for (User manager : r_Managers) {
+           // DatabaseFacade.GetUser(manager.GetEmailAddress()).AddGameToManagerList(m_GameId, m_GameName);//todo recheck
+            manager.AddGameToManagerList(this);
         }
 
         m_GameStatus = GameStatus.CREATION_COMPLETE;
     }
 
-    public List<Riddle> GetUserRiddlesToSolve(String i_UserId) {
+    public List<Riddle> GetUserRiddlesToSolve(User i_User) {
         List<Riddle> riddlesToSolve;
         if (m_IsTeamGame) {
-            riddlesToSolve = getUserRiddlesToSolveTeam(i_UserId);
+            riddlesToSolve = getUserRiddlesToSolveTeam(i_User);
         }
         else {
-            riddlesToSolve = getUserRiddlesToSolveIndividual(i_UserId);
+            riddlesToSolve = getUserRiddlesToSolveIndividual(i_User);
         }
 
         return riddlesToSolve;
     }
 
-    public Riddle GetUserRiddleByIndex(String i_UserId, int i_Index) {
-        return GetUserRiddlesToSolve(i_UserId).get(i_Index);
-    }
+//    public Riddle GetUserRiddleByIndex(User i_User, int i_Index) {//String i_UserId
+//        return GetUserRiddlesToSolve(i_UserId).get(i_Index);
+//    }
 
-    public boolean TryToSolveRiddle(String i_UserId, int i_Index, String i_Answer) {
-        List<Riddle> riddles = GetUserRiddlesToSolve(i_UserId);
-        Riddle riddleToBeSolved = riddles.get(i_Index);
+    public boolean TryToSolveRiddle(User i_User, Riddle i_Riddle, String i_Answer) {
         boolean userSolvedRiddle = false;
-        assertRiddleCanBeSolved(riddleToBeSolved, i_UserId); // Al
-        if (riddleToBeSolved.CheckAnswer(i_Answer)) {
-            Team playerTeam = getPlayerTeam(i_UserId);
+        assertRiddleCanBeSolved(i_Riddle, i_User); // Al
+        if (i_Riddle.CheckAnswer(i_Answer)) {
+            Team playerTeam = getPlayerTeam(i_User);
+            int nextLevel = playerTeam.GetTeamRiddleLevel() + 1;
             if (m_IsTeamGame) {
                 // Updates riddles solved and to be solved for team
-                if (!riddles.get(i_Index).IsSolvedByTeam(playerTeam.GetTeamName())) {
-                    int nextLevel = playerTeam.GetTeamRiddleLevel() + 1;
-                    Integer nextRiddleSetSize = m_Riddles.size() > nextLevel ? m_Riddles.get(nextLevel).size() : null;
-                    playerTeam.TeamSolvedRiddle(i_UserId, nextRiddleSetSize);
+                if (i_Riddle.IsSolvedByTeam(playerTeam)) {//was playerTeam.GetTeamName()
+                    //Integer nextRiddleSetSize = m_Levels.size() > nextLevel ? m_Levels.get(nextLevel).size() : null;
+                    playerTeam.TeamSolvedRiddle(m_Levels.get(nextLevel));
                 }
             }
             // Updates riddles solved and to be solved for player
             else {
-                Integer nextRiddleSetSize = playerTeam.GetPlayerRiddleLevel(i_UserId) + 1;
-                nextRiddleSetSize = m_Riddles.size() > nextRiddleSetSize ? nextRiddleSetSize : null;
-                playerTeam.PlayerSolvedRiddle(i_UserId, nextRiddleSetSize);
+                //Integer nextRiddleSetSize = playerTeam.GetPlayerRiddleLevel(i_User) + 1;
+                //nextRiddleSetSize = m_Levels.size() > nextRiddleSetSize ? nextRiddleSetSize : null;
+                playerTeam.PlayerSolvedRiddle(i_User, m_Levels.get(nextLevel));
             }
 
-            riddleToBeSolved.UserSolvedRiddle(i_UserId, playerTeam.GetTeamName());
+            i_Riddle.UserSolvedRiddle(i_User, playerTeam);//was i_UserId, playerTeam.GetTeamName()
             userSolvedRiddle = true;
         }
 
         return userSolvedRiddle;
     }
 
-    private void assertRiddleCanBeSolved(Riddle i_RiddleToBeSolved, String i_UserId) {
-        if (i_RiddleToBeSolved.IsSolvedPlayer(i_UserId)) {
+    private void assertRiddleCanBeSolved(Riddle i_RiddleToBeSolved, User i_User) {
+        if (i_RiddleToBeSolved.IsSolvedPlayer(i_User)) {
             throw new IllegalStateException("User had already solved the riddle!");
         }
     }
 
-    private List<Riddle> getUserRiddlesToSolveIndividual(String i_UserId) {
+    private List<Riddle> getUserRiddlesToSolveIndividual(User i_User) {
         List<Riddle> riddlesToSolve = new ArrayList<>();
-        Team playerTeam = getPlayerTeam(i_UserId);
-        if (!playerTeam.HasPlayerWon(i_UserId)) {
-            Integer riddleLevel = playerTeam.GetPlayerRiddleLevel(i_UserId);
-            for (Riddle riddle : m_Riddles.get(riddleLevel)) {
-                if (!riddle.IsSolvedPlayer(i_UserId)) {
-                    riddlesToSolve.add(riddle);
-                }
-            }
+        Team playerTeam = getPlayerTeam(i_User);
+        if (!playerTeam.HasPlayerWon(i_User)) {
+            Integer riddleLevel = playerTeam.GetPlayerRiddleLevel(i_User);
+            return m_Levels.get(riddleLevel).GetRiddlesNotSolvedByPlayer(i_User);
         }
 
         return riddlesToSolve;
     }
 
-    private List<Riddle> getUserRiddlesToSolveTeam(String i_UserId) {
+    private List<Riddle> getUserRiddlesToSolveTeam(User i_User) {
         List<Riddle> riddlesToSolve = new ArrayList<>();
-        Team playerTeam = getPlayerTeam(i_UserId);
+        Team playerTeam = getPlayerTeam(i_User);
         if (!playerTeam.HasTeamWon()) {
-            for (Riddle riddle : m_Riddles.get(playerTeam.GetTeamRiddleLevel())) {
-                if (!riddle.IsSolvedByTeam(playerTeam.GetTeamName())) {
-                    riddlesToSolve.add(riddle);
-                }
-            }
+            return m_Levels.get(getTeamRiddleLevel(playerTeam.GetTeamName())).GetRiddlesNotSolvedByTeam(playerTeam);
         }
 
         return riddlesToSolve;
@@ -304,21 +376,22 @@ public class Game {
         for (Team team : r_Teams) {
             if (team.GetTeamName().equals(i_TeamName)) {
                 teamRiddleLevel = team.GetTeamRiddleLevel();
+                break;
             }
         }
         //TODO: Change this so it throws exception if team not found
         return teamRiddleLevel;
     }
 
-    private Integer getPlayerRiddleLevel(String i_UserId) {
-        Team playerTeam = getPlayerTeam(i_UserId);
-        return playerTeam.GetPlayerRiddleLevel(i_UserId);
-    }
+//    private Integer getPlayerRiddleLevel(String i_UserId) {
+//        Team playerTeam = getPlayerTeam(i_UserId);
+//        return playerTeam.GetPlayerRiddleLevel(i_UserId);
+//    }
 
-    private Team getPlayerTeam(String i_UserId) {
+    private Team getPlayerTeam(User i_User) {
         Team playerTeam = null;
         for (Team team : r_Teams) {
-            if (team.IsPlayerInTeam(i_UserId)) {
+            if (team.IsPlayerInTeam(i_User)) {
                 playerTeam = team;
                 break;
             }
@@ -327,13 +400,33 @@ public class Game {
         return playerTeam;
     }
 
-    public Map<String,Integer> GetPlayerTeamScore(String i_Userid) {
-        Team team = getPlayerTeam(i_Userid);
-        return team.GetTeamScores();
+    public Map<User,Integer> GetPlayerTeamScore(User i_User) {///TODO change to ScoreCurrentLevel or remove
+        Team team = getPlayerTeam(i_User);
+        return team.GetTeamScoresForCurrentLevel();
     }
 
-    public Map<String, Integer> GetOtherTeamsScore(String i_Userid) {
-        Team playerTeam = getPlayerTeam(i_Userid);
+    public int GetPlayerScore(User i_User){
+        int score = 0;
+
+        for(Level level:m_Levels){
+            score += level.GetRiddlesSolvedByPlayer(i_User).size();
+        }
+
+        return score;
+    }
+
+    public int GetTeamScore(Team i_Team){
+        int score = 0;
+
+        for(Level level:m_Levels){
+            score += level.GetRiddleSolvedByTeam(i_Team).size();
+        }
+
+        return score;
+    }
+
+    public Map<String, Integer> GetOtherTeamsScore(User i_User) {//TODO change score to level?
+        Team playerTeam = getPlayerTeam(i_User);
         Map<String, Integer> teamsScores = new HashMap<>();
         for (Team team : r_Teams) {
             if (team != playerTeam) {
@@ -344,13 +437,19 @@ public class Game {
         return teamsScores;
     }
 
-    public boolean HasPlayerWon(String i_UserId) {
-        Team playerTeam = getPlayerTeam(i_UserId);
+    public boolean HasPlayerWon(User i_User) {
+        Team playerTeam = getPlayerTeam(i_User);
         if (m_IsTeamGame) {
             return playerTeam.HasTeamWon();
         }
         else {
-            return playerTeam.HasPlayerWon(i_UserId);
+            return playerTeam.HasPlayerWon(i_User);
         }
+    }
+
+    public Riddle GetUserRiddleById(Integer i_AppearanceNumber, User i_User){
+        Team team = getPlayerTeam(i_User);
+
+        return m_Levels.get(team.GetPlayerRiddleLevel(i_User)).GetRiddle(i_AppearanceNumber);
     }
 }

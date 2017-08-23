@@ -1,5 +1,6 @@
 package servlets.UserActions;
 
+import GameComponents.Game;
 import GameComponents.User;
 import Util.DatabaseFacade;
 import com.google.gson.Gson;
@@ -47,16 +48,18 @@ public class ProfileServlet extends HttpServlet {
 
     private void handleGetRequest(String i_RequestType, PrintWriter out, String i_Userid) throws ServletException {
         Map<String, Object> responseMap = new HashMap<>();
-        User user = DatabaseFacade.GetUser(i_Userid);
+        DatabaseFacade databaseFacade = (DatabaseFacade) getServletContext().getAttribute("databaseFacade");
+        User user = databaseFacade.GetUser(i_Userid);
+        //User user = DatabaseFacade.GetUser(i_Userid);
         switch (i_RequestType) {
             case "Tables":
-                Map<String, String> createdGames = new HashMap<>();
-                Map<String, String> playedGames = new HashMap<>();
-                for (Map.Entry<String, String> game : user.GetManagedGames().entrySet()) {
-                    createdGames.put(game.getKey(), game.getValue());
+                Map<Integer, String> createdGames = new HashMap<>();
+                Map<Integer, String> playedGames = new HashMap<>();
+                for (Game game : user.GetManagedGames()) {
+                    createdGames.put(game.GetGameId(), game.GetGameName());
                 }
-                for (Map.Entry<String, String> game : user.GetPlayedGames().entrySet()) {
-                    playedGames.put(game.getKey(), game.getValue());
+                for (Game game : user.GetPlayedGames()) {
+                    playedGames.put(game.GetGameId(), game.GetGameName());
                 }
                 responseMap.put("myGames", createdGames);
                 responseMap.put("playedGames", playedGames);

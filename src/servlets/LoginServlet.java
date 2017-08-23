@@ -1,10 +1,11 @@
 package servlets;
 
+import Util.DatabaseFacade;
+
 import javax.servlet.annotation.WebServlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import static Util.DatabaseFacade.Login;
 import static servlets.Util.ServletUtils.SetError;
 
 /**
@@ -24,7 +25,8 @@ public class LoginServlet extends javax.servlet.http.HttpServlet{
             SetError(response,410,"user Email or password are void");
         }
         else{
-            token = Login(userEmail,password);
+            DatabaseFacade databaseFacade = (DatabaseFacade) getServletContext().getAttribute("databaseFacade");
+            token = databaseFacade.Login(userEmail,password);//TODO get facade here and then facade.Login
             if(token != 0){
                 out.print(token);
                 out.flush();

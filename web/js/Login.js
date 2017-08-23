@@ -46,8 +46,8 @@ function checkLoginState(data) {
             url: "FaceBookLogin",
             type: 'POST',
             data: {userID: userID, accessToken: accessToken},
-            success:function () {
-                //todo get token
+            success:function (data) {
+                sessionStorage.setItem("access token",data);
                 window.location.href = SITE_URL + "/Home.html";
             },
             error: function () {

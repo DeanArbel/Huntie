@@ -24,7 +24,8 @@ public class NewGameServlet extends javax.servlet.http.HttpServlet {
         } else {
             try {
                 ServletUtils.AssertUserInDatabase(userid);
-                if (DatabaseFacade.DoesUserHaveAnUnpublishedGame(userid)) {
+                DatabaseFacade databaseFacade = (DatabaseFacade) getServletContext().getAttribute("databaseFacade");
+                if (databaseFacade.DoesUserHaveAnUnpublishedGame(userid)) {
                     if ("true".equals(request.getParameter("createNewGame"))) {
                         createNewGame(response, userid);
                     } else {
@@ -41,7 +42,8 @@ public class NewGameServlet extends javax.servlet.http.HttpServlet {
     }
 
     private void createNewGame(HttpServletResponse i_Response, String i_UserId) throws IOException {
-        DatabaseFacade.CreateNewGame(i_UserId);
+        DatabaseFacade databaseFacade = (DatabaseFacade) getServletContext().getAttribute("databaseFacade");
+        databaseFacade.CreateNewGame(i_UserId);
         i_Response.sendRedirect("/Manager/GameType.html");
     }
 }

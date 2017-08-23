@@ -3,105 +3,109 @@ package GameComponents;
 import Util.DatabaseFacade;
 import javafx.util.Pair;
 
+import javax.persistence.*;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Created by Dean on 18/2/2017.
  */
+@Entity
 public class Team {
-    private final String r_TeamName;
-    private final Map<String, Pair<Integer, Integer>> r_PlayerRiddleLevel;
-    private Pair<Integer, Integer> m_TeamRiddleLevel; // In TeamGame this field is used for player score. In single it is used for checking player riddle level
+    @Id
+    private String m_TeamName;
 
-    public Team(String i_TeamName) {
-        r_TeamName = i_TeamName;
-        r_PlayerRiddleLevel = new HashMap<>();
+//    private final Map<String, Pair<Integer, Integer>> r_PlayerRiddleLevel;
+
+    @OneToMany
+    private Map<User,Level> m_PlayerLevels;
+
+    @ManyToOne
+    private Level m_TeamRiddleLevel; // In TeamGame this field is used for player score. In single it is used for checking player riddle level
+
+    public Team() {
+        m_PlayerLevels = new HashMap<>();
     }
+
+    public void SetTeamName(String i_TeamName){m_TeamName = i_TeamName;}
 
     public String GetTeamName() {
-        return r_TeamName;
+        return m_TeamName;
     }
 
-    public boolean IsPlayerInTeam(String i_userId) {
-        return r_PlayerRiddleLevel.containsKey(i_userId);
+    public boolean IsPlayerInTeam(User i_user) {
+        return m_PlayerLevels.containsKey(i_user);
+    }
+
+    public  Boolean IsPlayerInTeam(String i_UserEmail){
+        Boolean res = false;
+
+        for(Map.Entry<User,Level> entry: m_PlayerLevels.entrySet()){
+            res = entry.getKey().GetEmailAddress().equals(i_UserEmail);
+            if(res){
+                break;
+            }
+        }
+
+        return res;
     }
 
     public int Count() {
-        return r_PlayerRiddleLevel.size();
+        return m_PlayerLevels.size();
     }
 
-    public void AddPlayer(String i_PlayerToAdd, int i_RiddleCount) {
-        r_PlayerRiddleLevel.put(i_PlayerToAdd, new Pair<>(0, i_RiddleCount));
+    public void AddPlayer(User i_PlayerToAdd, Level i_Level) {
+        m_PlayerLevels.put(i_PlayerToAdd, i_Level);
     }
 
-    public void InitTeam(int i_RiddleCount) {
-        m_TeamRiddleLevel = new Pair<>(0, i_RiddleCount);
+    public int GetPlayerRiddleLevel(User i_User) {
+        return m_PlayerLevels.get(i_User).GetIndex();
     }
 
-    public int GetPlayerRiddleLevel(String i_UserId) {
-        return r_PlayerRiddleLevel.get(i_UserId).getKey();
-    }
-
-    public int GetPlayerSolvedRiddlesInLevel(String i_UserId) {
-        return r_PlayerRiddleLevel.get(i_UserId).getValue();
-    }
+//    public int GetPlayerSolvedRiddlesInLevel(String i_UserId) {
+//        return r_PlayerRiddleLevel.get(i_UserId).getValue();
+//    }
 
     public int GetTeamRiddleLevel() {
-        return m_TeamRiddleLevel.getKey();
+        return m_TeamRiddleLevel.GetIndex();
     }
 
-    /**
-     * @param i_UserId
-     * @param i_NextRiddleLevelSize
-     * @return Player solved all the riddles of the game
-     */
-    public boolean PlayerSolvedRiddle(String i_UserId, Integer i_NextRiddleLevelSize) {
-        boolean playerHasWon = false;
-        Pair<Integer, Integer> playerPrevRiddleLevel = r_PlayerRiddleLevel.get(i_UserId);
-        if (playerPrevRiddleLevel.getValue() == 1) {
-            r_PlayerRiddleLevel.put(i_UserId, new Pair<>(playerPrevRiddleLevel.getKey() + 1, i_NextRiddleLevelSize));
-            playerHasWon = i_NextRiddleLevelSize == null;
-        }
-        else {
-            r_PlayerRiddleLevel.put(i_UserId, new Pair<>(playerPrevRiddleLevel.getKey(), playerPrevRiddleLevel.getValue() - 1));
+    public boolean PlayerSolvedRiddle(User i_User, Level i_NextLevel) {
+        boolean playerHasCompletedGame = false;
+        Level playerPrevRiddleLevel = m_PlayerLevels.get(i_User);
+        if (playerPrevRiddleLevel.GetRiddlesNotSolvedByPlayer(i_User).isEmpty()) {
+            m_PlayerLevels.put(i_User, i_NextLevel);
+            playerHasCompletedGame = i_NextLevel == null;
         }
 
-        return playerHasWon;
+        return playerHasCompletedGame;
     }
 
-    /**
-     * @param i_NextRiddleLevelSize
-     * @return Team solved all the riddles of the game
-     */
-    public boolean TeamSolvedRiddle(String i_UserId, Integer i_NextRiddleLevelSize) {
+    public boolean TeamSolvedRiddle(Level i_NextLevel) {
         boolean teamHasWon = false;
-        if (m_TeamRiddleLevel.getValue() == 1) {
-            m_TeamRiddleLevel = new Pair<>(m_TeamRiddleLevel.getKey() + 1, i_NextRiddleLevelSize);
-            teamHasWon = i_NextRiddleLevelSize == null;
+        if (m_TeamRiddleLevel.GetRiddlesNotSolvedByTeam(this).isEmpty()) {
+            m_TeamRiddleLevel = i_NextLevel;
+            teamHasWon = i_NextLevel == null;
         }
-        else {
-            m_TeamRiddleLevel = new Pair<>(m_TeamRiddleLevel.getKey(), m_TeamRiddleLevel.getValue() - 1);
-        }
-        r_PlayerRiddleLevel.put(i_UserId, new Pair<>(0, r_PlayerRiddleLevel.get(i_UserId).getValue() + 1));
 
         return teamHasWon;
     }
 
-    public Map<String,Integer> GetTeamScores() {
-        Map<String,Integer> teamScores = new HashMap<>();
-        for (Map.Entry<String, Pair<Integer, Integer>> entry : r_PlayerRiddleLevel.entrySet()) {
-            teamScores.put(DatabaseFacade.GetUserName(entry.getKey()), entry.getValue().getValue());
+    public Map<User,Integer> GetTeamScoresForCurrentLevel() {//Returns Team Scores fo
+        Map<User,Integer> teamScores = new HashMap<>();
+        for (Map.Entry<User, Level> entry : m_PlayerLevels.entrySet()) {
+            User user = entry.getKey();
+            teamScores.put(user, entry.getValue().GetRiddlesSolvedByPlayer(user).size());
         }
 
         return teamScores;
     }
 
     public boolean HasTeamWon() {
-        return m_TeamRiddleLevel.getValue() == null;
+        return m_TeamRiddleLevel == null;
     }
 
-    public boolean HasPlayerWon(String i_UserId) {
-        return r_PlayerRiddleLevel.get(i_UserId).getValue() == null;
+    public boolean HasPlayerWon(User i_User) {
+        return m_PlayerLevels.get(i_User) == null;
     }
 }
