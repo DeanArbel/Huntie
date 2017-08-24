@@ -2,10 +2,8 @@ package GameComponents;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import java.util.Comparator;
+import java.util.List;
 
 /**
  * Created by Dean on 18/2/2017.
@@ -37,8 +35,8 @@ public class Riddle {
 
     //public void setId(int i_Id){m_Id=i_Id;}
     private String m_Location;
-    private Set<String> r_SolvedByUserList = new HashSet<>();
-    private Set<String> r_SolvedByTeamList = new HashSet<>();
+//    private Set<String> r_SolvedByUserList = new HashSet<>();
+//    private Set<String> r_SolvedByTeamList = new HashSet<>();
 
     public String getName() {
         return m_Name;
