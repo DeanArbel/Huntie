@@ -19,16 +19,33 @@
 </div>
 <div hidden class="container">
     <nav class="navbar navbar-inverse navbar-fixed-top">
-        <a class="navbar-brand" href="#">Huntie</a>
+        <a class="brand" href="/index.jsp">
+            <img src="/assets/images/MiniLogo.png" class="huntie-logo" alt="Huntie">
+        </a>
         <ul class="nav navbar-nav">
             <li><a id="prevPage-btn" href="#"><span class="glyphicon glyphicon-chevron-left"></span>Game Lobby</a></li>
         </ul>
     </nav>
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h3 class="text-center" id="modal-msg"></h3>
+                </div>
+                <div class="modal-footer center-block">
+                    <button type="button" class="btn btn-default" id="modal-btn-lobby" onclick="goBackToLobby();">Go Back To Lobby</button>
+                    <button type="button" class="btn btn-default" id="modal-btn-ok" data-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <h2 class="text-center" style="margin-top: 80px" id="riddle-name"></h2>
     <div class="form-group">
         <label for="riddle-question-body">Question:</label>
         <div class="panel panel-default">
-            <div class="panel-body text-center" id="riddle-question-body">
+            <div class="panel-body text-center" id="riddle-question-body" style="font-size:20px">
             </div>
         </div>
     </div>
@@ -39,13 +56,14 @@
         </div>
         <div hidden class="riddle-answer-photo-area">
             <label for="riddle-answer-photo-button">Your Answer:</label>
-            <div class="panel panel-default">
+            <div hidden class="panel panel-default">
                 <div class="panel-body text-center ">
                     <input type='file' id="riddle-answer-photo-button" onchange="readPictureURL(this, '#riddle-answer-photo-image'); onPhotoAnswerInput();" />
                     <br>
                     <img hidden id="riddle-answer-photo-image" src="#" alt="your image" />
                 </div>
             </div>
+            <button class="btn btn-info" id="riddle-tmp-btn" onclick="document.getElementById('riddle-answer-photo-button').click();">Choose Photo</button>
         </div>
     </div>
     <div class="text-center">

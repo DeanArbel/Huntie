@@ -15,6 +15,8 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
+import static servlets.Util.ServletUtils.SetError;
+
 
 /**
  * Created by Dean on 06/03/2017.

@@ -2,6 +2,10 @@
     width: 100%;
 }
 
+.top-padding {
+    padding-top: 10px;
+}
+
 svg {
     cursor: pointer;
     height: 24px;
@@ -80,4 +84,18 @@ svg:hover > path {
 
 .small-table > tbody { display: block; height: 200px; overflow: auto;}
 
-/*End of Loader*/
+.huntie-logo {
+    height: 32px; margin-top: 5px;
+}
+
+.brand {
+    position: absolute;
+    left: 50%;
+    margin-left: -63.5px !important;  /* 50% of the logo width */
+    display: block;
+}
+
+.copyright-msg {
+    position: absolute; left:50%; bottom: 5px;
+    margin-left: -70px !important;
+}

@@ -1,9 +1,9 @@
 package GameComponents;
 
-import Util.DatabaseFacade;
-import javafx.util.Pair;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -62,6 +62,13 @@ public class Team {
         return m_PlayerLevels.get(i_User).GetIndex();
     }
 
+//    public int GetPlayerRiddleLevel(String i_UserId) {
+//        return r_PlayerRiddleLevel.get(i_UserId).getValue();
+//    }
+//
+//    public int GetPlayerSolvedRiddlesInLevel(String i_UserId) {
+//        return r_PlayerRiddleLevel.get(i_UserId).getValue();
+//    }
 //    public int GetPlayerSolvedRiddlesInLevel(String i_UserId) {
 //        return r_PlayerRiddleLevel.get(i_UserId).getValue();
 //    }

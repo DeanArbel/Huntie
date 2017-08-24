@@ -82,4 +82,45 @@ function minisizeImg(img, maxHeight, maxWidth) {
         img.width = maxWidth;
         img.height = maxWidth * ratio;
     }
-};
+}
+
+function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition, showError);
+    } else {
+        alert("Geolocation is not supported by this browser. At this time you can't use your position");
+    }
+}
+
+function showError(error) {
+    switch(error.code) {
+        case error.PERMISSION_DENIED:
+            alert("User denied the request for Geolocation");
+            break;
+        case error.POSITION_UNAVAILABLE:
+            alert("Location information is unavailable");
+            break;
+        case error.TIMEOUT:
+            alert("The request to get user location timed out");
+            break;
+        case error.UNKNOWN_ERROR:
+            alert("An unknown error occurred");
+            break;
+    }
+}
+
+function stringToLatLng(pos) {
+    var latLngStrArr = pos.split(/[ ,]+/);
+    return [parseFloat(latLngStrArr[0]), parseFloat(latLngStrArr[1])];
+}
+
+function getDistance(lat1,lon1,lat2,lon2){
+    var R = 63710; // Earth's radius in Km
+    return Math.acos(Math.sin(lat1)*Math.sin(lat2) +
+            Math.cos(lat1)*Math.cos(lat2) *
+            Math.cos(lon2-lon1)) * R;
+}
+
+function isLocationWithinDistanceFromOtherLocation(lat1, lon1, lat2, lon2, maxDistance) {
+    return maxDistance >= getDistance(lat1, lon1, lat2, lon2);
+}

@@ -64,6 +64,8 @@ public class GameLobbyServlet extends HttpServlet {
         if (game.IsTeamGame()) {
             responseData.put("myTeamScore", game.GetPlayerTeamScore(user));
             responseData.put("otherTeamsScore", game.GetOtherTeamsScore(user));
+            responseData.put("myTeamName", game.GetPlayerTeamName(user));
+            responseData.put("myTeamLevel", game.GetTeamLevel(user));
         }
         out.println(gson.toJson(responseData));
     }
@@ -73,14 +75,14 @@ public class GameLobbyServlet extends HttpServlet {
         Date endTime = game.GetEndTime();
         boolean playerHasWon = game.HasPlayerWon(user);
         Map<String, Object> responseData = new HashMap();
-        List<String> riddlesNames = new ArrayList();
+        Map<String, String> riddlesNameAndLocations = new HashMap<>();
         if (!playerHasWon && endTime.after(now)) {
             for (Riddle riddle : game.GetUserRiddlesToSolve(user)) {
-                riddlesNames.add(riddle.getName());
+                riddlesNameAndLocations.put(riddle.getName(), riddle.getM_Location());
             }
         }
         responseData.put("playerHasWon", playerHasWon);
-        responseData.put("riddlesNames", riddlesNames);
+        responseData.put("riddlesNameAndLocations", riddlesNameAndLocations);
         responseData.put("gameName", game.GetGameName());
         responseData.put("startTime", game.GetStartTime());
         responseData.put("endTime", game.GetEndTime());

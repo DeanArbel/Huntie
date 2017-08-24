@@ -36,6 +36,9 @@ public class Riddle {
     public int getId(){return m_Id;}
 
     //public void setId(int i_Id){m_Id=i_Id;}
+    private String m_Location;
+    private Set<String> r_SolvedByUserList = new HashSet<>();
+    private Set<String> r_SolvedByTeamList = new HashSet<>();
 
     public String getName() {
         return m_Name;
@@ -128,4 +131,12 @@ public class Riddle {
             //return StudentName2.compareTo(StudentName1);
         }
     };
+
+    public String getM_Location() {
+        return m_Location;
+    }
+
+    public void setM_Location(String m_Location) {
+        this.m_Location = m_Location;
+    }
 }

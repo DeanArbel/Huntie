@@ -13,7 +13,7 @@ function readPictureURL(input, imgId) {
             var image = $(imgId);
             image.removeAttr("width").removeAttr("height");
             image.attr('src', e.target.result)[0].hidden = false;
-            image[0].width = 200;
+            image[0].width = 100;
         };
 
         reader.readAsDataURL(input.files[0]);

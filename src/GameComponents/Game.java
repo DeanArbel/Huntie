@@ -452,4 +452,14 @@ public class Game {
 
         return m_Levels.get(team.GetPlayerRiddleLevel(i_User)).GetRiddle(i_AppearanceNumber);
     }
+
+    public String GetPlayerTeamName(User i_User) {
+        Team team = getPlayerTeam(i_User);
+        return team.GetTeamName();
+    }
+
+    public int GetTeamLevel(User i_User) {
+        Team team = getPlayerTeam(i_User);
+        return team.GetPlayerRiddleLevel(i_User) + 1;
+    }
 }

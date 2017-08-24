@@ -26,7 +26,7 @@ $(document).on("click", ".table > tbody > tr", function(clickedEvent) {
 });
 
 $(document).on("click", "#prevPage-btn", function() {
-    window.location.href = SITE_URL + "/Home.html";
+    window.location.href =   "/Home.html";
 });
 
 function initGlobalVars() {
@@ -59,7 +59,7 @@ function initPageElementsFromServer() {
                     confirm(gameData.errMsg);
                 }
             } else {
-                window.location.href = SITE_URL + "/Player/GameLobby.html?gameCode=" + gameCode;
+                window.location.href =   "/Player/GameLobby.html?gameCode=" + gameCode;
             }
         }
     });
@@ -74,7 +74,7 @@ function registerPlayerToGame() {
         type: 'POST',
         data: { gameCode: gameCode, teamIndex: chosenTeamIdx },
         success: function() {
-            window.location.href = SITE_URL + "/Player/GameLobby.html?gameCode=" + gameCode;
+            window.location.href =   "/Player/GameLobby.html?gameCode=" + gameCode;
         },
         error: function(errMsg) {
             confirm(errMsg.error);

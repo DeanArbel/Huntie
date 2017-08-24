@@ -6,6 +6,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static servlets.Util.ServletUtils.SetError;
+
 
 /**
  * Created by Dean on 18/2/2017.
@@ -26,7 +28,7 @@ public class NewGameServlet extends javax.servlet.http.HttpServlet {
                     if ("true".equals(request.getParameter("createNewGame"))) {
                         createNewGame(response, userid);
                     } else {
-                        ServletUtils.SetError(response, 499, "User already has a game");
+                        SetError(response, 499, "User already has a game");
                     }
                 } else {
                     createNewGame(response, userid);

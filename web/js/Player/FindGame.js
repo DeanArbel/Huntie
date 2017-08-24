@@ -12,7 +12,7 @@ $(function () {
 });
 
 $(document).on('click', '#prevPage-btn', function() {
-    window.location.href = SITE_URL + "/Home.html";
+    window.location.href =   "/Home.html";
 });
 
 $(document).on('click', '#game-find-btn', function() {
@@ -22,7 +22,7 @@ $(document).on('click', '#game-find-btn', function() {
         data: { gameCode: gameCode.value},
         success: function(data) {
             dataMap = JSON.parse(data);
-            window.location.href = SITE_URL + dataMap.url + "?gameCode=" + dataMap.gameCode;
+            window.location.href =   dataMap.url + "?gameCode=" + dataMap.gameCode;
         },
         error: function(errMsg) {
             confirm(errMsg.statusText);

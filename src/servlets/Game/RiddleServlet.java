@@ -41,7 +41,7 @@ public class RiddleServlet extends HttpServlet {
                 }
                 handlePostRequest(request, user, out, game, game.GetUserRiddleById(Integer.parseInt(request.getParameter("riddleCode")),user));
             } catch (Exception e) {
-                SetError(response, 400, e.getMessage());
+//                SetError(response, 400, e.getMessage());
             }
         }
     }
@@ -70,8 +70,9 @@ public class RiddleServlet extends HttpServlet {
                 }
                 Riddle riddle = game.GetUserRiddleById(Integer.parseInt(request.getParameter("riddleCode")),user);
                 handleGetRequest(out, user, riddle);
+                // TODO: Prevent user from accessing riddle unless he's in area
             } catch (Exception e) {
-                SetError(response, 400, e.getMessage());
+                //SetError(response, 400, e.getMessage());
             }
         }
     }

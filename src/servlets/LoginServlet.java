@@ -7,6 +7,8 @@ import javax.servlet.annotation.WebServlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import static servlets.Util.ServletUtils.SetError;
+
 
 /**
  * Created by dan on 2/24/2017.

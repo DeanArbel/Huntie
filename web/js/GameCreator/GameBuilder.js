@@ -5,7 +5,7 @@ var TEXT_ANSWER = "Text Answer";
 var PHOTO_ANSWER = "Photo Answer";
 var RIDDLE_LVL_ID_FORMAT = 'riddle-table-level-';
 var ADD_TO_LVL_BTN_ID_FORMAT = 'add-riddle-level-';
-var MAX_IMG_WIDTH = 200;
+var MAX_IMG_WIDTH = 100;
 var MAX_IMG_HEIGHT = 300;
 
 var riddles = [];
@@ -18,12 +18,13 @@ var riddleOptionalImage;
 var riddleTextAnswer;
 var riddleImageAnswer;
 var riddleLocationCheckBox;
-var riddleLocation;
+var mapHolder;
 var riddleModal;
 var editFlag = false;
 var edittedRiddle;
 var edittedRiddleDeleteButton;
 var rowIsMidRemoval;
+var locationCoords;
 
 $(function() {
     sessionStorage.setItem("PrevPage", "GameBuilder");
@@ -42,6 +43,7 @@ function initGlobalVars() {
     riddleImageAnswer = $("#riddle-photo-answer-image")[0];
     riddleTextAnswer = $("#riddle-answer-text")[0];
     riddleLocationCheckBox = $("#riddle-location-checkbox")[0];
+    mapHolder = $("#mapholder")[0];
     //TODO: Add this after google maps integration: riddleLocation = $("#riddle-location")[0];
     riddleModal = $("#myModal");
 
@@ -51,12 +53,12 @@ function initGlobalVars() {
 }
 
 $(document).on('click', '#prevPage-btn', function() {
-    window.location.href = SITE_URL + "/Manager/GameArea.html";
+    window.location.href = "/Manager/GameType.html";
 });
 
 $(document).on('click', '#nextPage-btn', function() {
         if ($("tbody > tr").length > 0) {
-        window.location.href = SITE_URL + "/Manager/GameSettings.html";
+        window.location.href =   "/Manager/GameSettings.html";
     }
     else {
         confirm("Game must have at least 1 riddle");
@@ -128,8 +130,12 @@ function resetForm() {
     document.getElementById("riddle-form").reset();
     resetImage('riddle-question-optionalimage');
     resetImage('riddle-photo-answer-image');
-    $('.location-info').show();
+    resetLocation();
     //TODO: Remove location
+}
+
+function resetLocation() {
+    getLocation();
 }
 
 function resetImage(imageId) {
@@ -147,6 +153,8 @@ function initPageElementsFromServer() {
         success: function(serverRiddles) {
             $(".loader").hide();
             $(".container").show();
+            $(".temp").hide();
+
             if (serverRiddles.length > 0) {
                 var riddleArrSize = serverRiddles.length;
                 for (var i = 0; i < riddleArrSize; i++) {
@@ -172,6 +180,7 @@ function convertRiddleToClientFormat(serverRiddle) {
     riddle.answer = serverRiddle.m_Answer;
     riddle.type = serverRiddle.m_IsTextType ? TEXT_ANSWER : PHOTO_ANSWER;
     riddle.questionOptionalImage = serverRiddle.m_OptionalQuestionImage;
+    riddle.location = serverRiddle.m_Location;
     return riddle;
 }
 
@@ -220,6 +229,8 @@ function editRiddle(riddle) {
         } else {
             riddleOptionalImage.src = "";
             riddleOptionalImage.hidden = true;
+        } if (riddle.location) {
+            showPosition1(riddle.location);
         }
         updateDropdownValue(riddle.type);
         editFlag = true;
@@ -237,7 +248,7 @@ function readPictureURL(input, imgId) {
             image.removeAttr("width").removeAttr("height");
             image.attr('src', e.target.result)[0].hidden = false;
             // minisizeImg(image[0], MAX_IMG_HEIGHT, MAX_IMG_WIDTH);
-            image[0].width = 200;
+            image[0].width = 100;
         };
 
         reader.readAsDataURL(input.files[0]);
@@ -309,7 +320,7 @@ function getRiddleInServerFormat() {
         type: riddleType.innerText,
         questionText: riddleTextQuestion.value,
         questionOptionalImage: getBase64Image(riddleOptionalImage),
-        //TODO: after google maps add location
+        location: riddleLocationCheckBox.checked ? locationCoords : ""
     }, errMsg;
     riddle.answer = riddle.type === TEXT_ANSWER ? riddleTextAnswer.value : getBase64Image(riddleImageAnswer);
     errMsg = checkRiddleErrors(riddle);
@@ -337,7 +348,7 @@ function addLevelToRiddleTable() {
     var $levelTable = $('<table class="table table-hover"></table>');
     $levelTable.append($('<thead>' +
         '<tr>' +
-            '<th style="font-size: 125%" class="col-xs-1">Level ' + m_iNextRiddleLvl + '</th>' +
+            '<th style="font-size: 110%" class="col-xs-1">Level ' + m_iNextRiddleLvl + '</th>' +
             '<th class="col-xs-2">Name</th>' +
             '<th class="col-xs-4">Question</th>' +
             '<th class="col-xs-4">Answer</th>' +
@@ -383,4 +394,26 @@ function addRiddleToRiddleLevelTable(riddle) {
     }
     $eRow.append(REMOVE_BUTTON_SVG);
     eBodyToAddTo.before($eRow);
+}
+
+function showPosition1(position) {
+    //TODO: Change the size of the map to be more dynamic
+    var mapWidth = document.body.clientWidth < 500 ? 240 : 400;
+    var mapHeight = parseInt((mapWidth * 3) / 4);
+    locationCoords = position;
+    var img_url = "https://maps.googleapis.com/maps/api/staticmap?markers=color:blue%7Clabel:S%7C"
+        +position+"&zoom=14&size=" + mapWidth + "x" + mapHeight + "&sensor=false&key=AIzaSyAsfLflI-UcGro_hBwjIQyIFVndLphZjOE";
+
+    mapHolder.innerHTML = "<img src='"+img_url+"'>";
+    showLocationElems();
+}
+
+function showPosition(position) {
+    var location = position.coords.latitude + "," + position.coords.longitude;
+    showPosition1(location)
+}
+
+function showLocationElems() {
+    riddleLocationCheckBox.checked = true;
+    $('.location-info').show();
 }

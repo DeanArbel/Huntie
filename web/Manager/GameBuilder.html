@@ -14,9 +14,11 @@
 <body>
 <div class="loader centered"></div>
 <nav class="navbar navbar-inverse navbar-fixed-top">
-    <a class="navbar-brand" href="#">Huntie</a>
+    <a class="brand" href="/index.jsp">
+        <img src="/assets/images/MiniLogo.png" class="huntie-logo" alt="Huntie">
+    </a>
     <ul class="nav navbar-nav">
-        <li><a id="prevPage-btn" href="#"><span class="glyphicon glyphicon-chevron-left"></span>Game Area</a></li>
+        <li><a id="prevPage-btn" href="#"><span class="glyphicon glyphicon-chevron-left"></span>Game Type</a></li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
         <li><a id="nextPage-btn" href="#">Game Settings<span class="glyphicon glyphicon-chevron-right"></span></a></li>
@@ -27,7 +29,7 @@
     <br>
     <h1 class="text-center">Game Builder</h1>
     <br>
-    <button type="button" id="openModal-btn" class="btn btn-success center-block" data-toggle="modal" data-target="#myModal" onclick="onAddRiddleButtonClick()">Add Riddle</button>
+    <button type="button" id="openModal-btn" class="btn btn-success center-block temp" data-toggle="modal" data-target="#myModal" onclick="onAddRiddleButtonClick()">Add Riddle</button>
     <button type="button" id="btn-add-riddle" class="btn btn-success center-block" onclick="onAddLevelClick()">Add Level</button>
     <!-- Modal -->
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog">
@@ -47,7 +49,7 @@
                                 <input type="text" class="form-control" id="riddle-name" maxlength="25">
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div hidden class="form-group">
                             <div class="col-xs-6">
                                 <label for="riddle-appearance-number">Riddle Apperance Number:</label>
                                 <p class="col-xs-offset-1"><i>*riddles with the same number will appear at the same time</i></p>
@@ -85,8 +87,9 @@
                                 <label for="riddle-question-optionalimage-uploadbtn">Optional Image Question:</label>
                             </div>
                             <div class="col-xs-6">
-                                <input type='file' accept="image/*" id="riddle-question-optionalimage-uploadbtn" onchange="readPictureURL(this, '#riddle-question-optionalimage');" />
-                                <img hidden id="riddle-question-optionalimage" src="#" alt="your image" />
+                                <input type='file' class="temp" accept="image/*" id="riddle-question-optionalimage-uploadbtn" onchange="readPictureURL(this, '#riddle-question-optionalimage');" />
+                                <button type="button" class="btn btn-info btn-wide" id="riddle-question-optionalimage-uploadbtn-lnk" onclick="document.getElementById('riddle-question-optionalimage-uploadbtn').click();">Select Image</button>
+                                <img hidden class="top-padding" id="riddle-question-optionalimage" src="#" alt="your image" />
                             </div>
                         </div>
                         <div hidden id="riddle-photo" class="form-group">
@@ -94,8 +97,9 @@
                                 <label for="riddle-photo-answer-uploadbtn">Photo Answer:</label>
                             </div>
                             <div class="col-xs-6">
-                                <input type='file' accept="image/*" capture="camera"  id="riddle-photo-answer-uploadbtn" onchange="readPictureURL(this, '#riddle-photo-answer-image');" />
-                                <img hidden id="riddle-photo-answer-image" src="#" alt="your image" />
+                                <input type='file' class="temp" accept="image/*" capture="camera"  id="riddle-photo-answer-uploadbtn" onchange="readPictureURL(this, '#riddle-photo-answer-image');" />
+                                <button type="button" class="btn btn-info btn-wide" id="riddle-photo-answer-uploadbtn-lnk" onclick="document.getElementById('riddle-photo-answer-uploadbtn').click();">Select Answer</button>
+                                <img hidden class="top-padding" id="riddle-photo-answer-image" src="#" alt="your image" />
                                 <!--TODO: add GPS tracking here-->
                             </div>
                         </div>
@@ -112,10 +116,12 @@
                                 <label for="riddle-location-checkbox">Location Based:</label>
                             </div>
                             <div class="col-xs-6">
-                                <input id="riddle-location-checkbox" type="checkbox" checked>
+                                <input id="riddle-location-checkbox" type="checkbox">
                             </div>
                         </div>
-                        <button hidden class="btn btn-default center-block location-info">Set Location</button>
+                        <div class="form-group">
+                            <div hidden id="mapholder" class="col-xs-offset-2   location-info"></div>
+                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -125,7 +131,7 @@
             </div>
         </div>
     </div>
-    <div class="center-block">
+    <div class="center-block temp">
         <table id="riddles-table" class="table table-hover table-users">
             <thead>
             <tr>

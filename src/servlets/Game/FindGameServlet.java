@@ -37,7 +37,7 @@ public class FindGameServlet extends HttpServlet {
                 }
                 handleGetRequest(out, userid, game);
             } catch (Exception e) {
-                SetError(response, 400, e.getMessage());
+//                SetError(response, 400, e.getMessage());
             }
         }
     }

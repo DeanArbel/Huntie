@@ -17,6 +17,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static servlets.Util.ServletUtils.SetError;
+
 
 /**
  * Created by Dean on 26/02/2017.

@@ -15,16 +15,31 @@
 </head>
 <body>
 <div>
-    <video id="myVideo" width="400" height="300" preload autoplay loop muted></video>
-    <input type='file' id="riddle-question-optionalimage-uploadbtn" onchange="readPictureURL(this, '#riddle-question-optionalimage');" />
-    <img hidden id="riddle-question-optionalimage" src="#" alt="your image" />
-    <canvas id="canvas" width="400" height="300"></canvas>
+    <!--<video id="myVideo" width="400" height="300" preload autoplay loop muted></video>-->
+    <div class="text-center" >
+        <button onclick="alert('picture match: ' + pictureComparison(document.getElementById('riddle-question-optionalimage'), document.getElementById('riddle-question-optionalimage1')))">Click for compare</button>
+    </div>
+    <br>
+    <div>
+        <div class="col-xs-6">
+            <input type='file' id="riddle-question-optionalimage-uploadbtn" onchange="readPictureURL(this, '#riddle-question-optionalimage');" />
+            <img hidden id="riddle-question-optionalimage" src="#" alt="your image" />
+        </div>
+        <div class="col-xs-6">
+            <canvas id="canvas" width="400" height="300"></canvas>
+        </div>
+    </div>
     <button onclick="drawImgCornersOnCanvas('riddle-question-optionalimage', 'canvas')">Update</button>
-    <input type='file' id="riddle-question-optionalimage-uploadbtn1" onchange="readPictureURL(this, '#riddle-question-optionalimage1');" />
-    <img hidden id="riddle-question-optionalimage1" src="#" alt="your image" />
-    <canvas id="canvas1" width="400" height="300"></canvas>
+    <div>
+        <div class="col-xs-6">
+            <input type='file' id="riddle-question-optionalimage-uploadbtn1" onchange="readPictureURL(this, '#riddle-question-optionalimage1');" />
+            <img hidden id="riddle-question-optionalimage1" src="#" alt="your image" />
+        </div>
+        <div class="col-xs-6">
+            <canvas id="canvas1" width="400" height="300"></canvas>
+        </div>
+    </div>
     <button onclick="drawImgCornersOnCanvas('riddle-question-optionalimage1', 'canvas1')">Update</button>
-    <button onclick="pictureComparison(document.getElementById('riddle-question-optionalimage'), document.getElementById('riddle-question-optionalimage1'))">Click for compare</button>
 </div>
 <!--<script>-->
     <!--var colors = new tracking.ColorTracker(['magenta', 'cyan', 'yellow']);-->
