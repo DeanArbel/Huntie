@@ -9,6 +9,10 @@ var mAnswerBox;
 var mPhotoAnswer;
 var mSubmitBtn;
 var mServerAnswer;
+var oModal;
+var oModalMsg;
+var oModalGoToLobbyButton;
+var oModalOkButton;
 
 $(function () {
     sessionStorage.setItem("PrevPage", "Riddle");
@@ -29,6 +33,10 @@ function initGlobalVars() {
     mAnswerBox = $('#riddle-answer-text')[0];
     mPhotoAnswer = $('#riddle-answer-photo-image')[0];
     mSubmitBtn = $("#riddle-submit-btn")[0];
+    oModal = $("#myModal");
+    oModalMsg = $("#modal-msg")[0];
+    oModalGoToLobbyButton = $("#modal-btn-lobby")
+    oModalOkButton = $("#modal-btn-ok");
 }
 
 function initPageElementsFromServer() {
@@ -78,14 +86,16 @@ function submitAnswer() {
         type: 'POST',
         data: {gameCode: mGameCode, riddleCode: mRiddleCode, answer: answer},
         success: function(data) {
+            oModal.modal('toggle');
             if (data) {
-                confirm("You got the right answer right!");
+                oModalMsg.innerText = "You got the answer right!";
+                oModalGoToLobbyButton.show();
                 mSubmitBtn.disabled = true;
                 mAnswerBox.disabled = true;
-                goBackToLobby();
             }
             else {
-                confirm("Nice try, but wrong answer!");
+                oModalMsg.innerText = "Nice try, but wrong answer!";
+                oModalGoToLobbyButton.hide();
                 mSubmitBtn.disabled = false;
             }
         },

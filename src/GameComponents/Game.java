@@ -358,4 +358,9 @@ public class Game {
         Team team = getPlayerTeam(i_Userid);
         return team.GetTeamName();
     }
+
+    public int GetTeamLevel(String i_UserId) {
+        Team team = getPlayerTeam(i_UserId);
+        return team.GetPlayerRiddleLevel(i_UserId) + 1;
+    }
 }

@@ -40,7 +40,7 @@ public class Team {
     }
 
     public int GetPlayerRiddleLevel(String i_UserId) {
-        return r_PlayerRiddleLevel.get(i_UserId).getKey();
+        return r_PlayerRiddleLevel.get(i_UserId).getValue();
     }
 
     public int GetPlayerSolvedRiddlesInLevel(String i_UserId) {

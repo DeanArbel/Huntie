@@ -103,7 +103,8 @@ function getNonCrucialPageElementsFromServer() {
         success: function(gameData) {
             if (gameData.isTeamGame) {
                 $('.score-content').show();
-                $('#message-my-team-score')[0].innerHTML = gameData.myTeamName + " Player Scores";
+                $('#message-my-team-score')[0].innerHTML = gameData.myTeamName + " Scores";
+                mPlayerMessage[0].innerText = "Level " + gameData.myTeamLevel;
                 initTeamTable(gameData.myTeamScore);
                 initOthersTable(gameData.otherTeamsScore);
             }
@@ -163,7 +164,8 @@ function initMap() {
     map_container.height(mapHeight);
     eMap = new google.maps.Map(map_container[0], {
         center: {lat: 32.109333, lng: 34.855499},
-        zoom: 14
+        zoom: 16,
+        disableDefaultUI: true
     });
     infoWindow = new google.maps.InfoWindow;
     getLocation();
@@ -174,10 +176,6 @@ function showPosition(position) {
         lat: position.coords.latitude,
         lng: position.coords.longitude
     };
-    // playerPos = {
-    //     lat: 32.048000,
-    //     lng: 34.760889
-    // };
     infoWindow.setPosition(playerPos);
     infoWindow.setContent('You Are Here');
     infoWindow.open(eMap);

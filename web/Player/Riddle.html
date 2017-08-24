@@ -26,6 +26,21 @@
             <li><a id="prevPage-btn" href="#"><span class="glyphicon glyphicon-chevron-left"></span>Game Lobby</a></li>
         </ul>
     </nav>
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h3 class="text-center" id="modal-msg"></h3>
+                </div>
+                <div class="modal-footer center-block">
+                    <button type="button" class="btn btn-default" id="modal-btn-lobby" onclick="goBackToLobby();">Go Back To Lobby</button>
+                    <button type="button" class="btn btn-default" id="modal-btn-ok" data-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <h2 class="text-center" style="margin-top: 80px" id="riddle-name"></h2>
     <div class="form-group">
         <label for="riddle-question-body">Question:</label>
@@ -48,8 +63,8 @@
                     <img hidden id="riddle-answer-photo-image" src="#" alt="your image" />
                 </div>
             </div>
+            <button class="btn btn-info" id="riddle-tmp-btn" onclick="document.getElementById('riddle-answer-photo-button').click();">Choose Photo</button>
         </div>
-        <button disabled class="btn btn-info" id="riddle-tmp-btn" onclick="submitAnswer()">Choose Photo</button>
     </div>
     <div class="text-center">
         <button disabled class="btn btn-success" id="riddle-submit-btn" onclick="submitAnswer()">Submit Answer</button>

@@ -62,6 +62,7 @@ public class GameLobbyServlet extends HttpServlet {
         if (game.IsTeamGame()) {
             responseData.put("myTeamName", game.GetPlayerTeamName(userid));
             responseData.put("myTeamScore", game.GetPlayerTeamScore(userid));
+            responseData.put("myTeamLevel", game.GetTeamLevel(userid));
             responseData.put("otherTeamsScore", game.GetOtherTeamsScore(userid));
         }
         out.println(gson.toJson(responseData));

@@ -5,7 +5,7 @@ var TEXT_ANSWER = "Text Answer";
 var PHOTO_ANSWER = "Photo Answer";
 var RIDDLE_LVL_ID_FORMAT = 'riddle-table-level-';
 var ADD_TO_LVL_BTN_ID_FORMAT = 'add-riddle-level-';
-var MAX_IMG_WIDTH = 200;
+var MAX_IMG_WIDTH = 100;
 var MAX_IMG_HEIGHT = 300;
 
 var riddles = [];
@@ -53,7 +53,7 @@ function initGlobalVars() {
 }
 
 $(document).on('click', '#prevPage-btn', function() {
-    window.location.href =   "/Manager/GameArea.html";
+    window.location.href = "/Manager/GameType.html";
 });
 
 $(document).on('click', '#nextPage-btn', function() {
@@ -154,6 +154,7 @@ function initPageElementsFromServer() {
             $(".loader").hide();
             $(".container").show();
             $(".temp").hide();
+
             if (serverRiddles.length > 0) {
                 var riddleArrSize = serverRiddles.length;
                 for (var i = 0; i < riddleArrSize; i++) {
@@ -247,7 +248,7 @@ function readPictureURL(input, imgId) {
             image.removeAttr("width").removeAttr("height");
             image.attr('src', e.target.result)[0].hidden = false;
             // minisizeImg(image[0], MAX_IMG_HEIGHT, MAX_IMG_WIDTH);
-            image[0].width = 200;
+            image[0].width = 100;
         };
 
         reader.readAsDataURL(input.files[0]);
@@ -397,9 +398,11 @@ function addRiddleToRiddleLevelTable(riddle) {
 
 function showPosition1(position) {
     //TODO: Change the size of the map to be more dynamic
+    var mapWidth = document.body.clientWidth < 500 ? 240 : 400;
+    var mapHeight = parseInt((mapWidth * 3) / 4);
     locationCoords = position;
     var img_url = "https://maps.googleapis.com/maps/api/staticmap?markers=color:blue%7Clabel:S%7C"
-        +position+"&zoom=14&size=400x300&sensor=false&key=AIzaSyAsfLflI-UcGro_hBwjIQyIFVndLphZjOE";
+        +position+"&zoom=14&size=" + mapWidth + "x" + mapHeight + "&sensor=false&key=AIzaSyAsfLflI-UcGro_hBwjIQyIFVndLphZjOE";
 
     mapHolder.innerHTML = "<img src='"+img_url+"'>";
     showLocationElems();

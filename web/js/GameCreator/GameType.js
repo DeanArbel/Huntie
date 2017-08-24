@@ -72,11 +72,11 @@ function dropdownChange(innerText) {
     sCurGameType = innerText;
     if (innerText === TEAM_GAME) {
         $('.show-team').show();
-        $('.show-Single').hide();
+        $('.show-solo').hide();
     }
     else {
         $('.show-team').hide();
-        $('.show-Single').show();
+        $('.show-solo').show();
     }
 }
 
@@ -118,7 +118,7 @@ $(document).on('click', '#nextPage-btn', function() {
                 gameType: gameType
             },
             success: function (response) {
-                window.location.href =   "/Manager/GameArea.html";
+                window.location.href = "/Manager/GameBuilder.html";
             },
             error: function(e) {
                 console.log(JSON.stringify(e));

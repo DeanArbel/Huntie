@@ -19,23 +19,24 @@ public class MockData {
             isMockTeamGameSet = true;
             Game game = DatabaseFacade.CreateNewGame("1");
             game.SetIsTeamGame(true);
-            game.SetTeamNames(new HashSet<String>(Arrays.asList("Team Water", "Team Ground", "Team Air")));
+            game.SetTeamNames(new HashSet<String>(Arrays.asList("Greeks", "Spartans", "Romans")));
             int riddleLevel = 0;
             for (int i = 0; i < 3; i++) {
                 game.AddRiddle(createMockRiddleWithLocation(riddleLevel, "The First Riddle", ""));
+                game.AddRiddle(createMockRiddleWithLocation(riddleLevel++, "Cerberus Head", ""));
+                game.AddRiddle(createSpecialMockRiddleWithLocation(riddleLevel, "Quest for Knowledge", "32.048000, 34.760889"));
                 game.AddRiddle(createMockRiddleWithLocation(riddleLevel, "Clocktower Conundrum", "32.055235, 34.756172"));
                 game.AddRiddle(createMockRiddleWithLocation(riddleLevel, "Find the Flee", "32.053115, 34.756848"));
                 game.AddRiddle(createMockRiddleWithLocation(riddleLevel, "All Aboard", "32.052320, 34.749615"));
-                game.AddRiddle(createMockRiddleWithLocation(riddleLevel, "Quest for Knowledge", "32.048000, 34.760889"));
 //                game.AddRiddle(createMockRiddleWithLocation(riddleLevel, "Quest for Knowledge", "32.048000, 34.88954"));
                 game.AddRiddle(createMockRiddleWithLocation(riddleLevel++, "The Special Dish", "34.7572, 32.0514"));
             }
             game.SetStartDate(new Date());
             game.SetDuration(5.0f);
-            game.SetMaxPayersInTeam(3);
+            game.SetMaxPayersInTeam(2);
             game.SetMaxPlayers(20);
             game.SetTreasureType("Treasure Chest");
-            game.SetGameName("Danny's Treasure Hunt");
+            game.SetGameName("The MTA Challenge");
             game.PublishGame();
 
             String userToSolveRiddles = createMockUser("Moshe");
@@ -71,6 +72,13 @@ public class MockData {
 
     private static Riddle createMockRiddleWithLocation(int riddleLevel, String riddldeName, String location) {
         Riddle riddle = createMockRiddle(riddleLevel, riddldeName);
+        riddle.setM_Location(location);
+        return riddle;
+    }
+
+    private static Riddle createSpecialMockRiddleWithLocation(int riddleLevel, String riddldeName, String location) {
+        Riddle riddle = createMockRiddle(riddleLevel, riddldeName);
+        riddle.setTextQuestion("Who invented the decimal classification the library uses?");
         riddle.setM_Location(location);
         return riddle;
     }
