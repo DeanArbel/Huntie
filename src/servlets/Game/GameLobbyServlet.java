@@ -2,9 +2,9 @@ package servlets.Game;
 
 import GameComponents.Game;
 import GameComponents.Riddle;
+import GameComponents.User;
 import Util.DatabaseFacade;
 import com.google.gson.Gson;
-import servlets.Util.ServletUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -28,54 +28,56 @@ public class GameLobbyServlet extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         //String username = SessionUtils.getUsername(request);
-        String userid = "1";
-        if (userid == null) {
+        DatabaseFacade databaseFacade = (DatabaseFacade) getServletContext().getAttribute("databaseFacade");
+        User user = databaseFacade.GetUser(request.getParameter("userEmail"));
+        if (user == null) {
             response.sendRedirect("index.jsp"); //TODO: Change this according to login system
         } else {
             try (PrintWriter out = response.getWriter()) {
-                ServletUtils.AssertUserInDatabase(userid);
-                Game game = DatabaseFacade.getGame(request.getParameter("gameCode"));
+                //ServletUtils.AssertUserInDatabase(user);
+                //Game game = DatabaseFacade.getGame(request.getParameter("gameCode"));
+                Game game = databaseFacade.getGame(Integer.parseInt(request.getParameter("gameCode")));
                 if (game == null) {
                     throw new ServletException("No game was found");
                 }
-                handleGetRequest(request, out, userid, game);
+                handleGetRequest(request, out, user, game);
             } catch (Exception e) {
                 SetError(response, 400, e.getMessage());
             }
         }
     }
 
-    private void handleGetRequest(HttpServletRequest request, PrintWriter out, String userid, Game game) {
+    private void handleGetRequest(HttpServletRequest request, PrintWriter out, User user, Game game) {
         String playerReq = request.getParameter("request");
         switch(playerReq) {
             case "getGameInfo":
-                handleGameInfoRequest(out, userid, game);
+                handleGameInfoRequest(out, user, game);
                 break;
             case "getPlayerTables":
-                handlePlayerTablesRequest(out, userid, game);
+                handlePlayerTablesRequest(out, user, game);
         }
     }
 
-    private void handlePlayerTablesRequest(PrintWriter out, String userid, Game game) {
+    private void handlePlayerTablesRequest(PrintWriter out, User user, Game game) {
         Map<String, Object> responseData = new HashMap();
         responseData.put("isTeamGame", game.IsTeamGame());
         if (game.IsTeamGame()) {
-            responseData.put("myTeamName", game.GetPlayerTeamName(userid));
-            responseData.put("myTeamScore", game.GetPlayerTeamScore(userid));
-            responseData.put("myTeamLevel", game.GetTeamLevel(userid));
-            responseData.put("otherTeamsScore", game.GetOtherTeamsScore(userid));
+            responseData.put("myTeamScore", game.GetPlayerTeamScore(user));
+            responseData.put("otherTeamsScore", game.GetOtherTeamsScore(user));
+            responseData.put("myTeamName", game.GetPlayerTeamName(user));
+            responseData.put("myTeamLevel", game.GetTeamLevel(user));
         }
         out.println(gson.toJson(responseData));
     }
 
-    private void handleGameInfoRequest(PrintWriter out, String userid, Game game) {
+    private void handleGameInfoRequest(PrintWriter out, User user, Game game) {
         Date now = new Date();
         Date endTime = game.GetEndTime();
-        boolean playerHasWon = game.HasPlayerWon(userid);
+        boolean playerHasWon = game.HasPlayerWon(user);
         Map<String, Object> responseData = new HashMap();
         Map<String, String> riddlesNameAndLocations = new HashMap<>();
         if (!playerHasWon && endTime.after(now)) {
-            for (Riddle riddle : game.GetUserRiddlesToSolve(userid)) {
+            for (Riddle riddle : game.GetUserRiddlesToSolve(user)) {
                 riddlesNameAndLocations.put(riddle.getName(), riddle.getM_Location());
             }
         }

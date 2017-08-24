@@ -75,4 +75,12 @@
         <servlet-name>LoginServlet</servlet-name>
         <url-pattern>/Login</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>FaceBookLoginServlet</servlet-name>
+        <servlet-class>servlets.FaceBookLoginServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>FaceBookLoginServlet</servlet-name>
+        <url-pattern>/FaceBookLogin</url-pattern>
+    </servlet-mapping>
 </web-app>

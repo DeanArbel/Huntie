@@ -3,7 +3,6 @@ package servlets.Game;
 import GameComponents.Game;
 import Util.DatabaseFacade;
 import com.google.gson.Gson;
-import servlets.Util.ServletUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,7 +14,6 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
-import static servlets.Util.ServletUtils.SetError;
 
 /**
  * Created by Dean on 27/02/2017.
@@ -31,25 +29,26 @@ public class FindGameServlet extends HttpServlet {
             response.sendRedirect("index.jsp"); //TODO: Change this according to login system
         } else {
             try (PrintWriter out = response.getWriter()) {
-                ServletUtils.AssertUserInDatabase(userid);
-                Game game = DatabaseFacade.getGame(request.getParameter("gameCode"));
+                //Game game = DatabaseFacade.getGame(request.getParameter("gameCode"));
+                DatabaseFacade databaseFacade = (DatabaseFacade) getServletContext().getAttribute("databaseFacade");
+                Game game = databaseFacade.getGame(Integer.parseInt(request.getParameter("gameCode")));
                 if (game == null) {
                     throw new ServletException("No game was found");
                 }
                 handleGetRequest(out, userid, game);
             } catch (Exception e) {
-                SetError(response, 400, e.getMessage());
+//                SetError(response, 400, e.getMessage());
             }
         }
     }
 
-    private void handleGetRequest(PrintWriter out, String userId, Game game) throws ServletException, IOException {
+    private void handleGetRequest(PrintWriter out, String userEmail, Game game) throws ServletException, IOException {
         Map<String, String> dataMap = new HashMap();
-        dataMap.put("gameCode", game.GetGameId());
+        dataMap.put("gameCode", Integer.toString(game.GetGameId()));
         //        if (game.IsUserManager(userId)) {
 //            //response.getWriter().println(gson.toJson(Constants.SITE_URL + "Manager/Menu.html?gameCode=" + game.GetGameId()));
 //        } //TODO: Enable this and make the one below else if
-        if (game.IsPlayerInGame(userId)) {
+        if (game.IsPlayerInGame(userEmail)) {
             dataMap.put("url", "/Player/GameLobby.html");
         } else if (!game.IsGameFull()) {
             dataMap.put("url", "/Player/JoinGame.html");

@@ -4,12 +4,14 @@ package servlets;
  * Created by dan on 3/14/2017.
  */
 
+import Util.DatabaseFacade;
+
 import javax.servlet.annotation.WebServlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import static Util.DatabaseFacade.SignUp;
 import static servlets.Util.ServletUtils.SetError;
+
 
 @WebServlet(name = "SignUpServlet")
 public class SignUpServlet extends javax.servlet.http.HttpServlet  {
@@ -19,7 +21,8 @@ public class SignUpServlet extends javax.servlet.http.HttpServlet  {
         String password = request.getParameter("password");
         String username = request.getParameter("username");
         PrintWriter out = response.getWriter();
-        int res = SignUp(userEmail,password,username);
+        DatabaseFacade databaseFacade = (DatabaseFacade) getServletContext().getAttribute("databaseFacade");
+        int res = databaseFacade.SignUp(userEmail,password,username);
 
         if(res == 0){
             out.print(res);

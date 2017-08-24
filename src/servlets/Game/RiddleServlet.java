@@ -2,9 +2,9 @@ package servlets.Game;
 
 import GameComponents.Game;
 import GameComponents.Riddle;
+import GameComponents.User;
 import Util.DatabaseFacade;
 import com.google.gson.Gson;
-import servlets.Util.ServletUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,7 +16,6 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
-import static servlets.Util.ServletUtils.SetError;
 
 /**
  * Created by Dean on 03/03/2017.
@@ -28,53 +27,57 @@ public class RiddleServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
         //String username = SessionUtils.getUsername(request);
-        String userid = "1";
-        if (userid == null) {
+        DatabaseFacade databaseFacade = (DatabaseFacade) getServletContext().getAttribute("databaseFacade");
+        User user = databaseFacade.GetUser(request.getParameter("userEmail"));
+        if (user == null) {
             response.sendRedirect("index.jsp"); //TODO: Change this according to login system
         } else {
             try (PrintWriter out = response.getWriter()) {
-                ServletUtils.AssertUserInDatabase(userid);
-                Game game = DatabaseFacade.getGame(request.getParameter("gameCode"));
+               // ServletUtils.AssertUserInDatabase(user);
+//                Game game = DatabaseFacade.getGame(request.getParameter("gameCode"));
+                Game game = databaseFacade.getGame(Integer.parseInt(request.getParameter("gameCode")));
                 if (game == null) {
                     throw new ServletException("No game was found");
                 }
-                handlePostRequest(request, userid, out, game);
+                handlePostRequest(request, user, out, game, game.GetUserRiddleById(Integer.parseInt(request.getParameter("riddleCode")),user));
             } catch (Exception e) {
-                SetError(response, 400, e.getMessage());
+//                SetError(response, 400, e.getMessage());
             }
         }
     }
 
-    private void handlePostRequest(HttpServletRequest request, String userid, PrintWriter out, Game game) {
+    private void handlePostRequest(HttpServletRequest request, User user, PrintWriter out, Game game, Riddle riddle) {
         //TODO: Handle photo riddle
 
-        out.println(gson.toJson(game.TryToSolveRiddle(userid, Integer.parseInt(request.getParameter("riddleCode")), request.getParameter("answer"))));
+        out.println(gson.toJson(game.TryToSolveRiddle(user, riddle, request.getParameter("answer"))));
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         //String username = SessionUtils.getUsername(request);
-        String userid = "1";
-        if (userid == null) {
+        DatabaseFacade databaseFacade = (DatabaseFacade) getServletContext().getAttribute("databaseFacade");
+        User user = databaseFacade.GetUser(request.getParameter("userEmail"));
+        if (user == null) {
             response.sendRedirect("index.jsp"); //TODO: Change this according to login system
         } else {
             try (PrintWriter out = response.getWriter()) {
-                ServletUtils.AssertUserInDatabase(userid);
-                Game game = DatabaseFacade.getGame(request.getParameter("gameCode"));
+                //ServletUtils.AssertUserInDatabase(user);
+                //Game game = DatabaseFacade.getGame(request.getParameter("gameCode"));
+                Game game = databaseFacade.getGame(Integer.parseInt(request.getParameter("gameCode")));
                 if (game == null) {
                     throw new ServletException("No game was found");
                 }
-                Riddle riddle = game.GetUserRiddleByIndex(userid, Integer.parseInt(request.getParameter("riddleCode")));
+                Riddle riddle = game.GetUserRiddleById(Integer.parseInt(request.getParameter("riddleCode")),user);
+                handleGetRequest(out, user, riddle);
                 // TODO: Prevent user from accessing riddle unless he's in area
-                handleGetRequest(out, userid, riddle);
             } catch (Exception e) {
-                SetError(response, 400, e.getMessage());
+                //SetError(response, 400, e.getMessage());
             }
         }
     }
 
-    private void handleGetRequest(PrintWriter out, String userid, Riddle riddle) {
+    private void handleGetRequest(PrintWriter out, User user, Riddle riddle) {
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("name", riddle.getName());
         dataMap.put("question", riddle.getTextQuestion());

@@ -4,7 +4,6 @@ import GameComponents.Game;
 import GameComponents.Riddle;
 import Util.DatabaseFacade;
 import com.google.gson.Gson;
-import servlets.Util.ServletUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -19,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static servlets.Util.ServletUtils.SetError;
+
 
 /**
  * Created by Dean on 18/2/2017.
@@ -35,7 +35,9 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
             response.sendRedirect("index.jsp"); //TODO: Change this according to login system
         } else {
             try (PrintWriter out = response.getWriter()) {
-                Game game = DatabaseFacade.getGame(DatabaseFacade.GetUser(userid).GetUnpublishedGame().GetGameId());
+                DatabaseFacade databaseFacade = (DatabaseFacade) getServletContext().getAttribute("databaseFacade");
+                //Game game = DatabaseFacade.getGame(DatabaseFacade.GetUser(userid).GetUnpublishedGame().GetGameId());
+                Game game = databaseFacade.getGame(databaseFacade.GetUser(userid).GetUnpublishedGame().GetGameId());
                 if (game != null) {
                     handlePostRequest(request, response, game, userid);
                     out.println(gson.toJson(game.GetGameId()));
@@ -58,10 +60,12 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
             response.sendRedirect("index.jsp"); //TODO: Change this according to login system
         } else {
             try (PrintWriter out = response.getWriter()) {
-                ServletUtils.AssertUserInDatabase(userid);
-                Game game = DatabaseFacade.GetUser(userid).GetUnpublishedGame();
+                DatabaseFacade databaseFacade =(DatabaseFacade) getServletContext().getAttribute("databaseFacade");
+                //Game game = DatabaseFacade.GetUser(userid).GetUnpublishedGame();
+                Game game = databaseFacade.GetUser(userid).GetUnpublishedGame();
                 if (game == null) {
-                    game = DatabaseFacade.CreateNewGame(userid);
+                    //game = DatabaseFacade.CreateNewGame(userid);
+                    game = databaseFacade.CreateNewGame(userid);
                 }
 
                 handleGetRequest(request, out, game);
@@ -117,7 +121,9 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
         game.SetGameName((String)settingsMap.get("gameName"));
         game.PublishGame();
         //TODO: Add check that game is really ready for publish
-        DatabaseFacade.GetUser(userid).SetUnpublishedGame(null);
+        //DatabaseFacade.GetUser(userid).SetUnpublishedGame(null);
+        DatabaseFacade databaseFacade = (DatabaseFacade) getServletContext().getAttribute("databaseFacade");
+        databaseFacade.GetUser(userid).SetUnpublishedGame(null);
     }
 
     private void handleGameTypeRequest(HttpServletRequest request, Game game) {
@@ -151,7 +157,7 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
         }
         else if ("add".equals(gameBuilderRequest)) {
             Riddle riddle = buildRiddle(riddleMap);
-            game.AddRiddle(riddle);
+            game.AddRiddle(riddle,((Double)riddleMap.get("level")).intValue());
         }
         else {
             throw new ServletException("No action was given");

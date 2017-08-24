@@ -8,7 +8,7 @@ $("#sign-in-btn").on('click', function() {
         data: {email: $("#textInputUserEmail").val(), password: $("#textInputPassword").val()},
         success: function(data) {
             sessionStorage.setItem("access token",data);
-            window.location.href =   "/Home.html";
+            window.location.href = SITE_URL + "/Home.html";
         },
         error: function(msg) {
             alert(msg);
@@ -46,9 +46,9 @@ function checkLoginState(data) {
             url: "FaceBookLogin",
             type: 'POST',
             data: {userID: userID, accessToken: accessToken},
-            success:function () {
-                //todo get token
-                window.location.href =   "/Home.html";
+            success:function (data) {
+                sessionStorage.setItem("access token",data);
+                window.location.href = SITE_URL + "/Home.html";
             },
             error: function () {
                 alert("Invalid Login")

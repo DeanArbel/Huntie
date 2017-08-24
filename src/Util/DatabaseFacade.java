@@ -1,123 +1,184 @@
 package Util;
 
 import GameComponents.Game;
+import GameComponents.SessionToken;
 import GameComponents.User;
+import GameComponents.Utils.RandomString;
 
-import java.util.HashMap;
-import java.util.Map;
+import javax.persistence.*;
+import java.util.List;
 
 /**
  * Created by Dean on 18/2/2017.
  */
 public class DatabaseFacade {
-    private static final Map<String, Game> sr_Games = new HashMap<>();
-    private static final Map<String, User> sr_Users = new HashMap<>();
-    private static final Map<String, String> sr_UseerMap = new HashMap<>();
-    private static int s_CurrentGameId = 1;
-    private static int s_CurrentUserId = 1;
+    private EntityManagerFactory m_HuntieEntityManagerFactory = Persistence.createEntityManagerFactory("$objectdb/db/Huntie.odb");
+    private EntityManager m_HuntieEntityManager;
 
-    public static User GetUser(String i_UserId) {
-        return sr_Users.get(i_UserId);
+    public User GetUser(String i_UserEmail) {
+        User user;
+
+        m_HuntieEntityManager = m_HuntieEntityManagerFactory.createEntityManager();
+        user = m_HuntieEntityManager.find(User.class, i_UserEmail);
+        m_HuntieEntityManager.close();
+        return user;
     }
 
-    public static Game getGame(String i_GameId) {
-        return sr_Games.get(i_GameId);
+    public Game getGame(int i_GameId) {//was String i_GameId
+        Game game;
+
+        m_HuntieEntityManager = m_HuntieEntityManagerFactory.createEntityManager();
+        game = m_HuntieEntityManager.find(Game.class, i_GameId);
+        m_HuntieEntityManager.close();
+        return game;
     }
 
-    public static User createUser(String i_UserName, String i_UserPassword, String i_Email) throws Exception {
-        User newUser = new User(String.valueOf(s_CurrentUserId));
+    public User createUser(String i_UserName, String i_UserPassword, String i_Email) throws Exception {
+        User newUser = new User();
+
+        if (!IsUserNameUnique(i_UserName)) {
+            throw new Exception("User name is already taken");
+        }
         newUser.SetUserName(i_UserName);
         newUser.setPassword(i_UserPassword);
+        if (!IsEmailUnique(i_Email)) {
+            throw new Exception("Email is already taken");
+        }
         newUser.SetEmailAddress(i_Email);
-        sr_Users.put(newUser.GetUserId(), newUser);
-        s_CurrentUserId++;
-        MockData.CreateMockTeamGame(); //TODO: Remove this line
+        m_HuntieEntityManager = m_HuntieEntityManagerFactory.createEntityManager();
+        m_HuntieEntityManager.getTransaction().begin();
+        m_HuntieEntityManager.persist(newUser);
+        m_HuntieEntityManager.getTransaction().commit();
+        m_HuntieEntityManager.close();
 
         return newUser;
     }
 
-    public static String GetUserName(String i_UserId) {
-        return GetUser(i_UserId).GetUserName();
+    public String GetUserName(String i_UserEmail) {
+        return GetUser(i_UserEmail).GetUserName();
     }
 
     public static int Verify(String i_UserEmail, String i_UserPassword){
         return 0;
     }
 
-    public static boolean DoesUserHaveAnUnpublishedGame(String i_UserId) {
-        return sr_Users.get(i_UserId).GetUnpublishedGame() != null;
+    public boolean DoesUserHaveAnUnpublishedGame(String i_UserEmail) {
+        return GetUser(i_UserEmail).GetUnpublishedGame() != null;
     }
 
     //TODO: Adjust username or id depending on login implementation
-    public static Game CreateNewGame(String i_UserId) {
+    public Game CreateNewGame(String i_UserEmail) {
         Game newGame = null;
-        User gameCreator = sr_Users.get(i_UserId);
+
+        User gameCreator = GetUser(i_UserEmail);
         if (gameCreator != null) {
-            gameCreator.DeleteUnpublishedGame();
-            newGame = new Game(String.valueOf(s_CurrentGameId++), i_UserId);
-            sr_Games.put(newGame.GetGameId(), newGame);
+           // gameCreator.DeleteUnpublishedGame();
+            DeleteGame(gameCreator.GetUnpublishedGame().GetGameId());
+            newGame = new Game(gameCreator);//String.valueOf(m_CurrentGameId++),
+            m_HuntieEntityManager = m_HuntieEntityManagerFactory.createEntityManager();
+            m_HuntieEntityManager.getTransaction().begin();
+            m_HuntieEntityManager.persist(newGame);
             gameCreator.SetUnpublishedGame(newGame);
+            m_HuntieEntityManager.getTransaction().commit();
+            m_HuntieEntityManager.close();
         }
 
         return newGame;
     }
 
-    public static void DeleteGame(String i_GameId) {
-        sr_Games.remove(i_GameId);
+    public void DeleteGame(int i_GameId) {//was String
+        Game game = getGame(i_GameId);
+        if(game != null) {
+            m_HuntieEntityManager = m_HuntieEntityManagerFactory.createEntityManager();
+            m_HuntieEntityManager.getTransaction().begin();
+            m_HuntieEntityManager.remove(game);
+            m_HuntieEntityManager.getTransaction().commit();
+            m_HuntieEntityManager.close();
+        }
     }
 
-    public static boolean IsUserNameUnique(String i_UserName) {
-        boolean nameIsUnique = true;
-        for (User user : sr_Users.values()) {
-            if (user.GetUserName().toLowerCase().equals(i_UserName.toLowerCase())) {
-                nameIsUnique = false;
-                break;
-            }
-        }
+    public boolean IsUserNameUnique(String i_UserName) {
+        boolean nameIsUnique;
+//        for (User user : sr_Users.values()) {
+//            if (user.GetUserName().toLowerCase().equals(i_UserName.toLowerCase())) {
+//                nameIsUnique = false;
+//                break;
+//            }
+//        }
+//        return nameIsUnique;
+        m_HuntieEntityManager = m_HuntieEntityManagerFactory.createEntityManager();
+        TypedQuery<User> query = m_HuntieEntityManager.createQuery("select u from User u where u.m_UserName = :name", User.class);
+        nameIsUnique = query.setParameter("name",i_UserName).getResultList().isEmpty();
+        m_HuntieEntityManager.close();
         return nameIsUnique;
     }
 
-    public static boolean IsEmailUnique(String i_Email) {
-        boolean emailIsUnique = true;
-        for (User user : sr_Users.values()) {
-            if (user.GetEmailAddress().toLowerCase().equals(i_Email.toLowerCase())) {
-                emailIsUnique = false;
-                break;
-            }
-        }
+    public boolean IsEmailUnique(String i_Email) {
+        boolean emailIsUnique;
+//        for (User user : sr_Users.values()) {
+//            if (user.GetEmailAddress().toLowerCase().equals(i_Email.toLowerCase())) {
+//                emailIsUnique = false;
+//                break;
+//            }
+//        }
+//        return emailIsUnique;
+        m_HuntieEntityManager = m_HuntieEntityManagerFactory.createEntityManager();
+        TypedQuery<User> query = m_HuntieEntityManager.createQuery("select u from User u where u.m_EmailAddress = :email", User.class);
+        emailIsUnique = query.setParameter("email",i_Email).getResultList().isEmpty();
+        m_HuntieEntityManager.close();
         return emailIsUnique;
     }
 
-    public static int Login(String i_UserEmail, String i_UserPassword){
-        int token=0;
-        String userId;
+    public SessionToken Login(String i_UserEmail, String i_UserPassword){
+        SessionToken token = new SessionToken();
+        token.SetUser(null);
+        token.SetToken("");
+        User user;
 
-        if(sr_UseerMap.containsKey(i_UserEmail)) {
-            userId = sr_UseerMap.get(i_UserEmail);
-            if (sr_Users.get(userId).GetPassword().equals(i_UserPassword)) {
-                token = generateToken();
+        m_HuntieEntityManager = m_HuntieEntityManagerFactory.createEntityManager();
+        user = m_HuntieEntityManager.find(User.class, i_UserEmail);
+        m_HuntieEntityManager.close();
+        if(user != null) {
+            if(user.GetPassword().equals(i_UserPassword)){//new
+                token = generateSessionToken(user);
             }
         }
 
         return token;
     }
 
-    private static int generateToken(){
-        return 1;
-    }
+    private SessionToken generateSessionToken(User i_User){
+        RandomString sessionToken = new RandomString();
+        SessionToken token = new SessionToken();
+        token.SetToken(sessionToken.nextString());
+        token.SetUser(i_User);
+        token.UpdateExpirationTime();
 
-    public static int FaceBookLogin(String i_AccessToken, Integer i_UserID){
-        int token = 0;
-
-        if(!sr_UseerMap.containsKey(i_AccessToken)) {
-            User user = new User(i_UserID.toString());
-            sr_Users.put(i_AccessToken,user);
+        m_HuntieEntityManager = m_HuntieEntityManagerFactory.createEntityManager();
+        while(m_HuntieEntityManager.contains(token)) {
+            token.SetToken(sessionToken.nextString());
         }
-        token = generateToken();
+        m_HuntieEntityManager.getTransaction().begin();
+        m_HuntieEntityManager.persist(token);
+        m_HuntieEntityManager.getTransaction().commit();
+        m_HuntieEntityManager.close();
+
         return token;
     }
 
-    public static int SignUp(String i_UserEmail, String i_UserPassword, String i_UserName){
+    public SessionToken FaceBookLogin(String i_AccessToken, String i_UserEmail, String i_UserName){//todo modify
+        SessionToken token;
+
+        m_HuntieEntityManager = m_HuntieEntityManagerFactory.createEntityManager();
+        User user = m_HuntieEntityManager.find(User.class, i_UserEmail);
+        if(user == null) {
+            SignUp(i_UserEmail,i_AccessToken,i_UserName);
+        }
+        token = generateSessionToken(user);
+        return token;
+    }
+
+    public int SignUp(String i_UserEmail, String i_UserPassword, String i_UserName){
         //if(!IsEmailUnique(i_UserEmail)){
           //  return -1;
         //}
@@ -128,11 +189,60 @@ public class DatabaseFacade {
 
         try {
             User user = createUser(i_UserName, i_UserPassword, i_UserEmail);
-            sr_UseerMap.put(i_UserEmail,user.GetUserId());
+            m_HuntieEntityManager = m_HuntieEntityManagerFactory.createEntityManager();
+            if(!m_HuntieEntityManager.contains(user)){
+                m_HuntieEntityManager.getTransaction().begin();
+                m_HuntieEntityManager.persist(user);
+                m_HuntieEntityManager.getTransaction().commit();
+            }
+            m_HuntieEntityManager.close();
         }
         catch (Exception e){
 
         }
         return 0;
+    }
+
+    public void Close(){
+        m_HuntieEntityManagerFactory.close();
+    }
+
+    public Boolean IsTokenValid(String i_Token){
+        boolean res = false;
+
+
+        m_HuntieEntityManager = m_HuntieEntityManagerFactory.createEntityManager();
+        SessionToken token = m_HuntieEntityManager.find(SessionToken.class, i_Token);
+        if(token != null){
+            res = token.IsExpiried();
+        }
+        m_HuntieEntityManager.close();
+
+        return res;
+    }
+
+    public void UpdateToken(String i_Token){
+        if(IsTokenValid(i_Token)){
+            m_HuntieEntityManager = m_HuntieEntityManagerFactory.createEntityManager();
+            SessionToken token = m_HuntieEntityManager.find(SessionToken.class, i_Token);
+            token.UpdateExpirationTime();
+            m_HuntieEntityManager.getTransaction().begin();
+            m_HuntieEntityManager.persist(token);
+            m_HuntieEntityManager.getTransaction().commit();
+            m_HuntieEntityManager.close();
+        }
+    }
+
+    public void RefrashTokens(){
+        m_HuntieEntityManager = m_HuntieEntityManagerFactory.createEntityManager();
+        TypedQuery<SessionToken> query = m_HuntieEntityManager.createQuery("select s from SessionToken s ", SessionToken.class);
+        m_HuntieEntityManager.getTransaction().begin();
+        for(SessionToken sessionToken:query.getResultList()){
+            if(sessionToken.IsExpiried()){
+                m_HuntieEntityManager.remove(sessionToken);
+            }
+        }
+        m_HuntieEntityManager.getTransaction().commit();
+        m_HuntieEntityManager.close();
     }
 }

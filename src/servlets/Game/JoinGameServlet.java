@@ -4,7 +4,6 @@ import GameComponents.Game;
 import GameComponents.Team;
 import Util.DatabaseFacade;
 import com.google.gson.Gson;
-import servlets.Util.ServletUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -20,6 +19,7 @@ import java.util.Map;
 
 import static servlets.Util.ServletUtils.SetError;
 
+
 /**
  * Created by Dean on 26/02/2017.
  */
@@ -34,9 +34,12 @@ public class JoinGameServlet extends HttpServlet {
             response.sendRedirect("index.jsp"); //TODO: Change this according to login system
         } else {
             try {
-                Game game = DatabaseFacade.getGame(request.getParameter("gameCode"));
+                //Game game = DatabaseFacade.getGame(request.getParameter("gameCode"));
+                DatabaseFacade databaseFacade = (DatabaseFacade) getServletContext().getAttribute("databaseFacade");
+                Game game = databaseFacade.getGame(Integer.parseInt(request.getParameter("gameCode")));
                 if (game != null) {
-                    game.AddPlayer(userid, Integer.parseInt(request.getParameter("teamIndex")));
+                    //game.AddPlayer(userid, Integer.parseInt(request.getParameter("teamIndex")));
+                    game.AddPlayer(databaseFacade.GetUser(userid),Integer.parseInt((request.getParameter("teamIndex"))));
                 } else {
                     SetError(response, 400, "Game not found");
                 }
@@ -56,8 +59,8 @@ public class JoinGameServlet extends HttpServlet {
             response.sendRedirect("index.jsp"); //TODO: Change this according to login system
         } else {
             try (PrintWriter out = response.getWriter()) {
-                ServletUtils.AssertUserInDatabase(userid);
-                Game game = DatabaseFacade.getGame(request.getParameter("gameCode"));
+                DatabaseFacade databaseFacade = (DatabaseFacade) getServletContext().getAttribute("databaseFacade");
+                Game game = databaseFacade.getGame(Integer.parseInt(request.getParameter("gameCode")));
                 if (game == null) {
                     throw new ServletException("No game was found");
                 }
