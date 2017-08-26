@@ -1,9 +1,6 @@
 package GameComponents;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,6 +10,9 @@ import java.util.Map;
 @Entity
 public class Team {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int m_TeamId;
+
     private String m_TeamName;
 
 //    private final Map<String, Pair<Integer, Integer>> r_PlayerRiddleLevel;

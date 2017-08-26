@@ -1,10 +1,8 @@
 package guest;
  
+import javax.servlet.ServletException;
 import java.io.IOException;
 import java.util.List;
-import javax.servlet.ServletException;
-import javax.servlet.http.*;
-import javax.persistence.*;
  
 public class GuestServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;

@@ -1,8 +1,5 @@
 package guest;
  
-import javax.persistence.*;
-import javax.servlet.*;
- 
 public class GuestListener implements ServletContextListener {
 
     // Prepare the EntityManagerFactory & Enhance:

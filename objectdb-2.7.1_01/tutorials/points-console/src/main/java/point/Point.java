@@ -1,7 +1,6 @@
 package point;
 
 import java.io.Serializable;
-import javax.persistence.*;
 
 @Entity
 public class Point implements Serializable {

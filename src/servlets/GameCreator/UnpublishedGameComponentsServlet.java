@@ -35,9 +35,8 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
             response.sendRedirect("index.jsp"); //TODO: Change this according to login system
         } else {
             try (PrintWriter out = response.getWriter()) {
-                DatabaseFacade databaseFacade = (DatabaseFacade) getServletContext().getAttribute("databaseFacade");
                 //Game game = DatabaseFacade.getGame(DatabaseFacade.GetUser(userid).GetUnpublishedGame().GetGameId());
-                Game game = databaseFacade.getGame(databaseFacade.GetUser(userid).GetUnpublishedGame().GetGameId());
+                Game game = DatabaseFacade.getGame(DatabaseFacade.GetUser(userid).GetUnpublishedGame().GetGameId());
                 if (game != null) {
                     handlePostRequest(request, response, game, userid);
                     out.println(gson.toJson(game.GetGameId()));
@@ -62,10 +61,10 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
             try (PrintWriter out = response.getWriter()) {
                 DatabaseFacade databaseFacade =(DatabaseFacade) getServletContext().getAttribute("databaseFacade");
                 //Game game = DatabaseFacade.GetUser(userid).GetUnpublishedGame();
-                Game game = databaseFacade.GetUser(userid).GetUnpublishedGame();
+                Game game = DatabaseFacade.GetUser(userid).GetUnpublishedGame();
                 if (game == null) {
                     //game = DatabaseFacade.CreateNewGame(userid);
-                    game = databaseFacade.CreateNewGame(userid);
+                    game = DatabaseFacade.CreateNewGame(userid);
                 }
 
                 handleGetRequest(request, out, game);
@@ -147,6 +146,7 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
         game.SetMaxPlayers(maxPlayers);
         game.SetIsTeamGame(isTeamGame);
         game.SetTeamNames(teamMap.keySet());
+        DatabaseFacade.EndTransaction();
     }
 
     private void handleGameBuilderRequest(HttpServletRequest request, Game game) throws ServletException, IOException {

@@ -1,5 +1,6 @@
 package GameComponents;
 
+import Util.DatabaseFacade;
 import Util.Enums.GameStatus;
 
 import javax.persistence.*;
@@ -15,10 +16,10 @@ public class Game {
     private int m_GameId;//was final String
 
     @OneToMany
-    private final List<User> r_Managers = new ArrayList<>();
+    private List<User> m_Managers = new ArrayList<>();
 
     @OneToMany
-    private final List<Team> r_Teams = new ArrayList<>();
+    private List<Team> m_Teams = new ArrayList<>();
 
     @OneToMany
     private List<Level> m_Levels = new ArrayList<>(Riddle.MAX_APPEARANCE + 1);
@@ -34,7 +35,7 @@ public class Game {
     private boolean m_IsTeamGame = false;
 
     public Game(User i_Manager) {//String i_GameId,
-        r_Managers.add(i_Manager);
+        m_Managers.add(i_Manager);
     }
 
     public Game(){}
@@ -73,12 +74,12 @@ public class Game {
     }
 
     public Collection<Team> GetTeams() {
-        return r_Teams;
+        return m_Teams;
     }
 
     public List<String> GetTeamNames() {
         List<String> teamNames = new ArrayList<>();
-        for(Team team : r_Teams) {
+        for(Team team : m_Teams) {
             teamNames.add(team.GetTeamName());
         }
 
@@ -93,13 +94,20 @@ public class Game {
         this.m_IsTeamGame = i_IsTeamGame;
     }
 
+    private void clearTeams() {
+        for (Team team : m_Teams) {
+            DatabaseFacade.RemoveObject(team);
+        }
+        m_Teams.clear();
+    }
+
     public void SetTeamNames(Set<String> teamNames) {
         Team tempTeam;
-        r_Teams.clear();
+        clearTeams();
         for(String team : teamNames) {
-            tempTeam = new Team();
+            tempTeam = DatabaseFacade.CreateNewTeam();
             tempTeam.SetTeamName(team);
-            r_Teams.add(tempTeam);
+            m_Teams.add(tempTeam);
         }
     }
 
@@ -177,7 +185,7 @@ public class Game {
     public void AddPlayer(User i_PlayerToAdd, int i_TeamIdx) {
         //TODO: In the future add not manager check
         if (!IsGameFull()) {
-            Team team = r_Teams.get(i_TeamIdx);
+            Team team = m_Teams.get(i_TeamIdx);
             //User player = DatabaseFacade.GetUser(i_PlayerToAdd);
             if (m_IsTeamGame && team.Count() >= m_MaxPayersInTeam) {
                 throw new ArrayIndexOutOfBoundsException("Team has reached max size");
@@ -230,7 +238,7 @@ public class Game {
 
     public boolean IsPlayerInGame(User i_User) {
         boolean result = false;
-        for (Team team : r_Teams) {
+        for (Team team : m_Teams) {
             if (team.IsPlayerInTeam(i_User)) {
                 result = true;
                 break;
@@ -241,7 +249,7 @@ public class Game {
 
     public Boolean IsPlayerInGame(String i_UserId){
         boolean result = false;
-        for (Team team : r_Teams) {
+        for (Team team : m_Teams) {
             if (team.IsPlayerInTeam(i_UserId)) {
                 result = true;
                 break;
@@ -252,7 +260,7 @@ public class Game {
 
     public boolean IsUserManager(String i_UserEmail) {
         boolean result = false;
-        for (User user : r_Managers) {
+        for (User user : m_Managers) {
             if (i_UserEmail.equals(user.GetEmailAddress())) {
                 result = true;
                 break;
@@ -289,11 +297,11 @@ public class Game {
         m_Levels = condensedRiddles;
 //        if (m_IsTeamGame) {
 //            int firstLevelRiddlesLength = m_Levels.get(0).GetRiddlesCount();
-//            for(Team team : r_Teams) {
+//            for(Team team : m_Teams) {
 //                team.InitTeam(firstLevelRiddlesLength);
 //            }
 //        }
-        for (User manager : r_Managers) {
+        for (User manager : m_Managers) {
            // DatabaseFacade.GetUser(manager.GetEmailAddress()).AddGameToManagerList(m_GameId, m_GameName);//todo recheck
             manager.AddGameToManagerList(this);
         }
@@ -373,7 +381,7 @@ public class Game {
 
     private int getTeamRiddleLevel(String i_TeamName) {
         int teamRiddleLevel = -1;
-        for (Team team : r_Teams) {
+        for (Team team : m_Teams) {
             if (team.GetTeamName().equals(i_TeamName)) {
                 teamRiddleLevel = team.GetTeamRiddleLevel();
                 break;
@@ -390,7 +398,7 @@ public class Game {
 
     private Team getPlayerTeam(User i_User) {
         Team playerTeam = null;
-        for (Team team : r_Teams) {
+        for (Team team : m_Teams) {
             if (team.IsPlayerInTeam(i_User)) {
                 playerTeam = team;
                 break;
@@ -428,7 +436,7 @@ public class Game {
     public Map<String, Integer> GetOtherTeamsScore(User i_User) {//TODO change score to level?
         Team playerTeam = getPlayerTeam(i_User);
         Map<String, Integer> teamsScores = new HashMap<>();
-        for (Team team : r_Teams) {
+        for (Team team : m_Teams) {
             if (team != playerTeam) {
                 teamsScores.put(team.GetTeamName(), team.GetTeamRiddleLevel());
             }

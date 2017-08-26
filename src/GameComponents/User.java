@@ -1,12 +1,8 @@
 package GameComponents;
 
-import Util.DatabaseFacade;
-
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import java.util.*;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Dean on 18/2/2017.
@@ -17,10 +13,10 @@ public class User {
 //    private final String r_UserId;
 
     @OneToMany
-    private final List<Game> r_ManagedGames = new ArrayList<>();
+    private List<Game> m_ManagedGames = new ArrayList<>();
 
     @OneToMany
-    private final List<Game> r_PlayedGames = new ArrayList<>();
+    private List<Game> m_PlayedGames = new ArrayList<>();
 
     private String m_UserName;
     private String m_Password;
@@ -78,11 +74,11 @@ public class User {
     }
 
     public List<Game> GetManagedGames() {
-        return r_ManagedGames;
+        return m_ManagedGames;
     }
 
     public List<Game> GetPlayedGames() {
-        return r_PlayedGames;
+        return m_PlayedGames;
     }
 
 //    public void DeleteUnpublishedGame() {//TODO not belong here
@@ -94,11 +90,11 @@ public class User {
 //    }
 
     public void JoinGameAsPlayer(Game i_Game) {
-        r_PlayedGames.add(i_Game);
+        m_PlayedGames.add(i_Game);
     }
 
     public void AddGameToManagerList(Game i_Game) {
-        r_PlayedGames.remove(i_Game);
-        r_ManagedGames.add(i_Game);
+        m_PlayedGames.remove(i_Game);
+        m_ManagedGames.add(i_Game);
     }
 }

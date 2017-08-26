@@ -1,8 +1,5 @@
 package point;
 
-import javax.persistence.*;
-import java.util.*;
-
 public class Main {
     public static void main(String[] args) {
         // Open a database connection

@@ -1,10 +1,10 @@
 package guest;
  
-import java.io.Serializable;
-import java.sql.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.io.Serializable;
+import java.sql.Date;
  
 @Entity
 public class Guest implements Serializable {
