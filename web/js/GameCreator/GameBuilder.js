@@ -86,7 +86,7 @@ $(document).on("click", "#riddle-reset-btn", resetForm);
 $(document).on("click", ".table > tbody > tr", function(clickedEvent) {
     if (!rowIsMidRemoval) {
         var clickedRowCells = clickedEvent.currentTarget.cells;
-        if (clickedRowCells.length > 0) {
+        if (clickedRowCells.length > 0 && clickedRowCells[0] && clickedRowCells[1]) {
             var clickedRiddle = riddles[clickedRowCells[0].innerText][clickedRowCells[1].innerText];
             edittedRiddleDeleteButton = $(clickedRowCells[clickedRowCells.length - 1]).children();
             editFlag = false;
@@ -156,13 +156,13 @@ function initPageElementsFromServer() {
             $(".temp").hide();
 
             if (serverRiddles.length > 0) {
-                var riddleArrSize = serverRiddles.length;
-                for (var i = 0; i < riddleArrSize; i++) {
+                var levelArrSize = serverRiddles.length;
+                for (var i = 0; i < levelArrSize; i++) {
                     if (serverRiddles[i]) {
                         riddles[i] = [];
-                        var currAppearanceSize = serverRiddles[i].length;
+                        var currAppearanceSize = serverRiddles[i].m_Riddles.length;
                         for (var j = 0; j < currAppearanceSize; j++) {
-                            riddles[i][j] = convertRiddleToClientFormat(serverRiddles[i][j]);
+                            riddles[i][j] = convertRiddleToClientFormat(serverRiddles[i].m_Riddles[j]);
                         }
                     }
                 }

@@ -111,7 +111,7 @@ public class Game {
         }
     }
 
-    public List<Level> GetRiddles() {
+    public List<Level> GetLevels() {
         return m_Levels;
     }
 
@@ -469,5 +469,15 @@ public class Game {
     public int GetTeamLevel(User i_User) {
         Team team = getPlayerTeam(i_User);
         return team.GetPlayerRiddleLevel(i_User) + 1;
+    }
+
+    public Level GetLevel(int levelIndex) {
+        if (m_Levels.size() <= levelIndex) {
+            for (int i = m_Levels.size(); i <= levelIndex; i++) {
+                m_Levels.add(DatabaseFacade.CreateNewLevel());
+            }
+        }
+
+        return m_Levels.get(levelIndex);
     }
 }

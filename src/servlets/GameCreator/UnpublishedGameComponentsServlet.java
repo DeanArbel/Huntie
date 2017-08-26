@@ -1,6 +1,7 @@
 package servlets.GameCreator;
 
 import GameComponents.Game;
+import GameComponents.Level;
 import GameComponents.Riddle;
 import Util.DatabaseFacade;
 import com.google.gson.Gson;
@@ -85,7 +86,7 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
                 out.flush();
                 break;
             case "GameBuilder":
-                out.println(gson.toJson(game.GetRiddles()));
+                out.println(gson.toJson(game.GetLevels()));
                 break;
             default:
                 throw new ServletException("No request was sent");
@@ -109,6 +110,7 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
             default:
                 throw new ServletException("No request was sent");
         }
+        DatabaseFacade.EndTransaction();
         response.setStatus(200);
     }
 
@@ -146,7 +148,6 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
         game.SetMaxPlayers(maxPlayers);
         game.SetIsTeamGame(isTeamGame);
         game.SetTeamNames(teamMap.keySet());
-        DatabaseFacade.EndTransaction();
     }
 
     private void handleGameBuilderRequest(HttpServletRequest request, Game game) throws ServletException, IOException {
@@ -156,8 +157,10 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
             deleteRiddle(game, ((Double)riddleMap.get("level")).intValue(), ((Double)riddleMap.get("index")).intValue());
         }
         else if ("add".equals(gameBuilderRequest)) {
+            Integer levelIndex = ((Double)riddleMap.get("level")).intValue();
+            Level level = game.GetLevel(levelIndex);
             Riddle riddle = buildRiddle(riddleMap);
-            game.AddRiddle(riddle,((Double)riddleMap.get("level")).intValue());
+            level.AddRiddle(riddle);
         }
         else {
             throw new ServletException("No action was given");
@@ -183,6 +186,7 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
         riddle.SetOptionalQuestionImage(optionalImage);
         riddle.setAnswer(answer);
         riddle.setM_Location(location);
+        DatabaseFacade.AddObject(riddle);
         return riddle;
     }
 

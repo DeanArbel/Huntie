@@ -1,9 +1,6 @@
 package Util;
 
-import GameComponents.Game;
-import GameComponents.SessionToken;
-import GameComponents.Team;
-import GameComponents.User;
+import GameComponents.*;
 import GameComponents.Utils.RandomString;
 
 import javax.persistence.*;
@@ -90,6 +87,20 @@ public final class DatabaseFacade {
         refreshEntityManagerAndTransAction();
         m_HuntieEntityManager.persist(team);
         return team;
+    }
+
+    public static Riddle CreateNewRiddle() {
+        Riddle riddle = new Riddle();
+        refreshEntityManagerAndTransAction();
+        m_HuntieEntityManager.persist(riddle);
+        return riddle;
+    }
+
+    public static Level CreateNewLevel() {
+        Level level = new Level();
+        refreshEntityManagerAndTransAction();
+        m_HuntieEntityManager.persist(level);
+        return level;
     }
 
     public static void EndTransaction() {
@@ -262,6 +273,11 @@ public final class DatabaseFacade {
         if (!transaction.isActive()) {
             transaction.begin();
         }
+    }
+
+    public static void AddObject(Object i_NewObject) {
+        refreshEntityManagerAndTransAction();
+        m_HuntieEntityManager.persist(i_NewObject);
     }
 
     public static void RemoveObject(Object i_RemovableObject) {
