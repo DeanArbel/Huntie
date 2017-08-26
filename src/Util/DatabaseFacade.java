@@ -12,9 +12,10 @@ import java.util.List;
  * Created by Dean on 18/2/2017.
  */
 public class DatabaseFacade {
-    private EntityManagerFactory m_HuntieEntityManagerFactory = Persistence.createEntityManagerFactory("$objectdb/db/Huntie.odb");
+    private EntityManagerFactory m_HuntieEntityManagerFactory = Persistence.createEntityManagerFactory("Huntie.odb");
     private EntityManager m_HuntieEntityManager;
-
+    // old path $objectdb/db/Huntie.odb
+    //new path
     public User GetUser(String i_UserEmail) {
         User user;
 

@@ -27,6 +27,7 @@ public class UserListener implements ServletContextListener,
          You can initialize servlet context related data here.
       */
       DatabaseFacade databaseFacade = new DatabaseFacade();
+
       sce.getServletContext().setAttribute("databaseFacade", databaseFacade);
     }
 

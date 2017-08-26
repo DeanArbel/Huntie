@@ -15,7 +15,7 @@
 
         <properties>
             <property name="javax.persistence.jdbc.url"
-                      value="objectdb://localhost/guest.odb"/>
+                      value="objectdb://localhost/Huntie.odb"/>
             <property name="javax.persistence.jdbc.user" value="admin"/>
             <property name="javax.persistence.jdbc.password" value="admin"/>
         </properties>
