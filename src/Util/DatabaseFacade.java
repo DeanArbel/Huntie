@@ -6,7 +6,6 @@ import GameComponents.User;
 import GameComponents.Utils.RandomString;
 
 import javax.persistence.*;
-import java.util.List;
 
 /**
  * Created by Dean on 18/2/2017.
@@ -19,18 +18,20 @@ public class DatabaseFacade {
     public User GetUser(String i_UserEmail) {
         User user;
 
-        m_HuntieEntityManager = m_HuntieEntityManagerFactory.createEntityManager();
+        refreshEntityManagerAndTransAction();
         user = m_HuntieEntityManager.find(User.class, i_UserEmail);
-        m_HuntieEntityManager.close();
+        m_HuntieEntityManager.persist(user);
         return user;
     }
 
-    public Game getGame(int i_GameId) {//was String i_GameId
-        Game game;
+    public Game getGame(Integer i_GameId) {//was String i_GameId
+        Game game = null;
+        if (i_GameId != null) {
+            refreshEntityManagerAndTransAction();
+            game = m_HuntieEntityManager.find(Game.class, i_GameId);
+            m_HuntieEntityManager.close();
+        }
 
-        m_HuntieEntityManager = m_HuntieEntityManagerFactory.createEntityManager();
-        game = m_HuntieEntityManager.find(Game.class, i_GameId);
-        m_HuntieEntityManager.close();
         return game;
     }
 
@@ -73,28 +74,36 @@ public class DatabaseFacade {
 
         User gameCreator = GetUser(i_UserEmail);
         if (gameCreator != null) {
-           // gameCreator.DeleteUnpublishedGame();
-            DeleteGame(gameCreator.GetUnpublishedGame().GetGameId());
-            newGame = new Game(gameCreator);//String.valueOf(m_CurrentGameId++),
-            m_HuntieEntityManager = m_HuntieEntityManagerFactory.createEntityManager();
-            m_HuntieEntityManager.getTransaction().begin();
+            DeleteGame(gameCreator.GetUnpublishedGame());
+            newGame = new Game(gameCreator);
             m_HuntieEntityManager.persist(newGame);
             gameCreator.SetUnpublishedGame(newGame);
-            m_HuntieEntityManager.getTransaction().commit();
-            m_HuntieEntityManager.close();
+            endTransaction();
         }
 
         return newGame;
     }
 
-    public void DeleteGame(int i_GameId) {//was String
-        Game game = getGame(i_GameId);
-        if(game != null) {
-            m_HuntieEntityManager = m_HuntieEntityManagerFactory.createEntityManager();
-            m_HuntieEntityManager.getTransaction().begin();
-            m_HuntieEntityManager.remove(game);
-            m_HuntieEntityManager.getTransaction().commit();
-            m_HuntieEntityManager.close();
+    private void endTransaction() {
+        m_HuntieEntityManager.getTransaction().commit();
+        m_HuntieEntityManager.close();
+    }
+
+    private void refreshUser(User i_User) {
+        m_HuntieEntityManager = m_HuntieEntityManagerFactory.createEntityManager();
+        User user = m_HuntieEntityManager.find(User.class,i_User.GetEmailAddress());
+        m_HuntieEntityManager.getTransaction().begin();
+        user.SetUnpublishedGame(i_User.GetUnpublishedGame());
+        m_HuntieEntityManager.persist(user);
+        m_HuntieEntityManager.getTransaction().commit();
+        m_HuntieEntityManager.close();
+    }
+
+    public void DeleteGame(Game i_Game) {//was String
+        if(i_Game != null) {
+            refreshEntityManagerAndTransAction();
+            m_HuntieEntityManager.persist(i_Game);
+            m_HuntieEntityManager.remove(i_Game);
         }
     }
 
@@ -245,5 +254,15 @@ public class DatabaseFacade {
         }
         m_HuntieEntityManager.getTransaction().commit();
         m_HuntieEntityManager.close();
+    }
+
+    private void refreshEntityManagerAndTransAction() {
+        if (m_HuntieEntityManager == null || !m_HuntieEntityManager.isOpen()) {
+            m_HuntieEntityManager = m_HuntieEntityManagerFactory.createEntityManager();
+        }
+        EntityTransaction transaction = m_HuntieEntityManager.getTransaction();
+        if (!transaction.isActive()) {
+            transaction.begin();
+        }
     }
 }
