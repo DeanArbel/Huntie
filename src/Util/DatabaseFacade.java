@@ -16,7 +16,9 @@ public final class DatabaseFacade {
         User user;
         refreshEntityManagerAndTransAction();
         user = m_HuntieEntityManager.find(User.class, i_UserEmail);
-        m_HuntieEntityManager.persist(user);
+        if (user != null) {
+            m_HuntieEntityManager.persist(user);
+        }
         return user;
     }
 

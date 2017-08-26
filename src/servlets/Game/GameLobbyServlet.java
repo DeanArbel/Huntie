@@ -13,7 +13,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import static servlets.Util.ServletUtils.SetError;
 
@@ -29,14 +31,15 @@ public class GameLobbyServlet extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
         //String username = SessionUtils.getUsername(request);
         DatabaseFacade databaseFacade = (DatabaseFacade) getServletContext().getAttribute("databaseFacade");
-        User user = databaseFacade.GetUser(request.getParameter("userEmail"));
+//        User user = DatabaseFacade.GetUser(request.getParameter("userEmail"));
+        User user = DatabaseFacade.GetUser("1");
         if (user == null) {
             response.sendRedirect("index.jsp"); //TODO: Change this according to login system
         } else {
             try (PrintWriter out = response.getWriter()) {
                 //ServletUtils.AssertUserInDatabase(user);
                 //Game game = DatabaseFacade.getGame(request.getParameter("gameCode"));
-                Game game = databaseFacade.getGame(Integer.parseInt(request.getParameter("gameCode")));
+                Game game = DatabaseFacade.getGame(Integer.parseInt(request.getParameter("gameCode")));
                 if (game == null) {
                     throw new ServletException("No game was found");
                 }
@@ -47,8 +50,11 @@ public class GameLobbyServlet extends HttpServlet {
         }
     }
 
-    private void handleGetRequest(HttpServletRequest request, PrintWriter out, User user, Game game) {
+    private void handleGetRequest(HttpServletRequest request, PrintWriter out, User user, Game game) throws Exception {
         String playerReq = request.getParameter("request");
+        if (!game.IsPlayerInGame(user)) {
+            throw new Exception("Player not in game");
+        }
         switch(playerReq) {
             case "getGameInfo":
                 handleGameInfoRequest(out, user, game);
@@ -84,8 +90,8 @@ public class GameLobbyServlet extends HttpServlet {
         responseData.put("playerHasWon", playerHasWon);
         responseData.put("riddlesNameAndLocations", riddlesNameAndLocations);
         responseData.put("gameName", game.GetGameName());
-        responseData.put("startTime", game.GetStartTime());
-        responseData.put("endTime", game.GetEndTime());
+        responseData.put("startTime", game.GetStartTime().getTime());
+        responseData.put("endTime", game.GetEndTime().getTime());
         out.println(gson.toJson(responseData));
     }
 }

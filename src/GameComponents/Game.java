@@ -190,11 +190,9 @@ public class Game {
             if (m_IsTeamGame && team.Count() >= m_MaxPayersInTeam) {
                 throw new ArrayIndexOutOfBoundsException("Team has reached max size");
             }
-            else if (m_IsTeamGame) {
-//                int riddleLevel = m_IsTeamGame ? 0 : m_Levels.get(0).size();
-                team.AddPlayer(i_PlayerToAdd, m_Levels.get(0));//was i_playerToAdd
-                m_PlayersInGame++;
-            }
+
+            team.AddPlayer(i_PlayerToAdd, m_Levels.get(0));//was i_playerToAdd
+            m_PlayersInGame++;
             i_PlayerToAdd.JoinGameAsPlayer(this);//was m_GameId
         }
         else {

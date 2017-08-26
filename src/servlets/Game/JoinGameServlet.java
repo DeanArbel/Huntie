@@ -35,11 +35,10 @@ public class JoinGameServlet extends HttpServlet {
         } else {
             try {
                 //Game game = DatabaseFacade.getGame(request.getParameter("gameCode"));
-                DatabaseFacade databaseFacade = (DatabaseFacade) getServletContext().getAttribute("databaseFacade");
-                Game game = databaseFacade.getGame(Integer.parseInt(request.getParameter("gameCode")));
+                Game game = DatabaseFacade.getGame(Integer.parseInt(request.getParameter("gameCode")));
                 if (game != null) {
-                    //game.AddPlayer(userid, Integer.parseInt(request.getParameter("teamIndex")));
-                    game.AddPlayer(databaseFacade.GetUser(userid),Integer.parseInt((request.getParameter("teamIndex"))));
+                    game.AddPlayer(DatabaseFacade.GetUser(userid),Integer.parseInt((request.getParameter("teamIndex"))));
+                    DatabaseFacade.EndTransaction();
                 } else {
                     SetError(response, 400, "Game not found");
                 }
