@@ -38,12 +38,13 @@ public class JoinGameServlet extends HttpServlet {
                 Game game = DatabaseFacade.getGame(Integer.parseInt(request.getParameter("gameCode")));
                 if (game != null) {
                     game.AddPlayer(DatabaseFacade.GetUser(userid),Integer.parseInt((request.getParameter("teamIndex"))));
-                    DatabaseFacade.EndTransaction();
                 } else {
-                    SetError(response, 400, "Game not found");
+                    throw new ServletException("Game not found");
                 }
+                DatabaseFacade.EndTransaction();
             }
             catch (Exception e) {
+                DatabaseFacade.RollbackTransaction();
                 SetError(response, 400, e.getMessage());
             }
         }
@@ -58,14 +59,15 @@ public class JoinGameServlet extends HttpServlet {
             response.sendRedirect("index.jsp"); //TODO: Change this according to login system
         } else {
             try (PrintWriter out = response.getWriter()) {
-                DatabaseFacade databaseFacade = (DatabaseFacade) getServletContext().getAttribute("databaseFacade");
-                Game game = databaseFacade.getGame(Integer.parseInt(request.getParameter("gameCode")));
+                Game game = DatabaseFacade.getGame(Integer.parseInt(request.getParameter("gameCode")));
                 if (game == null) {
                     throw new ServletException("No game was found");
                 }
                 handleGetRequest(out, userid, game);
             } catch (Exception e) {
                 SetError(response, 400, e.getMessage());
+            } finally {
+                DatabaseFacade.EndTransaction();
             }
         }
     }

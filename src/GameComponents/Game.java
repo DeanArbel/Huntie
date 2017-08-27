@@ -35,10 +35,13 @@ public class Game {
     private boolean m_IsTeamGame = false;
 
     public Game(User i_Manager) {//String i_GameId,
+        this();
         m_Managers.add(i_Manager);
     }
 
-    public Game(){}
+    public Game(){
+
+    }
 
     public String GetGameName() {
         return m_GameName;
@@ -115,78 +118,17 @@ public class Game {
         return m_Levels;
     }
 
-    public void ClearRiddles() { m_Levels.clear(); }
-
-    public void ClearLevel(int i_LevelNum){
-        for(Level level:m_Levels){
-            if(level.GetIndex()==i_LevelNum){
-                level.ClearRiddles();
-                break;
-            }
+    public void DeleteRiddle(int i_LevelIdx, int i_RiddleIdx) {
+        Level level = m_Levels.get(i_LevelIdx);
+        if(level != null) {
+            level.RemoveRiddle(i_RiddleIdx);
         }
-    }
-
-    public void RemoveLevel(int i_LevelNum){
-        for(Level level:m_Levels){
-            if(level.GetIndex() == i_LevelNum){
-                m_Levels.remove(level);
-                break;
-            }
-        }
-    }
-
-    public void AddRiddle(Riddle riddle, int i_LevelNum) {
-        Level level = findOrAddLevel(i_LevelNum, true);
-        if(!level.IsRiddleInLevel(riddle)) {
-            level.AddRiddle(riddle);
-            level.SortRiddles();
-        }
-//        int riddleIndex = riddle.getAppearanceNumber();
-//        if (m_Levels.size() <= riddleIndex) {
-//            for (int i = m_Levels.size(); i < riddleIndex; i++) {
-//                m_Levels.add(i, null);
-//            }
-//            m_Levels.add(riddleIndex, new ArrayList<>());
-//        }
-//        else if (m_Levels.get(riddleIndex) == null) {
-//            m_Levels.set(riddleIndex, new ArrayList<>());
-//        }
-//        m_Levels.get(riddleIndex).add(riddle);
-    }
-
-    private Level findOrAddLevel(int i_LevelNum, boolean i_IsAddOn){
-        for(Level level:m_Levels){
-            if(level.GetIndex() == i_LevelNum)
-                return level;
-        }
-
-        Level level = null;
-        if(i_IsAddOn) {
-            level = new Level();
-            level.SetIndex(i_LevelNum);
-        }
-        return level;
-    }
-
-    public void AddLevel(Level i_Level){
-        if(!m_Levels.contains(i_Level)) {
-            m_Levels.add(i_Level);
-        }
-    }
-
-    public void DeleteRiddle(int i_AppearanceNumber, int i_LevelNum) {
-        Level level = findOrAddLevel(i_LevelNum,false);
-        if(level != null){
-            level.RemoveRiddle(i_AppearanceNumber);
-        }
-//        m_Levels.get(appearanceNumber).remove(index);
     }
 
     public void AddPlayer(User i_PlayerToAdd, int i_TeamIdx) {
         //TODO: In the future add not manager check
         if (!IsGameFull()) {
             Team team = m_Teams.get(i_TeamIdx);
-            //User player = DatabaseFacade.GetUser(i_PlayerToAdd);
             if (m_IsTeamGame && team.Count() >= m_MaxPayersInTeam) {
                 throw new ArrayIndexOutOfBoundsException("Team has reached max size");
             }
@@ -328,23 +270,23 @@ public class Game {
         assertRiddleCanBeSolved(i_Riddle, i_User); // Al
         if (i_Riddle.CheckAnswer(i_Answer)) {
             Team playerTeam = getPlayerTeam(i_User);
+            i_Riddle.UserSolvedRiddle(i_User, playerTeam);
+            userSolvedRiddle = true;
             int nextLevel = playerTeam.GetTeamRiddleLevel() + 1;
+            Level level = m_Levels.size() > nextLevel ?  m_Levels.get(nextLevel) : null;
             if (m_IsTeamGame) {
                 // Updates riddles solved and to be solved for team
                 if (i_Riddle.IsSolvedByTeam(playerTeam)) {//was playerTeam.GetTeamName()
                     //Integer nextRiddleSetSize = m_Levels.size() > nextLevel ? m_Levels.get(nextLevel).size() : null;
-                    playerTeam.TeamSolvedRiddle(m_Levels.get(nextLevel));
+                    playerTeam.TeamSolvedRiddle(level);
                 }
             }
             // Updates riddles solved and to be solved for player
             else {
                 //Integer nextRiddleSetSize = playerTeam.GetPlayerRiddleLevel(i_User) + 1;
                 //nextRiddleSetSize = m_Levels.size() > nextRiddleSetSize ? nextRiddleSetSize : null;
-                playerTeam.PlayerSolvedRiddle(i_User, m_Levels.get(nextLevel));
+                playerTeam.PlayerSolvedRiddle(i_User, level);
             }
-
-            i_Riddle.UserSolvedRiddle(i_User, playerTeam);//was i_UserId, playerTeam.GetTeamName()
-            userSolvedRiddle = true;
         }
 
         return userSolvedRiddle;
@@ -406,7 +348,7 @@ public class Game {
         return playerTeam;
     }
 
-    public Map<User,Integer> GetPlayerTeamScore(User i_User) {///TODO change to ScoreCurrentLevel or remove
+    public Map<String,Integer> GetPlayerTeamScore(User i_User) {///TODO change to ScoreCurrentLevel or remove
         Team team = getPlayerTeam(i_User);
         return team.GetTeamScoresForCurrentLevel();
     }
@@ -436,7 +378,7 @@ public class Game {
         Map<String, Integer> teamsScores = new HashMap<>();
         for (Team team : m_Teams) {
             if (team != playerTeam) {
-                teamsScores.put(team.GetTeamName(), team.GetTeamRiddleLevel());
+                teamsScores.put(team.GetTeamName(), team.GetTeamRiddleLevel() + 1);
             }
         }
 
@@ -453,10 +395,12 @@ public class Game {
         }
     }
 
-    public Riddle GetUserRiddleById(Integer i_AppearanceNumber, User i_User){
+    public Riddle GetUserRiddleById(Integer i_Id, User i_User){
         Team team = getPlayerTeam(i_User);
-
-        return m_Levels.get(team.GetPlayerRiddleLevel(i_User)).GetRiddle(i_AppearanceNumber);
+        if (m_IsTeamGame) {
+            return m_Levels.get(team.GetTeamRiddleLevel()).GetRiddleById(i_Id);
+        }
+        return m_Levels.get(team.GetPlayerRiddleLevel(i_User)).GetRiddleById(i_Id);
     }
 
     public String GetPlayerTeamName(User i_User) {
@@ -472,7 +416,7 @@ public class Game {
     public Level GetLevel(int levelIndex) {
         if (m_Levels.size() <= levelIndex) {
             for (int i = m_Levels.size(); i <= levelIndex; i++) {
-                m_Levels.add(DatabaseFacade.CreateNewLevel());
+                m_Levels.add(DatabaseFacade.CreateNewLevel(i - 1));
             }
         }
 

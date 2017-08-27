@@ -39,7 +39,9 @@ public class ProfileServlet extends HttpServlet {
         } else {
             try (PrintWriter out = response.getWriter()) {
                 handleGetRequest(request.getParameter("request"), out, userid);
+                DatabaseFacade.EndTransaction();
             } catch (Exception e) {
+                DatabaseFacade.RollbackTransaction();
                 SetError(response, 400, e.getMessage());
             }
         }
@@ -47,8 +49,7 @@ public class ProfileServlet extends HttpServlet {
 
     private void handleGetRequest(String i_RequestType, PrintWriter out, String i_Userid) throws ServletException {
         Map<String, Object> responseMap = new HashMap<>();
-        DatabaseFacade databaseFacade = (DatabaseFacade) getServletContext().getAttribute("databaseFacade");
-        User user = databaseFacade.GetUser(i_Userid);
+        User user = DatabaseFacade.GetUser(i_Userid);
         //User user = DatabaseFacade.GetUser(i_Userid);
         switch (i_RequestType) {
             case "Tables":

@@ -86,7 +86,7 @@ function initGameTable(table, gamesObject) {
     if (size > 0) {
         for (var i = 0; i < size; i++) {
             var $eRow = $('<tr>');
-            $eRow.append('<td>' + gamesObject[keys[i]] + '</td>');
+            $eRow.append('<td style="width:' + mPlayerGamesTable.width() + 'px">' + gamesObject[keys[i]] + '</td>');
             $eRow.append('<td hidden>' + keys[i] + '</td>');
             table.append($eRow);
         }

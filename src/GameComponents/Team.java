@@ -55,6 +55,9 @@ public class Team {
     }
 
     public void AddPlayer(User i_PlayerToAdd, Level i_Level) {
+        if (m_TeamRiddleLevel == null) {
+            m_TeamRiddleLevel = i_Level;
+        }
         m_PlayerLevels.put(i_PlayerToAdd, i_Level);
     }
 
@@ -74,6 +77,9 @@ public class Team {
 //    }
 
     public int GetTeamRiddleLevel() {
+        if (m_TeamRiddleLevel == null) {
+            return 0;
+        }
         return m_TeamRiddleLevel.GetIndex();
     }
 
@@ -98,11 +104,11 @@ public class Team {
         return teamHasWon;
     }
 
-    public Map<User,Integer> GetTeamScoresForCurrentLevel() {//Returns Team Scores fo
-        Map<User,Integer> teamScores = new HashMap<>();
+    public Map<String,Integer> GetTeamScoresForCurrentLevel() {//Returns Team Scores fo
+        Map<String,Integer> teamScores = new HashMap<>();
         for (Map.Entry<User, Level> entry : m_PlayerLevels.entrySet()) {
             User user = entry.getKey();
-            teamScores.put(user, entry.getValue().GetRiddlesSolvedByPlayer(user).size());
+            teamScores.put(user.GetUserName(), entry.getValue().GetRiddlesSolvedByPlayer(user).size());
         }
 
         return teamScores;

@@ -14,6 +14,8 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
+import static servlets.Util.ServletUtils.SetError;
+
 
 /**
  * Created by Dean on 27/02/2017.
@@ -30,14 +32,15 @@ public class FindGameServlet extends HttpServlet {
         } else {
             try (PrintWriter out = response.getWriter()) {
                 //Game game = DatabaseFacade.getGame(request.getParameter("gameCode"));
-                DatabaseFacade databaseFacade = (DatabaseFacade) getServletContext().getAttribute("databaseFacade");
-                Game game = databaseFacade.getGame(Integer.parseInt(request.getParameter("gameCode")));
+                Game game = DatabaseFacade.getGame(Integer.parseInt(request.getParameter("gameCode")));
                 if (game == null) {
                     throw new ServletException("No game was found");
                 }
                 handleGetRequest(out, userid, game);
+                DatabaseFacade.EndTransaction();
             } catch (Exception e) {
-//                SetError(response, 400, e.getMessage());
+                DatabaseFacade.RollbackTransaction();
+                SetError(response, 400, e.getMessage());
             }
         }
     }

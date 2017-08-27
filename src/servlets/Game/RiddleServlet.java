@@ -16,6 +16,8 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
+import static servlets.Util.ServletUtils.SetError;
+
 
 /**
  * Created by Dean on 03/03/2017.
@@ -27,21 +29,21 @@ public class RiddleServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
         //String username = SessionUtils.getUsername(request);
-        DatabaseFacade databaseFacade = (DatabaseFacade) getServletContext().getAttribute("databaseFacade");
-        User user = databaseFacade.GetUser(request.getParameter("userEmail"));
+        User user = DatabaseFacade.GetUser("1");
         if (user == null) {
             response.sendRedirect("index.jsp"); //TODO: Change this according to login system
         } else {
             try (PrintWriter out = response.getWriter()) {
                // ServletUtils.AssertUserInDatabase(user);
-//                Game game = DatabaseFacade.getGame(request.getParameter("gameCode"));
-                Game game = databaseFacade.getGame(Integer.parseInt(request.getParameter("gameCode")));
+                Game game = DatabaseFacade.getGame(Integer.parseInt(request.getParameter("gameCode")));
                 if (game == null) {
                     throw new ServletException("No game was found");
                 }
                 handlePostRequest(request, user, out, game, game.GetUserRiddleById(Integer.parseInt(request.getParameter("riddleCode")),user));
+                DatabaseFacade.EndTransaction();
             } catch (Exception e) {
-//                SetError(response, 400, e.getMessage());
+                DatabaseFacade.RollbackTransaction();
+                SetError(response, 400, e.getMessage());
             }
         }
     }
@@ -56,23 +58,24 @@ public class RiddleServlet extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         //String username = SessionUtils.getUsername(request);
-        DatabaseFacade databaseFacade = (DatabaseFacade) getServletContext().getAttribute("databaseFacade");
-        User user = databaseFacade.GetUser(request.getParameter("userEmail"));
+        User user = DatabaseFacade.GetUser("1");
         if (user == null) {
             response.sendRedirect("index.jsp"); //TODO: Change this according to login system
         } else {
             try (PrintWriter out = response.getWriter()) {
                 //ServletUtils.AssertUserInDatabase(user);
                 //Game game = DatabaseFacade.getGame(request.getParameter("gameCode"));
-                Game game = databaseFacade.getGame(Integer.parseInt(request.getParameter("gameCode")));
+                Game game = DatabaseFacade.getGame(Integer.parseInt(request.getParameter("gameCode")));
                 if (game == null) {
                     throw new ServletException("No game was found");
                 }
                 Riddle riddle = game.GetUserRiddleById(Integer.parseInt(request.getParameter("riddleCode")),user);
                 handleGetRequest(out, user, riddle);
+                DatabaseFacade.EndTransaction();
                 // TODO: Prevent user from accessing riddle unless he's in area
             } catch (Exception e) {
-                //SetError(response, 400, e.getMessage());
+                DatabaseFacade.RollbackTransaction();
+                SetError(response, 400, e.getMessage());
             }
         }
     }

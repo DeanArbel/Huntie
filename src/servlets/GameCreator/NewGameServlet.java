@@ -23,8 +23,7 @@ public class NewGameServlet extends javax.servlet.http.HttpServlet {
             response.sendRedirect("index.jsp"); //TODO: Change this according to login system
         } else {
             try {
-                DatabaseFacade databaseFacade = (DatabaseFacade) getServletContext().getAttribute("databaseFacade");
-                if (databaseFacade.DoesUserHaveAnUnpublishedGame(userid)) {
+                if (DatabaseFacade.DoesUserHaveAnUnpublishedGame(userid)) {
                     if ("true".equals(request.getParameter("createNewGame"))) {
                         createNewGame(response, userid);
                     } else {
@@ -35,14 +34,14 @@ public class NewGameServlet extends javax.servlet.http.HttpServlet {
                 }
             }
             catch(Exception e) {
+                DatabaseFacade.RollbackTransaction();
                 SetError(response, 400, e.getMessage());
             }
         }
     }
 
     private void createNewGame(HttpServletResponse i_Response, String i_UserId) throws IOException {
-        DatabaseFacade databaseFacade = (DatabaseFacade) getServletContext().getAttribute("databaseFacade");
-        databaseFacade.CreateNewGame(i_UserId);
+        DatabaseFacade.CreateNewGame(i_UserId);
         i_Response.sendRedirect("/Manager/GameType.html");
     }
 }

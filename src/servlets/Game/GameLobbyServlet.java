@@ -44,7 +44,9 @@ public class GameLobbyServlet extends HttpServlet {
                     throw new ServletException("No game was found");
                 }
                 handleGetRequest(request, out, user, game);
+                DatabaseFacade.EndTransaction();
             } catch (Exception e) {
+                DatabaseFacade.RollbackTransaction();
                 SetError(response, 400, e.getMessage());
             }
         }
@@ -68,10 +70,9 @@ public class GameLobbyServlet extends HttpServlet {
         Map<String, Object> responseData = new HashMap();
         responseData.put("isTeamGame", game.IsTeamGame());
         if (game.IsTeamGame()) {
-            responseData.put("myTeamScore", game.GetPlayerTeamScore(user));
             responseData.put("otherTeamsScore", game.GetOtherTeamsScore(user));
             responseData.put("myTeamName", game.GetPlayerTeamName(user));
-            responseData.put("myTeamLevel", game.GetTeamLevel(user));
+            responseData.put("myTeamScore", game.GetPlayerTeamScore(user));
         }
         out.println(gson.toJson(responseData));
     }
@@ -82,13 +83,19 @@ public class GameLobbyServlet extends HttpServlet {
         boolean playerHasWon = game.HasPlayerWon(user);
         Map<String, Object> responseData = new HashMap();
         Map<String, String> riddlesNameAndLocations = new HashMap<>();
+        Map<String, Integer> riddleNamesAndIds = new HashMap<>();
         if (!playerHasWon && endTime.after(now)) {
             for (Riddle riddle : game.GetUserRiddlesToSolve(user)) {
                 riddlesNameAndLocations.put(riddle.getName(), riddle.getM_Location());
+                riddleNamesAndIds.put(riddle.getName(), riddle.getId());
             }
         }
         responseData.put("playerHasWon", playerHasWon);
-        responseData.put("riddlesNameAndLocations", riddlesNameAndLocations);
+        if (!playerHasWon) {
+            responseData.put("myLevel", game.GetTeamLevel(user));
+            responseData.put("riddlesNamesAndLocations", riddlesNameAndLocations);
+            responseData.put("riddlesNamesAndIds", riddleNamesAndIds);
+        }
         responseData.put("gameName", game.GetGameName());
         responseData.put("startTime", game.GetStartTime().getTime());
         responseData.put("endTime", game.GetEndTime().getTime());

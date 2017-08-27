@@ -1,5 +1,7 @@
 package GameComponents;
 
+import Util.DatabaseFacade;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,6 +21,11 @@ public class Level {
     @OneToMany
     private List<Riddle> m_Riddles;
 
+    public Level(int i_Index) {
+        this();
+        m_Index = i_Index;
+    }
+
     public Level() {
         m_Riddles = new ArrayList<>();
     }
@@ -34,11 +41,11 @@ public class Level {
     }
 
     public void RemoveRiddle(int i_AppearanceNumber){
-        for(Riddle riddle: m_Riddles){
-            if(riddle.getAppearanceNumber() == i_AppearanceNumber){
-                m_Riddles.remove(riddle);
-            }
-        }
+        Riddle riddleToRemove = m_Riddles.get(i_AppearanceNumber);
+        DatabaseFacade.PersistObject(this);
+        DatabaseFacade.PersistObject(riddleToRemove);
+        m_Riddles.remove(riddleToRemove);
+        DatabaseFacade.RemoveObject(riddleToRemove);
     }
 
     public List<Riddle> GetRiddlesNotSolvedByPlayer(User i_User) {
@@ -78,14 +85,6 @@ public class Level {
     }
 
     public List<Riddle> GetRiddlesNotSolvedByTeam(Team i_Team) {
-//        List<Riddle> notSolved = new ArrayList<>();
-//        for (Riddle riddle : m_Riddles) {
-//            if (!riddle.IsSolvedByTeam(i_Team)) {
-//                notSolved.add(riddle);
-//            }
-//        }
-//
-//        return notSolved;
         return getTeamRiddles(i_Team,false);
     }
 
@@ -116,5 +115,15 @@ public class Level {
 
     public int GetRiddlesCount(){
         return m_Riddles.size();
+    }
+
+    public Riddle GetRiddleById(Integer i_id) {
+        for (Riddle riddle : m_Riddles) {
+            if (riddle.getId() == i_id) {
+                return riddle;
+            }
+        }
+
+        throw new NullPointerException("Riddle not found");
     }
 }

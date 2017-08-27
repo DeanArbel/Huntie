@@ -3,6 +3,7 @@
  */
 var mGameEndedMessage;
 var mGameName;
+var mRiddlesIds;
 var mPlayerMessage;
 var mGameTimeMessage;
 var mPlayerWonMessage;
@@ -10,7 +11,7 @@ var mTeamTable;
 var mOthersTable;
 var mRiddleTable;
 var mClickedRow;
-var mChosenRiddleIdx;
+var mChosenRiddleId;
 var mGameCode;
 var mIsGameActive;
 var mHasGameStarted;
@@ -21,6 +22,8 @@ var RADIUS_LEN = 50;
 
 $(function () {
     sessionStorage.setItem("PrevPage", "GameLobby");
+    $(".lobby-container").hide();
+    $(".riddle-content").hide();
     initGlobalVars();
     initPageElementsFromServer();
 });
@@ -31,7 +34,7 @@ $(document).on("click", "#riddle-table > tbody > tr", function(clickedEvent) {
     }
     mClickedRow = clickedEvent.currentTarget;
     mClickedRow.classList.add("active");
-    mChosenRiddleIdx = clickedEvent.currentTarget.rowIndex - 1;
+    mChosenRiddleId = mRiddlesIds[clickedEvent.currentTarget.rowIndex - 1];
     mSolveRiddleBtn.disabled = false;
 });
 
@@ -40,7 +43,7 @@ $(document).on("click", "#prevPage-btn", function() {
 });
 
 $(document).on("click", "#solveRiddle-btn", function() {
-   window.location.href =   "/Player/Riddle.html?gameCode=" + mGameCode + "&riddle=" + mChosenRiddleIdx;
+   window.location.href =   "/Player/Riddle.html?gameCode=" + mGameCode + "&riddle=" + mChosenRiddleId;
 });
 
 function initGlobalVars() {
@@ -77,17 +80,19 @@ function initPageElementsFromServer() {
             $(".lobby-container").show();
             if (gameData.playerHasWon) {
                 mPlayerWonMessage.show();
+            } else {
+                if (mIsGameActive && mHasGameStarted) {
+                    mPlayerMessage[0].innerText = "Level " + gameData.myLevel;
+                    initRiddleTable(gameData.riddlesNamesAndLocations, gameData.riddlesNamesAndIds);
+                }
+                else if (!mHasGameStarted) {
+                    mPlayerMessage[0].innerText = "The Game hasn't started yet, please come again later";
+                }
+                else {
+                    mGameEndedMessage.show();
+                }
+                getNonCrucialPageElementsFromServer();
             }
-            if (mIsGameActive && mHasGameStarted) {
-                initRiddleTable(gameData.riddlesNameAndLocations);
-            }
-            else if (!mHasGameStarted) {
-                mPlayerMessage[0].innerText = "The Game hasn't started yet, please come again later";
-            }
-            else {
-                mGameEndedMessage.show();
-            }
-            getNonCrucialPageElementsFromServer();
         },
         error: function(err) {
             mPlayerMessage[0].innerText = err;
@@ -104,7 +109,6 @@ function getNonCrucialPageElementsFromServer() {
             if (gameData.isTeamGame) {
                 $('.score-content').show();
                 $('#message-my-team-score')[0].innerHTML = gameData.myTeamName + " Scores";
-                mPlayerMessage[0].innerText = "Level " + gameData.myTeamLevel;
                 initTeamTable(gameData.myTeamScore);
                 initOthersTable(gameData.otherTeamsScore);
             }
@@ -112,28 +116,30 @@ function getNonCrucialPageElementsFromServer() {
     });
 }
 
-function initRiddleTable(riddlesNameAndLocations) {
+function initRiddleTable(riddlesNameAndLocations, riddleNamesAndIds) {
     if ({} !== riddlesNameAndLocations) {
         $('.riddle-content').show();
         mRiddleTable.show();
+        mRiddlesIds = [];
         for (var name in riddlesNameAndLocations) {
             if (riddlesNameAndLocations[name] !== "") {
                 var positionArr = stringToLatLng(riddlesNameAndLocations[name]);
                 addIconToMap(name, positionArr[0], positionArr[1]);
                 if (isPlayerInAreaRadius(positionArr[0], positionArr[1])) {
-                    addItemToRiddleTable(name);
+                    addItemToRiddleTable(name, riddleNamesAndIds[name]);
                 }
             } else {        // If riddle has no position
-                addItemToRiddleTable(name);
+                addItemToRiddleTable(name, riddleNamesAndIds[name]);
             }
         }
     }
 }
 
-function addItemToRiddleTable(name) {
+function addItemToRiddleTable(name, id) {
     var $eRow = $('<tr>');
     $eRow.append('<td>' + name + '</td>');
     mRiddleTable.append($eRow);
+    mRiddlesIds.push(id);
 }
 
 function initTeamTable(teamScores) {

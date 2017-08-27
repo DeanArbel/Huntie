@@ -98,8 +98,8 @@ public final class DatabaseFacade {
         return riddle;
     }
 
-    public static Level CreateNewLevel() {
-        Level level = new Level();
+    public static Level CreateNewLevel(int i_LevelIdx) {
+        Level level = new Level(i_LevelIdx);
         refreshEntityManagerAndTransAction();
         m_HuntieEntityManager.persist(level);
         return level;
@@ -277,7 +277,7 @@ public final class DatabaseFacade {
         }
     }
 
-    public static void AddObject(Object i_NewObject) {
+    public static void PersistObject(Object i_NewObject) {
         refreshEntityManagerAndTransAction();
         m_HuntieEntityManager.persist(i_NewObject);
     }
@@ -285,5 +285,10 @@ public final class DatabaseFacade {
     public static void RemoveObject(Object i_RemovableObject) {
         refreshEntityManagerAndTransAction();
         m_HuntieEntityManager.remove(i_RemovableObject);
+    }
+
+    public static void RollbackTransaction() {
+        m_HuntieEntityManager.getTransaction().rollback();
+        m_HuntieEntityManager.close();
     }
 }

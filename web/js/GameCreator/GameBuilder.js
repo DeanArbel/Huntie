@@ -1,8 +1,8 @@
 /**
  * Created by Dean on 20/2/2017.
  */
-var TEXT_ANSWER = "Text Answer";
-var PHOTO_ANSWER = "Photo Answer";
+var TEXT_ANSWER = "Text";
+var PHOTO_ANSWER = "Photo";
 var RIDDLE_LVL_ID_FORMAT = 'riddle-table-level-';
 var ADD_TO_LVL_BTN_ID_FORMAT = 'add-riddle-level-';
 var MAX_IMG_WIDTH = 100;
@@ -160,9 +160,11 @@ function initPageElementsFromServer() {
                 for (var i = 0; i < levelArrSize; i++) {
                     if (serverRiddles[i]) {
                         riddles[i] = [];
-                        var currAppearanceSize = serverRiddles[i].m_Riddles.length;
-                        for (var j = 0; j < currAppearanceSize; j++) {
-                            riddles[i][j] = convertRiddleToClientFormat(serverRiddles[i].m_Riddles[j]);
+                        if (serverRiddles[i].m_Riddles) {
+                            var currAppearanceSize = serverRiddles[i].m_Riddles.length;
+                            for (var j = 0; j < currAppearanceSize; j++) {
+                                riddles[i][j] = convertRiddleToClientFormat(serverRiddles[i].m_Riddles[j]);
+                            }
                         }
                     }
                 }

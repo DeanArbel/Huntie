@@ -42,10 +42,12 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
                     handlePostRequest(request, response, game, userid);
                     out.println(gson.toJson(game.GetGameId()));
                 } else {
-                    SetError(response, 400, "Game not found");
+                    throw new ServletException( "Game not found");
                 }
+                DatabaseFacade.EndTransaction();
             }
             catch (Exception e) {
+                DatabaseFacade.RollbackTransaction();
                 SetError(response, 400, e.getMessage());
             }
         }
@@ -60,7 +62,6 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
             response.sendRedirect("index.jsp"); //TODO: Change this according to login system
         } else {
             try (PrintWriter out = response.getWriter()) {
-                DatabaseFacade databaseFacade =(DatabaseFacade) getServletContext().getAttribute("databaseFacade");
                 //Game game = DatabaseFacade.GetUser(userid).GetUnpublishedGame();
                 Game game = DatabaseFacade.GetUser(userid).GetUnpublishedGame();
                 if (game == null) {
@@ -69,7 +70,9 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
                 }
 
                 handleGetRequest(request, out, game);
+                DatabaseFacade.EndTransaction();
             } catch (Exception e) {
+                DatabaseFacade.RollbackTransaction();
                 SetError(response, 400, e.getMessage());
             }
         }
@@ -110,7 +113,6 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
             default:
                 throw new ServletException("No request was sent");
         }
-        DatabaseFacade.EndTransaction();
         response.setStatus(200);
     }
 
@@ -123,8 +125,7 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
         game.PublishGame();
         //TODO: Add check that game is really ready for publish
         //DatabaseFacade.GetUser(userid).SetUnpublishedGame(null);
-        DatabaseFacade databaseFacade = (DatabaseFacade) getServletContext().getAttribute("databaseFacade");
-        databaseFacade.GetUser(userid).SetUnpublishedGame(null);
+        DatabaseFacade.GetUser(userid).SetUnpublishedGame(null);
     }
 
     private void handleGameTypeRequest(HttpServletRequest request, Game game) {
@@ -169,12 +170,12 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
 
     private Riddle buildRiddle(Map i_Riddle) throws ServletException {
         Riddle riddle = new Riddle();
-        boolean isTextType = !"Photo Answer".equals(i_Riddle.get("type"));
+        boolean isTextType = !"Photo".equals(i_Riddle.get("type"));
         int appearanceNumber = ((Double)i_Riddle.get("level")).intValue();
-        String answer = isTextType ? (String)i_Riddle.get("answer") : ((String)i_Riddle.get("answer")).replaceAll(" ", "+");
+        String answer = isTextType ? (String)i_Riddle.get("answer") : ((String)i_Riddle.get("answer"));
         String name = (String)i_Riddle.get("name");
         String questionText = (String)i_Riddle.get("questionText");
-        String optionalImage = ((String)i_Riddle.get("questionOptionalImage")).replaceAll(" ", "+");
+        String optionalImage = ((String)i_Riddle.get("questionOptionalImage"));
         String location = ((String)i_Riddle.get("location"));
         if (name == null || questionText == null || answer == null && appearanceNumber > Riddle.MAX_APPEARANCE && appearanceNumber < Riddle.MIN_APPEARANCE) {
             throw new ServletException("Received illegal parameters");
@@ -186,7 +187,7 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
         riddle.SetOptionalQuestionImage(optionalImage);
         riddle.setAnswer(answer);
         riddle.setM_Location(location);
-        DatabaseFacade.AddObject(riddle);
+        DatabaseFacade.PersistObject(riddle);
         return riddle;
     }
 
