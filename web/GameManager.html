@@ -1,0 +1,124 @@
+<html>
+<head>
+    <script src="js/jquery-3.1.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/Util/UtilityFuncs.js"></script>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/GameManager.css">
+    <link rel="stylesheet" href="css/Util/UtilityClasses.css">
+</head>
+<body>
+<div class="middlePage">
+    <div class="panel panel-info">
+        <div class="panel-body">
+
+            <div class="row">
+
+                <div class="col-md-5" >
+                    <h2>Player List </h2>
+                    <table id="player-riddle-tbl">
+                        <tr>
+                            <th>Player</th>
+                            <th>Riddle</th>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="col-md-7" style="border-left:1px solid #ccc;height:440px">
+                    <div class="form-horizontal">
+                        <fieldset>
+
+                            <div class="spacing"><button id="begin-game-btn" name="begin-game-btn" class="btn btn-info btn-sm ">Begin Game</button></div>
+                            <div class="spacing"><button id="end-game-btn" name="end-game-btn" class="btn btn-info btn-sm ">End Game</button></div>
+                            <div class="spacing"><button id="remove-player-btn" name="remove-player-btn" class="btn btn-info btn-sm ">Remove Player</button></div>
+                            <div class="spacing"><button id="Ban-player-btn" name="block-player-btn" class="btn btn-info btn-sm ">Ban Player</button></div>
+                            <div class="spacing"><button id="unban-player-btn" name="unban-player-btn" class="btn btn-info btn-sm ">Unban player</button></div>
+                            <div class="spacing"><button id="remove-riddle-btn" name="remove-riddle-btn" class="btn btn-info btn-sm ">Remove Riddle</button></div>
+                            <div class="spacing"><button id="move-player-btn" name="move-player-btn" class="btn btn-info btn-sm ">Move Player</button></div>
+                            <div class="spacing"><button id="manage-statistics-btn" name="manage-statistics-btn" class="btn btn-info btn-sm ">Mange Statistics</button></div>
+                            <div class="spacing"><button id="add-manager-btn" name="add-manager-btn" class="btn btn-info btn-sm ">Add Manager</button></div>
+                            <div class="spacing"><button id="remove-manager-btn" name="remove-manager-btn" class="btn btn-info btn-sm ">Remove Manager</button></div>
+                            <!--<div class="list-group">-->
+                                <!--<button id="begin-game-btn" name="begin-game-btn" class="btn btn-info btn-sm list-group-item">Begin Game</button>-->
+                                <!--<button id="end-game-btn" name="end-game-btn" class="btn btn-info btn-sm ">End Game</button>-->
+                                <!--<button id="remove-player-btn" name="remove-player-btn" class="btn btn-info btn-sm ">Remove Player</button>-->
+                                <!--<button id="Ban-player-btn" name="block-player-btn" class="btn btn-info btn-sm ">Ban Player</button>-->
+                                <!--<button id="unban-player-btn" name="unban-player-btn" class="btn btn-info btn-sm ">Unban player</button>-->
+                                <!--<button id="remove-riddle-btn" name="remove-riddle-btn" class="btn btn-info btn-sm ">Remove Riddle</button>-->
+                                <!--<button id="move-player-btn" name="move-player-btn" class="btn btn-info btn-sm ">Move Player</button>-->
+                                <!--<button id="add-manager-btn" name="add-manager-btn" class="btn btn-info btn-sm ">Add Manager</button>-->
+                                <!--<button id="remove-manager-btn" name="remove-manager-btn" class="btn btn-info btn-sm ">Remove Manager</button>-->
+                            <!--</div>-->
+
+                        </fieldset>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!--modal-->
+<div id="pwdModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h1 class="text-center">Password Recovery</h1>
+            </div>
+            <div class="modal-body">
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <div class="text-center">
+
+                                <div class="panel-body">
+                                    <fieldset>
+                                        <div class="form-group">
+                                            <input class="form-control input-lg" placeholder="E-mail Address" name="email" type="email">
+                                        </div>
+                                        <input id=submit-btn name=submit-btn class="btn btn-lg btn-primary btn-block" value="Submit User Email" type="submit">
+                                    </fieldset>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="col-md-12">
+                    <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="confModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h1 class="text-center">Password Sent to Email</h1>
+            </div>
+            <div class="modal-body">
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <div class="text-center">
+
+                                <div class="panel-body">
+                                    <button class="btn btn-lg btn-primary btn-block" data-dismiss="modal" aria-hidden="true">OK</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="js/Login.js"></script>
+</body>
+</html>
