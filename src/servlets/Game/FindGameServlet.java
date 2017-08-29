@@ -25,18 +25,18 @@ public class FindGameServlet extends HttpServlet {
     private static Gson gson = new Gson();
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        //String username = SessionUtils.getUsername(request);
-        String userid = "1";
-        if (userid == null) {
+        String token = request.getParameter("token");
+        if (token == null || !DatabaseFacade.IsTokenValid(token)) {
             response.sendRedirect("index.jsp"); //TODO: Change this according to login system
         } else {
             try (PrintWriter out = response.getWriter()) {
                 //Game game = DatabaseFacade.getGame(request.getParameter("gameCode"));
+                DatabaseFacade.UpdateToken(token);
                 Game game = DatabaseFacade.getGame(Integer.parseInt(request.getParameter("gameCode")));
                 if (game == null) {
                     throw new ServletException("No game was found");
                 }
-                handleGetRequest(out, userid, game);
+                handleGetRequest(out, DatabaseFacade.GetUserFromToken(token).GetEmailAddress(), game);
                 DatabaseFacade.EndTransaction();
             } catch (Exception e) {
                 DatabaseFacade.RollbackTransaction();

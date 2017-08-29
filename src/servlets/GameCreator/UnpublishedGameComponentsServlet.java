@@ -3,6 +3,7 @@ package servlets.GameCreator;
 import GameComponents.Game;
 import GameComponents.Level;
 import GameComponents.Riddle;
+import GameComponents.User;
 import Util.DatabaseFacade;
 import com.google.gson.Gson;
 
@@ -31,15 +32,17 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //String username = SessionUtils.getUsername(request);
-        String userid = "1";
-        if (userid == null) {
+        String token = request.getParameter("token");
+        if (token == null || !DatabaseFacade.IsTokenValid(token)) {
             response.sendRedirect("index.jsp"); //TODO: Change this according to login system
         } else {
             try (PrintWriter out = response.getWriter()) {
                 //Game game = DatabaseFacade.getGame(DatabaseFacade.GetUser(userid).GetUnpublishedGame().GetGameId());
-                Game game = DatabaseFacade.getGame(DatabaseFacade.GetUser(userid).GetUnpublishedGame().GetGameId());
+                DatabaseFacade.UpdateToken(token);
+                User user = DatabaseFacade.GetUserFromToken(token);
+                Game game = DatabaseFacade.getGame(user.GetUnpublishedGame().GetGameId());
                 if (game != null) {
-                    handlePostRequest(request, response, game, userid);
+                    handlePostRequest(request, response, game, user.GetEmailAddress());
                     out.println(gson.toJson(game.GetGameId()));
                 } else {
                     throw new ServletException( "Game not found");
@@ -57,16 +60,18 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         //String username = SessionUtils.getUsername(request);
-        String userid = "1";
-        if (userid == null) {
+        String token = request.getParameter("token");
+        if (token == null || !DatabaseFacade.IsTokenValid(token)) {
             response.sendRedirect("index.jsp"); //TODO: Change this according to login system
         } else {
             try (PrintWriter out = response.getWriter()) {
                 //Game game = DatabaseFacade.GetUser(userid).GetUnpublishedGame();
-                Game game = DatabaseFacade.GetUser(userid).GetUnpublishedGame();
+                DatabaseFacade.UpdateToken(token);
+                User user = DatabaseFacade.GetUserFromToken(token);
+                Game game = user.GetUnpublishedGame();
                 if (game == null) {
                     //game = DatabaseFacade.CreateNewGame(userid);
-                    game = DatabaseFacade.CreateNewGame(userid);
+                    game = DatabaseFacade.CreateNewGame(user.GetEmailAddress());
                 }
 
                 handleGetRequest(request, out, game);

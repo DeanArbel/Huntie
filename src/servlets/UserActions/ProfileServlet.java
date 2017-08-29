@@ -33,12 +33,14 @@ public class ProfileServlet extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         //String username = SessionUtils.getUsername(request);
-        String userid = "1";
-        if (userid == null) {
+        String token = request.getParameter("token");
+        if (token == null || !DatabaseFacade.IsTokenValid(token)) {
             response.sendRedirect("index.jsp"); //TODO: Change this according to login system
         } else {
             try (PrintWriter out = response.getWriter()) {
-                handleGetRequest(request.getParameter("request"), out, userid);
+                DatabaseFacade.UpdateToken(token);
+                User user = DatabaseFacade.GetUserFromToken(token);
+                handleGetRequest(request.getParameter("request"), out, user);
                 DatabaseFacade.EndTransaction();
             } catch (Exception e) {
                 DatabaseFacade.RollbackTransaction();
@@ -47,26 +49,26 @@ public class ProfileServlet extends HttpServlet {
         }
     }
 
-    private void handleGetRequest(String i_RequestType, PrintWriter out, String i_Userid) throws ServletException {
+    private void handleGetRequest(String i_RequestType, PrintWriter out, User i_User) throws ServletException {
         Map<String, Object> responseMap = new HashMap<>();
-        User user = DatabaseFacade.GetUser(i_Userid);
+        //User user = DatabaseFacade.GetUser(i_Userid);
         //User user = DatabaseFacade.GetUser(i_Userid);
         switch (i_RequestType) {
             case "Tables":
                 Map<Integer, String> createdGames = new HashMap<>();
                 Map<Integer, String> playedGames = new HashMap<>();
-                for (Game game : user.GetManagedGames()) {
+                for (Game game : i_User.GetManagedGames()) {
                     createdGames.put(game.GetGameId(), game.GetGameName());
                 }
-                for (Game game : user.GetPlayedGames()) {
+                for (Game game : i_User.GetPlayedGames()) {
                     playedGames.put(game.GetGameId(), game.GetGameName());
                 }
                 responseMap.put("myGames", createdGames);
                 responseMap.put("playedGames", playedGames);
                 break;
             case "UserInfo":
-                responseMap.put("username", user.GetUserName());
-                responseMap.put("email", user.GetEmailAddress());
+                responseMap.put("username", i_User.GetUserName());
+                responseMap.put("email", i_User.GetEmailAddress());
                 break;
             default:
                 throw new ServletException("Did not receive proper request");

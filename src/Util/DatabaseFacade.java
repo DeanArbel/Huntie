@@ -267,6 +267,13 @@ public final class DatabaseFacade {
         m_HuntieEntityManager.close();
     }
 
+    public static User GetUserFromToken(String i_Token){
+        m_HuntieEntityManager = m_HuntieEntityManagerFactory.createEntityManager();
+        SessionToken token = m_HuntieEntityManager.find(SessionToken.class, i_Token);
+
+        return token.GetUser();
+    }
+
     private static void refreshEntityManagerAndTransAction() {
         if (m_HuntieEntityManager == null || !m_HuntieEntityManager.isOpen()) {
             m_HuntieEntityManager = m_HuntieEntityManagerFactory.createEntityManager();

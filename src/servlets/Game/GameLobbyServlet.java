@@ -32,13 +32,16 @@ public class GameLobbyServlet extends HttpServlet {
         //String username = SessionUtils.getUsername(request);
         DatabaseFacade databaseFacade = (DatabaseFacade) getServletContext().getAttribute("databaseFacade");
 //        User user = DatabaseFacade.GetUser(request.getParameter("userEmail"));
-        User user = DatabaseFacade.GetUser("1");
-        if (user == null) {
+        //User user = DatabaseFacade.GetUser("1");
+        String token = request.getParameter("token");
+        if (token == null || !DatabaseFacade.IsTokenValid(token)) {
             response.sendRedirect("index.jsp"); //TODO: Change this according to login system
         } else {
             try (PrintWriter out = response.getWriter()) {
                 //ServletUtils.AssertUserInDatabase(user);
                 //Game game = DatabaseFacade.getGame(request.getParameter("gameCode"));
+                DatabaseFacade.UpdateToken(token);
+                User user = DatabaseFacade.GetUserFromToken(token);
                 Game game = DatabaseFacade.getGame(Integer.parseInt(request.getParameter("gameCode")));
                 if (game == null) {
                     throw new ServletException("No game was found");

@@ -29,12 +29,14 @@ public class RiddleServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
         //String username = SessionUtils.getUsername(request);
-        User user = DatabaseFacade.GetUser("1");
-        if (user == null) {
+        String token = request.getParameter("token");
+        if (token == null || !DatabaseFacade.IsTokenValid(token)) {
             response.sendRedirect("index.jsp"); //TODO: Change this according to login system
         } else {
             try (PrintWriter out = response.getWriter()) {
                // ServletUtils.AssertUserInDatabase(user);
+                DatabaseFacade.UpdateToken(token);
+                User user = DatabaseFacade.GetUserFromToken(token);
                 Game game = DatabaseFacade.getGame(Integer.parseInt(request.getParameter("gameCode")));
                 if (game == null) {
                     throw new ServletException("No game was found");
@@ -58,14 +60,16 @@ public class RiddleServlet extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         //String username = SessionUtils.getUsername(request);
-        User user = DatabaseFacade.GetUser("1");
-        if (user == null) {
+        String token = request.getParameter("token");
+        if (token == null || !DatabaseFacade.IsTokenValid(token)) {
             response.sendRedirect("index.jsp"); //TODO: Change this according to login system
         } else {
             try (PrintWriter out = response.getWriter()) {
                 //ServletUtils.AssertUserInDatabase(user);
                 //Game game = DatabaseFacade.getGame(request.getParameter("gameCode"));
+                DatabaseFacade.UpdateToken(token);
                 Game game = DatabaseFacade.getGame(Integer.parseInt(request.getParameter("gameCode")));
+                User user = DatabaseFacade.GetUserFromToken(token);
                 if (game == null) {
                     throw new ServletException("No game was found");
                 }

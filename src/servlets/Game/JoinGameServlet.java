@@ -29,15 +29,16 @@ public class JoinGameServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //String username = SessionUtils.getUsername(request);
-        String userid = "1";
-        if (userid == null) {
+        String token = request.getParameter("token");
+        if (token == null || !DatabaseFacade.IsTokenValid(token)) {
             response.sendRedirect("index.jsp"); //TODO: Change this according to login system
         } else {
             try {
                 //Game game = DatabaseFacade.getGame(request.getParameter("gameCode"));
+                DatabaseFacade.UpdateToken(token);
                 Game game = DatabaseFacade.getGame(Integer.parseInt(request.getParameter("gameCode")));
                 if (game != null) {
-                    game.AddPlayer(DatabaseFacade.GetUser(userid),Integer.parseInt((request.getParameter("teamIndex"))));
+                    game.AddPlayer(DatabaseFacade.GetUserFromToken(token),Integer.parseInt((request.getParameter("teamIndex"))));
                 } else {
                     throw new ServletException("Game not found");
                 }
@@ -54,16 +55,17 @@ public class JoinGameServlet extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         //String username = SessionUtils.getUsername(request);
-        String userid = "1";
-        if (userid == null) {
+        String token = request.getParameter("token");
+        if (token == null || !DatabaseFacade.IsTokenValid(token)) {
             response.sendRedirect("index.jsp"); //TODO: Change this according to login system
         } else {
             try (PrintWriter out = response.getWriter()) {
+                DatabaseFacade.IsTokenValid(token);
                 Game game = DatabaseFacade.getGame(Integer.parseInt(request.getParameter("gameCode")));
                 if (game == null) {
                     throw new ServletException("No game was found");
                 }
-                handleGetRequest(out, userid, game);
+                handleGetRequest(out, DatabaseFacade.GetUserFromToken(token).GetEmailAddress(), game);
             } catch (Exception e) {
                 SetError(response, 400, e.getMessage());
             } finally {

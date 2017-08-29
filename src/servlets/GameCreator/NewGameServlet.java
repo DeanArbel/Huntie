@@ -1,5 +1,6 @@
 package servlets.GameCreator;
 
+import GameComponents.User;
 import Util.DatabaseFacade;
 
 import javax.servlet.annotation.WebServlet;
@@ -18,19 +19,20 @@ public class NewGameServlet extends javax.servlet.http.HttpServlet {
         response.setContentType("application/json");
         //TODO: Fix this
         //String username = SessionUtils.getUsername(request);
-        String userid = "1";
-        if (userid == null) {
+        String token = request.getParameter("token");
+        if (token == null || !DatabaseFacade.IsTokenValid(token)) {
             response.sendRedirect("index.jsp"); //TODO: Change this according to login system
         } else {
             try {
-                if (DatabaseFacade.DoesUserHaveAnUnpublishedGame(userid)) {
+                User user = DatabaseFacade.GetUserFromToken(token);
+                if (DatabaseFacade.DoesUserHaveAnUnpublishedGame(user.GetEmailAddress())) {
                     if ("true".equals(request.getParameter("createNewGame"))) {
-                        createNewGame(response, userid);
+                        createNewGame(response, user.GetEmailAddress());
                     } else {
                         SetError(response, 499, "User already has a game");
                     }
                 } else {
-                    createNewGame(response, userid);
+                    createNewGame(response, user.GetEmailAddress());
                 }
             }
             catch(Exception e) {
