@@ -40,7 +40,7 @@ function initPageElementsFromServer() {
     $.ajax({
         url: GAME_ENTRY_URL,
         type: 'GET',
-        data: {gameCode: gameCode},
+        data: {gameCode: gameCode, token: sessionStorage.getItem("access token")},
         success: function(gameData) {
             if (!gameData.isPlayerInGame) {
                 if (gameData.errMsg === "") {
@@ -72,7 +72,7 @@ function registerPlayerToGame() {
     $.ajax({
         url: GAME_ENTRY_URL,
         type: 'POST',
-        data: { gameCode: gameCode, teamIndex: chosenTeamIdx },
+        data: { gameCode: gameCode, teamIndex: chosenTeamIdx, token: sessionStorage.getItem("access token")},
         success: function() {
             window.location.href =   "/Player/GameLobby.html?gameCode=" + gameCode;
         },

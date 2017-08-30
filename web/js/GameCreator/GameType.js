@@ -30,7 +30,7 @@ $(function() {
 function initPageElementsFromServer() {
     $.ajax({
         url: "GameCreator/GameComponents",
-        data: { requestType: "GameType" },
+        data: { requestType: "GameType" , token: sessionStorage.getItem("access token")},
         type: 'GET',
         success: function(previousGameType) {
             $(".loader").hide();
@@ -115,7 +115,8 @@ $(document).on('click', '#nextPage-btn', function() {
                 teams: JSON.stringify(mTeams),
                 maxPlayers: maxPlayerSoloInput.value,
                 maxPlayersInTeam: maxPlayerTeamInput.value,
-                gameType: gameType
+                gameType: gameType,
+                token: sessionStorage.getItem("access token")
             },
             success: function (response) {
                 window.location.href = "/Manager/GameBuilder.html";

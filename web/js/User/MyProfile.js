@@ -50,7 +50,7 @@ function initPageElementsFromServer() {
     $.ajax({
         url: PROFILE_URL,
         type: 'GET',
-        data: {request: "UserInfo"},
+        data: {request: "UserInfo", token: sessionStorage.getItem("access token")},
         success: function(gameData) {
             mUsername[0].value = gameData.username;
             mEmail[0].value = gameData.email;
@@ -68,7 +68,7 @@ function getGameTablesFromServer() {
     $.ajax({
         url: PROFILE_URL,
         type: 'GET',
-        data: {request: "Tables"},
+        data: {request: "Tables", token: sessionStorage.getItem("access token")},
         success: function(gameData) {
             initTables(gameData);
         }

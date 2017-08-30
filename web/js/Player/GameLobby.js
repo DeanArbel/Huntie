@@ -63,7 +63,7 @@ function initPageElementsFromServer() {
     $.ajax({
         url: GAME_LOBBY_URL,
         type: 'GET',
-        data: {request: "getGameInfo", gameCode: mGameCode},
+        data: {request: "getGameInfo", gameCode: mGameCode, token: sessionStorage.getItem("access token")},
         success: function(gameData) {
             var now = new Date();
             var startTime = new Date(gameData.startTime);
@@ -104,7 +104,7 @@ function getNonCrucialPageElementsFromServer() {
     $.ajax({
         url: GAME_LOBBY_URL,
         type: 'GET',
-        data: {request: "getPlayerTables", gameCode: mGameCode},
+        data: {request: "getPlayerTables", gameCode: mGameCode, token: sessionStorage.getItem("access token")},
         success: function(gameData) {
             if (gameData.isTeamGame) {
                 $('.score-content').show();

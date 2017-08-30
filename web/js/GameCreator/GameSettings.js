@@ -31,7 +31,7 @@ $(document).on('click', '#nextPage-btn', function() {
     if (settingsAndErr[1] === "") {
         $.ajax({
             url: GAME_CREATOR_COMPONENTS_URL,
-            data: { requestType: "GameSettings", settings: JSON.stringify(settingsAndErr[0])},
+            data: { requestType: "GameSettings", settings: JSON.stringify(settingsAndErr[0]), token: sessionStorage.getItem("access token")},
             type: 'POST',
             success: function(gameId) {
                 //TODO: Show dialog that will take you back home and will contain all the data you need

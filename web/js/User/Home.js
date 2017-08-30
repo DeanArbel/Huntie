@@ -5,6 +5,7 @@ $(document).on('click', "#createGame-btn", function() {
    $.ajax({
        url: "newGame",
        type: 'POST',
+       data: {token: sessionStorage.getItem("access token")},
        success: function(response) {
            window.location.href =   "/Manager/GameType.html";
        },
@@ -32,7 +33,7 @@ $(document).on('click', '#modal-no-btn', function() {
     $.ajax({
         url: "newGame",
         type: 'POST',
-        data: { createNewGame: true },
+        data: { createNewGame: true, token: sessionStorage.getItem("access token") },
         success: function(response) {
             window.location.href =   "/Manager/GameType.html";
         },

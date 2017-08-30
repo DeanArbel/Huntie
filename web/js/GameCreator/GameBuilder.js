@@ -104,7 +104,7 @@ function onAddRiddleButtonClick() {
 function sendRiddleToServer(riddle) {
     $.ajax({
         url: GAME_CREATOR_COMPONENTS_URL,
-        data: "requestType=GameBuilder&action=add&riddle=" + JSON.stringify(riddle),
+        data: "requestType=GameBuilder&action=add&riddle=" + JSON.stringify(riddle),token: sessionStorage.getItem("access token"),
         type: 'POST',
         success: onSuccessfulRiddlePost(riddle),
         error: function(err) {
@@ -148,7 +148,7 @@ function initPageElementsFromServer() {
     $.ajax({
         url: "GameCreator/GameComponents",
         datatype: "application/json; charset=utf-8",
-        data: { requestType: "GameBuilder" },
+        data: { requestType: "GameBuilder" ,token: sessionStorage.getItem("access token")},
         type: 'GET',
         success: function(serverRiddles) {
             $(".loader").hide();
@@ -275,7 +275,7 @@ function rowWasRemoved(that) {
     rowIsMidRemoval = true;
     $.ajax({
         url: "GameCreator/GameComponents",
-        data: { requestType: "GameBuilder", action: "delete", riddle: JSON.stringify(riddles[removedFirstIdx][removedSecondIdx]) },
+        data: { requestType: "GameBuilder", action: "delete", riddle: JSON.stringify(riddles[removedFirstIdx][removedSecondIdx]), token: sessionStorage.getItem("access token") },
         type: 'POST',
         success: function() {
             rowIsMidRemoval = false;

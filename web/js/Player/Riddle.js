@@ -43,7 +43,7 @@ function initPageElementsFromServer() {
     $.ajax({
         url: RIDDLE_URL,
         type: 'GET',
-        data: {gameCode: mGameCode, riddleCode: mRiddleCode},
+        data: {gameCode: mGameCode, riddleCode: mRiddleCode, token: sessionStorage.getItem("access token")},
         success: function(gameData) {
             var optImg = new Image();
             optImg.src = gameData.optionalImage;
@@ -84,7 +84,7 @@ function submitAnswer() {
     $.ajax({
         url: RIDDLE_URL,
         type: 'POST',
-        data: {gameCode: mGameCode, riddleCode: mRiddleCode, answer: answer},
+        data: {gameCode: mGameCode, riddleCode: mRiddleCode, answer: answer, token: sessionStorage.getItem("access token")},
         success: function(data) {
             oModal.modal('toggle');
             if (data) {

@@ -19,7 +19,7 @@ $(document).on('click', '#game-find-btn', function() {
     //TODO: Check the given id is in the server (the server will give the right address)
     $.ajax({
         url: FIND_GAME_URL,
-        data: { gameCode: gameCode.value},
+        data: { gameCode: gameCode.value, token: sessionStorage.getItem("access token")},
         success: function(data) {
             dataMap = JSON.parse(data);
             window.location.href =   dataMap.url + "?gameCode=" + dataMap.gameCode;
