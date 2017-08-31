@@ -10,7 +10,7 @@ $("#submit").on('click', function () {
                 type: 'POST',
                 data: {email: $("#email").val(), username: $("#UserName").val(), password: $("#password").val()},
                 success: function () {
-                    window.location.href =   "/Login.html";
+                    window.location.href =   "/login.html";
                 },
                 error: function (data) {
                     alert(data);

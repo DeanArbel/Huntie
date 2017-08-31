@@ -20,7 +20,7 @@ $("#remove-manager-btn").on('click', handleClick(10));
 
 function handleClick(buttonNum) {
     $.ajax({
-        url: "GameManager",
+        url: "game-manager",
         type: 'POST',
         data: {token: sessionStorage.getItem("access token"), button: buttonNum},
         success: function() {
@@ -34,7 +34,7 @@ function handleClick(buttonNum) {
 
 setInterval(function(){ 
     $.ajax({
-        url: "GameManager",
+        url: "game-manager",
         type: 'POST',
         success:refreshPlayerList()
 }) }, 30000);

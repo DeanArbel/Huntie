@@ -73,41 +73,44 @@ function getBase64Image(imgElem) {
     // return dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
 }
 
-function minisizeImg(img, maxHeight, maxWidth) {
-    var ratio = img.height / img.width;
-    if (img.height > maxHeight) {
-        img.height = maxHeight;
-        img.width = maxHeight / ratio;
-    }
-    if (img.width > maxWidth) {
-        img.width = maxWidth;
-        img.height = maxWidth * ratio;
+function tryAPIGeolocation() {
+    jQuery.post( "https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyAsfLflI-UcGro_hBwjIQyIFVndLphZjOE", function(success) {
+        showPosition({coords: {latitude: success.location.lat, longitude: success.location.lng}});
+    })
+        .fail(function(err) {
+            alert("API Geolocation error! \n\n"+err);
+        });
+}
+
+function browserGeolocationFail(error) {
+    switch (error.code) {
+        case error.TIMEOUT:
+            alert("Browser geolocation error !\n\nTimeout.");
+            break;
+        case error.PERMISSION_DENIED:
+            if(error.message.indexOf("Only secure origins are allowed") == 0) {
+                tryAPIGeolocation();
+            }
+            break;
+        case error.POSITION_UNAVAILABLE:
+            alert("Browser geolocation error !\n\nPosition unavailable.");
+            break;
     }
 }
 
 function getLocation() {
     if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(showPosition, showError);
-    } else {
-        alert("Geolocation is not supported by this browser. At this time you can't use your position");
+        navigator.geolocation.getCurrentPosition(
+            showPosition,
+            browserGeolocationFail,
+            {maximumAge: 50000, timeout: 20000, enableHighAccuracy: true});
     }
-}
-
-function showError(error) {
-    switch(error.code) {
-        case error.PERMISSION_DENIED:
-            alert("User denied the request for Geolocation");
-            break;
-        case error.POSITION_UNAVAILABLE:
-            alert("Location information is unavailable");
-            break;
-        case error.TIMEOUT:
-            alert("The request to get user location timed out");
-            break;
-        case error.UNKNOWN_ERROR:
-            alert("An unknown error occurred");
-            break;
-    }
+    // jQuery.post( "https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyAsfLflI-UcGro_hBwjIQyIFVndLphZjOE", function(success) {
+    //     showPosition({coords: {latitude: success.location.lat, longitude: success.location.lng}});
+    // })
+    //     .fail(function(err) {
+    //         alert("API Geolocation error! \n\n"+err);
+    //     });
 }
 
 function stringToLatLng(pos) {

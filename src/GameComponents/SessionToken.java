@@ -1,12 +1,9 @@
 package GameComponents;
 
-import javax.ejb.Local;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
-import java.sql.Time;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -21,7 +18,7 @@ public class SessionToken {
     @OneToOne
     private User m_User;
 
-    private LocalTime m_ExpirationTime = LocalTime.now();
+    private Date m_ExpirationTime = new Date();
 
 
     public String GetToken(){return m_Token;}
@@ -33,11 +30,13 @@ public class SessionToken {
     public void SetUser(User i_User){m_User = i_User;}
 
     public Boolean IsExpiried(){
-        return !m_ExpirationTime.isAfter(LocalTime.now());
+        return !m_ExpirationTime.after(new Date());
     }
 
     public void UpdateExpirationTime(){
-        m_ExpirationTime = LocalTime.now();
-        m_ExpirationTime = m_ExpirationTime.plusHours(3);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.add(Calendar.HOUR_OF_DAY, 3);
+        m_ExpirationTime = calendar.getTime();
     }
 }

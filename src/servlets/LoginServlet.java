@@ -2,6 +2,7 @@ package servlets;
 
 import GameComponents.SessionToken;
 import Util.DatabaseFacade;
+import com.google.gson.Gson;
 
 import javax.servlet.annotation.WebServlet;
 import java.io.IOException;
@@ -15,27 +16,31 @@ import static servlets.Util.ServletUtils.SetError;
  */
 @WebServlet(name = "LoginServlet")
 public class LoginServlet extends javax.servlet.http.HttpServlet{
+    private static Gson gson = new Gson();
+
     protected void doPost(javax.servlet.http.HttpServletRequest request, javax.servlet.http.HttpServletResponse response) throws javax.servlet.ServletException, IOException {
         response.setContentType("application/json");
-        String userEmail = request.getParameter("email");
-        String password = request.getParameter("password");
-        PrintWriter out = response.getWriter();
-        SessionToken token;
-
-        if(userEmail == null || password == null){
-
-            SetError(response,410,"user Email or password are void");
-        }
-        else{
-            DatabaseFacade databaseFacade = (DatabaseFacade) getServletContext().getAttribute("databaseFacade");
-            token = databaseFacade.Login(userEmail,password);//TODO get facade here and then facade.Login
-            if(!token.GetToken().equals("")){
-                out.print(token.GetToken());
-                out.flush();
+        response.setCharacterEncoding("UTF-8");
+        try {
+            String userEmail = request.getParameter("email");
+            String password = request.getParameter("password");
+            PrintWriter out = response.getWriter();
+            SessionToken token;
+            if (userEmail == null || password == null) {
+                SetError(response, 410, "user Email or password are void");
+            } else {
+                token = DatabaseFacade.Login(userEmail, password);//TODO get facade here and then facade.Login
+                if (!token.GetToken().equals("")) {
+                    out.println(gson.toJson(token.GetToken()));
+                    response.setStatus(200);
+                    DatabaseFacade.EndTransaction();
+                } else {
+                    DatabaseFacade.RollbackTransaction();
+                    SetError(response, 420, "UserName/Password entered incorrect");
+                }
             }
-            else{
-                SetError(response,420,"UserName/Password entered incorrect");
-            }
+        } catch (Exception e) {
+            SetError(response, 400, "Login failed, please try again");
         }
     }
 }

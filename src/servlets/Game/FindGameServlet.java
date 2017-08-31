@@ -52,9 +52,9 @@ public class FindGameServlet extends HttpServlet {
 //            //response.getWriter().println(gson.toJson(Constants.SITE_URL + "Manager/Menu.html?gameCode=" + game.GetGameId()));
 //        } //TODO: Enable this and make the one below else if
         if (game.IsPlayerInGame(userEmail)) {
-            dataMap.put("url", "/Player/GameLobby.html");
+            dataMap.put("url", "/Player/game-lobby.html");
         } else if (!game.IsGameFull()) {
-            dataMap.put("url", "/Player/JoinGame.html");
+            dataMap.put("url", "/Player/join-game.html");
         } else {
             throw new ServletException("Game is full");
         }

@@ -1,0 +1,134 @@
+<html>
+<head>
+    <script src="js/jquery-3.1.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/Util/UtilityFuncs.js"></script>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/Login.css">
+    <link rel="stylesheet" href="css/Util/UtilityClasses.css">
+    <script>
+        window.fbAsyncInit = function() {
+            FB.init({
+                appId      : '560922760698832',
+                xfbml      : true,
+                version    : 'v2.8'
+            });
+            FB.AppEvents.logPageView();
+        };
+
+        (function(d, s, id){
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) {return;}
+            js = d.createElement(s); js.id = id;
+            js.src = "//connect.facebook.net/en_US/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+
+
+    </script>
+</head>
+<body>
+<div class="middlePage">
+    <div class="page-header">
+        <h1 class="logo">Huntie</h1>
+    </div>
+
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h3 class="panel-title">Please Sign In</h3>
+        </div>
+        <div class="panel-body">
+
+            <div class="row">
+
+                <div class="col-md-5" >
+                    <fb:login-button scope="public_profile,email" onlogin="checkLoginState">
+                    </fb:login-button>
+                </div>
+
+                <div class="col-md-7" style="border-left:1px solid #ccc;height:160px">
+                    <div class="form-horizontal">
+                        <fieldset>
+
+                            <input id="textInputUserEmail" name="textInputUserEmail" type="text" placeholder="Enter Email" class="form-control input-md">
+                            <div class="spacing"><input type="checkbox" name="checkboxes" id="checkboxes-0" value="1"><small> Remember me</small></div>
+                            <input id="textInputPassword" name="textInputPassword" type="text" placeholder="Enter Password" class="form-control input-md">
+                            <div class="spacing"><a href="#" data-target="#pwdModal" data-toggle="modal"><small> Forgot Password?</small></a><br/></div>
+                            <button id="sign-in-btn" name="sign-in-btn" class="btn btn-info btn-sm pull-right">Sign In</button>
+
+
+                        </fieldset>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <p><a href="signup.html">Sign Up</a></p>
+
+</div>
+
+<!--modal-->
+<div id="pwdModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h1 class="text-center">Password Recovery</h1>
+            </div>
+            <div class="modal-body">
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <div class="text-center">
+
+                                <div class="panel-body">
+                                    <fieldset>
+                                        <div class="form-group">
+                                            <input class="form-control input-lg" placeholder="E-mail Address" name="email" type="email">
+                                        </div>
+                                        <input id=submit-btn name=submit-btn class="btn btn-lg btn-primary btn-block" value="Submit User Email" type="submit">
+                                    </fieldset>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="col-md-12">
+                    <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="confModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h1 class="text-center">Password Sent to Email</h1>
+            </div>
+            <div class="modal-body">
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <div class="text-center">
+
+                                <div class="panel-body">
+                                    <button class="btn btn-lg btn-primary btn-block" data-dismiss="modal" aria-hidden="true">OK</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="js/login.js"></script>
+</body>
+</html>

@@ -107,7 +107,6 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
         switch (requestType) {
             case "GameType":
                 handleGameTypeRequest(request, game);
-                //response.sendRedirect("Manager/GameArea.html");
                 break;
             case "GameBuilder":
                 handleGameBuilderRequest(request, game);

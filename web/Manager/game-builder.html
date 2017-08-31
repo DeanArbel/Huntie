@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Game Builder</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/Util/UtilityClasses.css">
+    <script src="../js/jquery-3.1.1.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/Util/UtilityFuncs.js"></script>
+    <script src="../js/GameCreator/game-builder.js"></script>
+</head>
+<body>
+<div class="loader centered"></div>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <a class="brand" href="/index.jsp">
+        <img src="/assets/images/MiniLogo.png" class="huntie-logo" alt="Huntie">
+    </a>
+    <ul class="nav navbar-nav">
+        <li><a id="prevPage-btn" href="#"><span class="glyphicon glyphicon-chevron-left"></span>Game Type</a></li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+        <li><a id="nextPage-btn" href="#">Game Settings<span class="glyphicon glyphicon-chevron-right"></span></a></li>
+    </ul>
+</nav>
+<div hidden class="container">
+    <br>
+    <br>
+    <h1 class="text-center">Game Builder</h1>
+    <br>
+    <button type="button" id="openModal-btn" class="btn btn-success center-block temp" data-toggle="modal" data-target="#myModal" onclick="onAddRiddleButtonClick()">Add Riddle</button>
+    <button type="button" id="btn-add-riddle" class="btn btn-success center-block" onclick="onAddLevelClick()">Add Level</button>
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-body form-horizontal">
+                    <button type="button" class="btn btn-danger pull-right" id="riddle-reset-btn">Reset</button>
+                    <h2 class="text-center">Riddle Builder</h2>
+                    <form id="riddle-form">
+                        <div class="form-group">
+                            <div class="col-xs-6">
+                                <label class="control-label" for="riddle-name">Riddle Name:</label>
+                            </div>
+                            <div class="col-xs-6">
+                                <input type="text" class="form-control" id="riddle-name" maxlength="25">
+                            </div>
+                        </div>
+                        <div hidden class="form-group">
+                            <div class="col-xs-6">
+                                <label for="riddle-appearance-number">Riddle Apperance Number:</label>
+                                <p class="col-xs-offset-1"><i>*riddles with the same number will appear at the same time</i></p>
+                            </div>
+                            <div class="col-xs-6">
+                                <input type="number" class="form-control" id="riddle-appearance-number" min="0">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-xs-6">
+                                <label>Riddle Type:</label>
+                            </div>
+                            <div class="col-xs-6">
+                                <div class="dropdown">
+                                    <button class="btn btn-primary dropdown-toggle dropdown-btn btn-wide" type="button" data-toggle="dropdown">Text Answer
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="#" class="dropdown-selection" data-toggle="dropdown">Text</a></li>
+                                        <li><a href="#" class="dropdown-selection" data-toggle="dropdown">Photo</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-xs-6">
+                                <label for="riddle-question-text">Question:</label>
+                            </div>
+                            <div class="col-xs-6">
+                                <textarea class="form-control" id="riddle-question-text" maxlength="255"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-xs-6">
+                                <label for="riddle-question-optionalimage-uploadbtn">Optional Image Question:</label>
+                            </div>
+                            <div class="col-xs-6">
+                                <input type='file' class="temp" accept="image/*" id="riddle-question-optionalimage-uploadbtn" onchange="readPictureURL(this, '#riddle-question-optionalimage');" />
+                                <button type="button" class="btn btn-info btn-wide" id="riddle-question-optionalimage-uploadbtn-lnk" onclick="document.getElementById('riddle-question-optionalimage-uploadbtn').click();">Select Image</button>
+                                <img hidden class="top-padding" id="riddle-question-optionalimage" src="#" alt="your image" />
+                            </div>
+                        </div>
+                        <div hidden id="riddle-photo" class="form-group">
+                            <div class="col-xs-6">
+                                <label for="riddle-photo-answer-uploadbtn">Answer:</label>
+                            </div>
+                            <div class="col-xs-6">
+                                <input type='file' class="temp" accept="image/*" id="riddle-photo-answer-uploadbtn" onchange="readPictureURL(this, '#riddle-photo-answer-image');" />
+                                <button type="button" class="btn btn-info btn-wide" id="riddle-photo-answer-uploadbtn-lnk" onclick="document.getElementById('riddle-photo-answer-uploadbtn').click();">Select Answer</button>
+                                <img hidden class="top-padding" id="riddle-photo-answer-image" src="#" alt="your image" />
+                                <!--TODO: add GPS tracking here-->
+                            </div>
+                        </div>
+                        <div hidden id="riddle-text" class="form-group">
+                            <div class="col-xs-6">
+                                <label for="riddle-answer-text">Answer:</label>
+                            </div>
+                            <div class="col-xs-6">
+                                <textarea class="form-control" id="riddle-answer-text" maxlength="255"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-xs-6">
+                                <label for="riddle-location-checkbox">Location Based:</label>
+                            </div>
+                            <div class="col-xs-6">
+                                <input id="riddle-location-checkbox" type="checkbox">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div hidden id="mapholder" class="col-xs-offset-2   location-info"></div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" id="riddle-submit-btn">Submit</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="center-block temp">
+        <table id="riddles-table" class="table table-hover table-users">
+            <thead>
+            <tr>
+                <th class="col-xs-1"></th>
+                <th class="col-xs-9">Riddle Name</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    <div class="center-block">
+        <table id="table-riddles" class="table">
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

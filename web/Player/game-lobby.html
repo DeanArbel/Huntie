@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Game Lobby</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/Util/UtilityClasses.css">
+    <script src="../js/jquery-3.1.1.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/Util/UtilityFuncs.js"></script>
+    <script src="../js/Player/game-lobby.js"></script>
+</head>
+<body>
+<div class="loading-area">
+    <h2 class="text-center" style="margin-top: 120px">Loading Game...</h2>
+    <div class="loader centered "></div>
+</div>
+<div class="container lobby-container">
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <a class="brand" href="/index.jsp">
+            <img src="/assets/images/MiniLogo.png" class="huntie-logo" alt="Huntie">
+        </a>
+        <ul class="nav navbar-nav">
+            <li><a id="prevPage-btn" href="#"><span class="glyphicon glyphicon-chevron-left"></span>Home</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li style="top: -5px;"><button disabled style="margin-right: 20px" id="solveRiddle-btn" class="btn navbar-btn btn-success btn-sm">Solve Riddle<span class="glyphicon glyphicon-chevron-right"></span></button></li>
+        </ul>
+    </nav>
+    <h2 hidden id="player-message-won" style="margin-top: 80px; background-color: yellow" class="text-center">You Won The Game!</h2>
+    <h2 hidden id="game-ended-message" style="margin-top: 80px; background-color: yellow" class="text-center">Game Has Ended!</h2>
+    <h2 id="game-name" style="margin-top: 80px" class="text-center">Game Name</h2>
+    <h3 id="game-start-time" class="text-center">Game Start Time</h3>
+    <div hidden class="score-content">
+        <div class="col-xs-6">
+            <h5 class="text-center" id="message-my-team-score">My Team Scores</h5>
+            <div style="overflow-y: hidden; height: 120px">
+                <table hidden class="table" id="table-my-score">
+                    <thead>
+                    <tr>
+                        <th style="font-size: small">Name</th>
+                        <th style="font-size: small">Score</th>
+                    </tr>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-xs-6">
+            <h5 class="text-center" id="message-others-score">Other Teams Level</h5>
+            <div style="overflow-y: hidden; height: 120px">
+                <table hidden class="table noVerticalBar" id="table-others-score">
+                    <thead>
+                    <tr>
+                        <th style="font-size: small">Name</th>
+                        <th style="font-size: small">Level</th>
+                    </tr>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="col-xs-12">
+        <h3 class="text-center" id="player-message"></h3>
+        <h4 hidden class="text-center riddle-content">Riddles Locations</h4>
+        <div id="map" style="width:100%;height:500px" class="map-content"></div>
+        <div hidden class="col-xs-offset-2 col-xs-8 riddle-content">
+            <table id="riddle-table" class="table table-hover">
+                <thead>
+                <tr>
+                    <th class="small">Available Riddles In Your Location</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAsfLflI-UcGro_hBwjIQyIFVndLphZjOE&callback=initMap"></script>
+</body>
+</html>

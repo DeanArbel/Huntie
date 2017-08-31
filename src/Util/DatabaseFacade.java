@@ -37,20 +37,17 @@ public final class DatabaseFacade {
         User newUser = new User();
 
         if (!IsUserNameUnique(i_UserName)) {
-            throw new Exception("User name is already taken");
+            throw new NonUniqueResultException("User name is already taken");
         }
         newUser.SetUserName(i_UserName);
         newUser.setPassword(i_UserPassword);
         if (!IsEmailUnique(i_Email)) {
-            throw new Exception("Email is already taken");
+            throw new EntityExistsException("Email is already taken");
         }
         newUser.SetEmailAddress(i_Email);
-        m_HuntieEntityManager = m_HuntieEntityManagerFactory.createEntityManager();
-        m_HuntieEntityManager.getTransaction().begin();
+        refreshEntityManagerAndTransAction();
         m_HuntieEntityManager.persist(newUser);
-        m_HuntieEntityManager.getTransaction().commit();
-        m_HuntieEntityManager.close();
-
+        EndTransaction();
         return newUser;
     }
 
@@ -158,7 +155,6 @@ public final class DatabaseFacade {
 
         m_HuntieEntityManager = m_HuntieEntityManagerFactory.createEntityManager();
         user = m_HuntieEntityManager.find(User.class, i_UserEmail);
-        m_HuntieEntityManager.close();
         if(user != null) {
             if(user.GetPassword().equals(i_UserPassword)){//new
                 token = generateSessionToken(user);
@@ -181,13 +177,11 @@ public final class DatabaseFacade {
         }
         m_HuntieEntityManager.getTransaction().begin();
         m_HuntieEntityManager.persist(token);
-        m_HuntieEntityManager.getTransaction().commit();
-        m_HuntieEntityManager.close();
 
         return token;
     }
 
-    public static SessionToken FaceBookLogin(String i_AccessToken, String i_UserEmail, String i_UserName){//todo modify
+    public static SessionToken FaceBookLogin(String i_AccessToken, String i_UserEmail, String i_UserName) throws Exception {//todo modify
         SessionToken token;
 
         m_HuntieEntityManager = m_HuntieEntityManagerFactory.createEntityManager();
@@ -199,28 +193,8 @@ public final class DatabaseFacade {
         return token;
     }
 
-    public static int SignUp(String i_UserEmail, String i_UserPassword, String i_UserName){
-        //if(!IsEmailUnique(i_UserEmail)){
-          //  return -1;
-        //}
-
-        //if(!IsUserNameUnique(i_UserName)){
-          //  return -2;
-        //}
-
-        try {
-            User user = createUser(i_UserName, i_UserPassword, i_UserEmail);
-            m_HuntieEntityManager = m_HuntieEntityManagerFactory.createEntityManager();
-            if(!m_HuntieEntityManager.contains(user)){
-                m_HuntieEntityManager.getTransaction().begin();
-                m_HuntieEntityManager.persist(user);
-                m_HuntieEntityManager.getTransaction().commit();
-            }
-            m_HuntieEntityManager.close();
-        }
-        catch (Exception e){
-
-        }
+    public static int SignUp(String i_UserEmail, String i_UserPassword, String i_UserName) throws Exception{
+        createUser(i_UserName, i_UserPassword, i_UserEmail);
         return 0;
     }
 
@@ -253,19 +227,19 @@ public final class DatabaseFacade {
             m_HuntieEntityManager.close();
         }
     }
-
-    public static void RefrashTokens(){
-        m_HuntieEntityManager = m_HuntieEntityManagerFactory.createEntityManager();
-        TypedQuery<SessionToken> query = m_HuntieEntityManager.createQuery("select s from SessionToken s ", SessionToken.class);
-        m_HuntieEntityManager.getTransaction().begin();
-        for(SessionToken sessionToken:query.getResultList()){
-            if(sessionToken.IsExpiried()){
-                m_HuntieEntityManager.remove(sessionToken);
-            }
-        }
-        m_HuntieEntityManager.getTransaction().commit();
-        m_HuntieEntityManager.close();
-    }
+//
+//    public static void RefrashTokens(){
+//        m_HuntieEntityManager = m_HuntieEntityManagerFactory.createEntityManager();
+//        TypedQuery<SessionToken> query = m_HuntieEntityManager.createQuery("select s from SessionToken s ", SessionToken.class);
+//        m_HuntieEntityManager.getTransaction().begin();
+//        for(SessionToken sessionToken:query.getResultList()){
+//            if(sessionToken.IsExpiried()){
+//                m_HuntieEntityManager.remove(sessionToken);
+//            }
+//        }
+//        m_HuntieEntityManager.getTransaction().commit();
+//        m_HuntieEntityManager.close();
+//    }
 
     public static User GetUserFromToken(String i_Token){
         m_HuntieEntityManager = m_HuntieEntityManagerFactory.createEntityManager();
@@ -295,7 +269,9 @@ public final class DatabaseFacade {
     }
 
     public static void RollbackTransaction() {
-        m_HuntieEntityManager.getTransaction().rollback();
-        m_HuntieEntityManager.close();
+        if (m_HuntieEntityManager != null && !m_HuntieEntityManager.isOpen()) {
+            m_HuntieEntityManager.getTransaction().rollback();
+            m_HuntieEntityManager.close();
+        }
     }
 }

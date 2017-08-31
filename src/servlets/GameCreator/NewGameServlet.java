@@ -15,6 +15,7 @@ import static servlets.Util.ServletUtils.SetError;
  */
 @WebServlet(name = "NewGameServlet")
 public class NewGameServlet extends javax.servlet.http.HttpServlet {
+    @Override
     protected void doPost(javax.servlet.http.HttpServletRequest request, javax.servlet.http.HttpServletResponse response) throws javax.servlet.ServletException, IOException {
         response.setContentType("application/json");
         //TODO: Fix this
@@ -44,6 +45,6 @@ public class NewGameServlet extends javax.servlet.http.HttpServlet {
 
     private void createNewGame(HttpServletResponse i_Response, String i_UserId) throws IOException {
         DatabaseFacade.CreateNewGame(i_UserId);
-        i_Response.sendRedirect("/Manager/GameType.html");
+        i_Response.sendRedirect("/Manager/game-type.html");
     }
 }
