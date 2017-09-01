@@ -8,7 +8,7 @@ $("#sign-in-btn").on('click', function() {
         data: {email: $("#textInputUserEmail").val(), password: $("#textInputPassword").val()},
         success: function(data) {
             sessionStorage.setItem("access token",data);
-            window.location.href = SITE_URL + "/home.html";
+            window.location.href = "/home.html";
         },
         error: function(msg) {
             alert(msg);
@@ -48,7 +48,7 @@ function checkLoginState(data) {
             data: {userID: userID, accessToken: accessToken},
             success:function (data) {
                 sessionStorage.setItem("access token",data);
-                window.location.href = SITE_URL + "/home.html";
+                window.location.href = "/home.html";
             },
             error: function () {
                 alert("Invalid Login")

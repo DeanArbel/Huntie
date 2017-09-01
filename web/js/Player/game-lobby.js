@@ -18,7 +18,7 @@ var mGameCode;
 var mIsGameActive;
 var mHasGameStarted;
 var mSolveRiddleBtn;
-var eMap, infoWindow;
+var eMap, mInfoWindow;
 var playerPos;
 var mapInit;
 var mapMarker;
@@ -204,9 +204,9 @@ function initMap() {
         zoom: 16,
         disableDefaultUI: true
     });
-    infoWindow = new google.maps.InfoWindow;
+    mInfoWindow = new google.maps.InfoWindow;
     getLocation();
-    //setInterval( "getLocation()", 5000);
+    setInterval( getLocation, 5000);
 }
 
 function showPosition(position) {
@@ -214,25 +214,29 @@ function showPosition(position) {
         lat: position.coords.latitude,
         lng: position.coords.longitude
     };
-    infoWindow.setPosition(playerPos);
-    infoWindow.setContent('You Are Here');
-    infoWindow.open(eMap);
-    var icon = {
-        url: "/assets/images/locationCircle.png", // url
-        scaledSize: new google.maps.Size(20, 20), // scaled size
-        origin: new google.maps.Point(0,0), // origin
-        anchor: new google.maps.Point(10, 10) // anchor
-    };
-    eMap.setCenter(playerPos);
-    mapMarker = new google.maps.Marker({position:playerPos, icon: icon});
-    mapMarker.setMap(eMap);
-
-    for (var i = 0; i < mAsyncRiddlesLocationToUpdate.length; i++) {
-        var riddleObj = mAsyncRiddlesLocationToUpdate[i];
-        if (isPlayerInAreaRadius(riddleObj.location[0], riddleObj.location[1])) {
-            addItemToRiddleTable(riddleObj.name, riddleObj.riddle);
+    if (!mapInit) {
+        mapInit = true;
+        mInfoWindow.setPosition(playerPos);
+        mInfoWindow.setContent('You Are Here');
+        mInfoWindow.open(eMap);
+        var icon = {
+            url: "/assets/images/locationCircle.png", // url
+            scaledSize: new google.maps.Size(20, 20), // scaled size
+            origin: new google.maps.Point(0, 0), // origin
+            anchor: new google.maps.Point(10, 10) // anchor
+        };
+        eMap.setCenter(playerPos);
+        mapMarker = new google.maps.Marker({position: playerPos, icon: icon});
+        mapMarker.setMap(eMap);
+        for (var i = 0; i < mAsyncRiddlesLocationToUpdate.length; i++) {
+            var riddleObj = mAsyncRiddlesLocationToUpdate[i];
+            if (isPlayerInAreaRadius(riddleObj.location[0], riddleObj.location[1])) {
+                addItemToRiddleTable(riddleObj.name, riddleObj.riddle);
+            }
         }
+        mAsyncRiddlesLocationToUpdate = [];
     }
+    mapMarker.setPosition(playerPos);
 }
 
 function addIconToMap(name, lat, lng) {
@@ -250,9 +254,6 @@ function addIconToMap(name, lat, lng) {
 }
 
 function isPlayerInAreaRadius(lat, lng) {
-    if (!playerPos) {
-
-    }
     return playerPos && isLocationWithinDistanceFromOtherLocation(playerPos.lat, playerPos.lng, lat, lng, RADIUS_LEN_IN_KM);
 }
 

@@ -3,12 +3,18 @@
     <script src="../js/jquery-3.1.1.min.js"></script>
     <script src="../js/bootstrap.min.js"></script>
     <script src="../js/Util/UtilityFuncs.js"></script>
+    <script src="../js/GameManager.js"></script>
     <link rel="stylesheet" href="../css/bootstrap.min.css">
     <link rel="stylesheet" href="../css/GameManager.css">
     <link rel="stylesheet" href="../css/Util/UtilityClasses.css">
 </head>
 <body>
 <div class="middlePage">
+    <div class="container map-container">
+        <div class="col-xs-12">
+            <div id="map" style="width:100%;height:500px" class="map-content"></div>
+        </div>
+    </div>
     <div class="panel panel-info">
         <div class="panel-body">
 
@@ -120,5 +126,6 @@
     </div>
 </div>
 <script src="../js/login.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAsfLflI-UcGro_hBwjIQyIFVndLphZjOE&callback=initMap"></script>
 </body>
 </html>

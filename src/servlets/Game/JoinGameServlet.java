@@ -31,7 +31,7 @@ public class JoinGameServlet extends HttpServlet {
         //String username = SessionUtils.getUsername(request);
         String token = request.getParameter("token");
         if (token == null || !DatabaseFacade.IsTokenValid(token)) {
-            response.sendRedirect("index.jsp"); //TODO: Change this according to login system
+            response.sendRedirect("/home.html");
         } else {
             try {
                 //Game game = DatabaseFacade.getGame(request.getParameter("gameCode"));
@@ -57,7 +57,7 @@ public class JoinGameServlet extends HttpServlet {
         //String username = SessionUtils.getUsername(request);
         String token = request.getParameter("token");
         if (token == null || !DatabaseFacade.IsTokenValid(token)) {
-            response.sendRedirect("index.jsp"); //TODO: Change this according to login system
+            response.sendRedirect("/index.jsp");
         } else {
             try (PrintWriter out = response.getWriter()) {
                 DatabaseFacade.IsTokenValid(token);

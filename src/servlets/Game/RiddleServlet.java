@@ -29,7 +29,7 @@ public class RiddleServlet extends HttpServlet {
         response.setContentType("application/json");
         String token = request.getParameter("token");
         if (token == null || !DatabaseFacade.IsTokenValid(token)) {
-            response.sendRedirect("index.jsp"); //TODO: Change this according to login system
+            response.sendRedirect("/home.html");
         } else {
             try (PrintWriter out = response.getWriter()) {
                // ServletUtils.AssertUserInDatabase(user);
@@ -64,7 +64,7 @@ public class RiddleServlet extends HttpServlet {
         //String username = SessionUtils.getUsername(request);
         String token = request.getParameter("token");
         if (token == null || !DatabaseFacade.IsTokenValid(token)) {
-            response.sendRedirect("index.jsp"); //TODO: Change this according to login system
+            response.sendRedirect("/index.jsp");
         } else {
             try (PrintWriter out = response.getWriter()) {
                 //ServletUtils.AssertUserInDatabase(user);

@@ -35,7 +35,7 @@ public class ProfileServlet extends HttpServlet {
         //String username = SessionUtils.getUsername(request);
         String token = request.getParameter("token");
         if (token == null || !DatabaseFacade.IsTokenValid(token)) {
-            response.sendRedirect("index.jsp"); //TODO: Change this according to login system
+            response.sendRedirect("/index.jsp");
         } else {
             try (PrintWriter out = response.getWriter()) {
                 DatabaseFacade.UpdateToken(token);

@@ -1,3 +1,6 @@
+var mInfoWindow;
+var mUserPos;
+
 $("#begin-game-btn").on('click', handleClick(1));
 
 $("#end-game-btn").on('click', handleClick(2));
@@ -24,7 +27,7 @@ function handleClick(buttonNum) {
         type: 'POST',
         data: {token: sessionStorage.getItem("access token"), button: buttonNum},
         success: function() {
-            window.location.href = SITE_URL + "/Home.html";
+            window.location.href = "/home.html";
         },
         error: function(msg) {
             alert(msg);
@@ -32,12 +35,12 @@ function handleClick(buttonNum) {
     });
 }
 
-setInterval(function(){ 
-    $.ajax({
-        url: "game-manager",
-        type: 'POST',
-        success:refreshPlayerList()
-}) }, 30000);
+// setInterval(function(){
+//     $.ajax({
+//         url: "game-manager",
+//         type: 'POST',
+//         success:refreshPlayerList()
+// }) }, 30000);
 
 
 function refreshPlayerList(listData) {
@@ -49,4 +52,39 @@ function refreshPlayerList(listData) {
         var tr = $('<tr>' + data['PlayerName'] + '</td>' + '<td>'+ data['Riddle']  +'</td>' );
         $("#player-riddle-tbl").append(tr);
     });
+}
+
+function initMap() {
+    var map_container = $('#map');
+    map_container.show();
+    var mapWidth = 640;
+    var mapHeight = 480;
+    map_container.height(mapHeight);
+    map_container.width(mapWidth);
+    eMap = new google.maps.Map(map_container[0], {
+        center: {lat: 32.109333, lng: 34.855499},
+        zoom: 16,
+        disableDefaultUI: true
+    });
+    mInfoWindow = new google.maps.InfoWindow;
+    getLocation();
+}
+
+function showPosition(position) {
+    mUserPos = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+    };
+    mInfoWindow.setPosition(mUserPos);
+    mInfoWindow.setContent('You Are Here');
+    mInfoWindow.open(eMap);
+    var icon = {
+        url: "../assets/images/locationCircle.png", // url
+        scaledSize: new google.maps.Size(20, 20), // scaled size
+        origin: new google.maps.Point(0,0), // origin
+        anchor: new google.maps.Point(10, 10) // anchor
+    };
+    eMap.setCenter(mUserPos);
+    mapMarker = new google.maps.Marker({position:mUserPos, icon: icon});
+    mapMarker.setMap(eMap);
 }
