@@ -29,10 +29,6 @@ public class GameLobbyServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        //String username = SessionUtils.getUsername(request);
-        DatabaseFacade databaseFacade = (DatabaseFacade) getServletContext().getAttribute("databaseFacade");
-//        User user = DatabaseFacade.GetUser(request.getParameter("userEmail"));
-        //User user = DatabaseFacade.GetUser("1");
         String token = request.getParameter("token");
         if (token == null || !DatabaseFacade.IsTokenValid(token)) {
             response.sendRedirect("index.jsp"); //TODO: Change this according to login system
@@ -95,10 +91,13 @@ public class GameLobbyServlet extends HttpServlet {
         }
         responseData.put("playerHasWon", playerHasWon);
         if (!playerHasWon) {
-            responseData.put("myLevel", game.GetTeamLevel(user));
+            int teamLevel = game.GetTeamLevel(user);
+            responseData.put("myLevel", teamLevel);
             responseData.put("riddlesNamesAndLocations", riddlesNameAndLocations);
             responseData.put("riddlesNamesAndIds", riddleNamesAndIds);
+            responseData.put("isTreasureLevel", game.IsTreasureLevel(teamLevel - 1));
         }
+        responseData.put("treasureType", game.GetTreasureType());
         responseData.put("gameName", game.GetGameName());
         responseData.put("startTime", game.GetStartTime().getTime());
         responseData.put("endTime", game.GetEndTime().getTime());

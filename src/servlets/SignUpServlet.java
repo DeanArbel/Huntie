@@ -35,14 +35,14 @@ public class SignUpServlet extends javax.servlet.http.HttpServlet  {
 
         } catch (NonUniqueResultException e) {
             DatabaseFacade.RollbackTransaction();
-            SetError(response, 400, "username already in use");
+            SetError(response, 400, "Username already in use");
         } catch (EntityExistsException e) {
             DatabaseFacade.RollbackTransaction();
             SetError(response, 400, "Email already in use");
         }
         catch (Exception e) {
             DatabaseFacade.RollbackTransaction();
-            SetError(response, 400, "Server has encountered an unknow error");
+            SetError(response,  400, "Server has encountered an unknown error");
         }
     }
 }

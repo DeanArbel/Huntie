@@ -78,14 +78,14 @@ function tryAPIGeolocation() {
         showPosition({coords: {latitude: success.location.lat, longitude: success.location.lng}});
     })
         .fail(function(err) {
-            alert("API Geolocation error! \n\n"+err);
+            //alert("API Geolocation error! \n\n"+err);
         });
 }
 
 function browserGeolocationFail(error) {
     switch (error.code) {
         case error.TIMEOUT:
-            alert("Browser geolocation error !\n\nTimeout.");
+            //alert("Browser geolocation error !\n\nTimeout.");
             break;
         case error.PERMISSION_DENIED:
             if(error.message.indexOf("Only secure origins are allowed") == 0) {
@@ -105,12 +105,6 @@ function getLocation() {
             browserGeolocationFail,
             {maximumAge: 50000, timeout: 20000, enableHighAccuracy: true});
     }
-    // jQuery.post( "https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyAsfLflI-UcGro_hBwjIQyIFVndLphZjOE", function(success) {
-    //     showPosition({coords: {latitude: success.location.lat, longitude: success.location.lng}});
-    // })
-    //     .fail(function(err) {
-    //         alert("API Geolocation error! \n\n"+err);
-    //     });
 }
 
 function stringToLatLng(pos) {
@@ -118,13 +112,24 @@ function stringToLatLng(pos) {
     return [parseFloat(latLngStrArr[0]), parseFloat(latLngStrArr[1])];
 }
 
-function getDistance(lat1,lon1,lat2,lon2){
-    var R = 63710; // Earth's radius in Km
-    return Math.acos(Math.sin(lat1)*Math.sin(lat2) +
-            Math.cos(lat1)*Math.cos(lat2) *
-            Math.cos(lon2-lon1)) * R;
+function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
+    var R = 6371; // Radius of the earth in km
+    var dLat = deg2rad(lat2-lat1);  // deg2rad below
+    var dLon = deg2rad(lon2-lon1);
+    var a =
+            Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+            Math.sin(dLon/2) * Math.sin(dLon/2)
+        ;
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    var d = R * c; // Distance in km
+    return d;
+}
+
+function deg2rad(deg) {
+    return deg * (Math.PI/180)
 }
 
 function isLocationWithinDistanceFromOtherLocation(lat1, lon1, lat2, lon2, maxDistance) {
-    return maxDistance >= getDistance(lat1, lon1, lat2, lon2);
+    return maxDistance >= getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2);
 }

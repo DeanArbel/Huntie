@@ -11,6 +11,8 @@ import java.util.*;
  */
 @Entity
 public class Game {
+    public final static String sr_TreasureLevelAnswer = "treasureAnswer";
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int m_GameId;//was final String
@@ -164,10 +166,6 @@ public class Game {
         return m_TreasureType;
     }
 
-    public void SetTreasureType(String i_TreasureType) {
-        this.m_TreasureType = i_TreasureType;
-    }
-
     public GameStatus GetGameStatus() {
         return m_GameStatus;
     }
@@ -268,25 +266,24 @@ public class Game {
     public boolean TryToSolveRiddle(User i_User, Riddle i_Riddle, String i_Answer) {
         boolean userSolvedRiddle = false;
         assertRiddleCanBeSolved(i_Riddle, i_User); // Al
+        Team playerTeam = getPlayerTeam(i_User);
+        int playerRiddleLevel = m_IsTeamGame ? playerTeam.GetTeamRiddleLevel() : playerTeam.GetPlayerRiddleLevel(i_User);
+        if (m_Levels.get(playerRiddleLevel).IsTreasureLevel()) {
+            i_Answer = sr_TreasureLevelAnswer;
+        }
         if (i_Riddle.CheckAnswer(i_Answer)) {
-            Team playerTeam = getPlayerTeam(i_User);
             i_Riddle.UserSolvedRiddle(i_User, playerTeam);
             userSolvedRiddle = true;
-            int nextLevel = playerTeam.GetTeamRiddleLevel() + 1;
+            int nextLevel = playerRiddleLevel + 1;
             Level level = m_Levels.size() > nextLevel ?  m_Levels.get(nextLevel) : null;
             if (m_IsTeamGame) {
                 // Updates riddles solved and to be solved for team
                 if (i_Riddle.IsSolvedByTeam(playerTeam)) {//was playerTeam.GetTeamName()
-                    //Integer nextRiddleSetSize = m_Levels.size() > nextLevel ? m_Levels.get(nextLevel).size() : null;
                     playerTeam.TeamSolvedRiddle(level);
                 }
             }
             // Updates riddles solved and to be solved for player
-            else {
-                //Integer nextRiddleSetSize = playerTeam.GetPlayerRiddleLevel(i_User) + 1;
-                //nextRiddleSetSize = m_Levels.size() > nextRiddleSetSize ? nextRiddleSetSize : null;
-                playerTeam.PlayerSolvedRiddle(i_User, level);
-            }
+            playerTeam.PlayerSolvedRiddle(i_User, level);
         }
 
         return userSolvedRiddle;
@@ -416,10 +413,28 @@ public class Game {
     public Level GetLevel(int levelIndex) {
         if (m_Levels.size() <= levelIndex) {
             for (int i = m_Levels.size(); i <= levelIndex; i++) {
-                m_Levels.add(DatabaseFacade.CreateNewLevel(i - 1));
+                m_Levels.add(DatabaseFacade.CreateNewLevel(i - 1, false));
             }
         }
 
         return m_Levels.get(levelIndex);
+    }
+
+    public void AddTreasureLevel(String i_TeasureType, String i_TreasureLocation) {
+        int levelNumber = m_Levels.size();
+        Level level = DatabaseFacade.CreateNewLevel(levelNumber - 1, true);
+        m_TreasureType = i_TeasureType;
+        m_Levels.add(level);
+        Riddle riddle = DatabaseFacade.CreateNewRiddle();
+        riddle.setM_Location(i_TreasureLocation);
+        riddle.setName("Final Treasure");
+        riddle.setAnswer(sr_TreasureLevelAnswer);
+        riddle.setAppearanceNumber(levelNumber);
+        riddle.setIsTextType(true);
+        level.AddRiddle(riddle);
+    }
+
+    public Object IsTreasureLevel(int i_TeamLevel) {
+        return m_Levels.get(i_TeamLevel).IsTreasureLevel();
     }
 }

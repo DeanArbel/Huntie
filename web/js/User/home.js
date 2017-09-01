@@ -12,6 +12,8 @@ $(document).on('click', "#createGame-btn", function() {
        error: function(xhr, status, error) {
            if (xhr.status === 499) {
                $("#myModal").modal('show');
+           } else if (xhr.status === 480) {
+               window.location.href = "/index.jsp";
            }
            else if (xhr.status === 400) {
                console.log(xhr.getResponseHeader(error));

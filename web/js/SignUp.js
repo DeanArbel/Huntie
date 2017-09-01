@@ -12,8 +12,8 @@ $("#submit").on('click', function () {
                 success: function () {
                     window.location.href =   "/login.html";
                 },
-                error: function (data) {
-                    alert(data);
+                error: function(xhr, status, error) {
+                    alert(xhr.getResponseHeader("errortext"));
                 }
             });
         }

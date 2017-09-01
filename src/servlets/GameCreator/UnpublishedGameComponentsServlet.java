@@ -124,7 +124,7 @@ public class UnpublishedGameComponentsServlet extends HttpServlet {
         HashMap<String, Object> settingsMap = gson.fromJson(request.getParameter("settings"), HashMap.class);
         game.SetStartDate(new Date(((Double)settingsMap.get("startTime")).longValue()));
         game.SetDuration(((Double)settingsMap.get("duration")));
-        game.SetTreasureType((String)settingsMap.get("treasureType"));
+        game.AddTreasureLevel((String)settingsMap.get("treasureType"), (String)settingsMap.get("treasureLocation"));
         game.SetGameName((String)settingsMap.get("gameName"));
         game.PublishGame();
         //TODO: Add check that game is really ready for publish

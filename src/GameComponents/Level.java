@@ -18,6 +18,8 @@ public class Level {
 
     private int m_Index;
 
+    private boolean m_treasureLevel = false;
+
     @OneToMany
     private List<Riddle> m_Riddles;
 
@@ -26,9 +28,16 @@ public class Level {
         m_Index = i_Index;
     }
 
+    public Level(int i_Index, boolean treasureLevel) {
+        this(i_Index);
+        m_treasureLevel = treasureLevel;
+    }
+
     public Level() {
         m_Riddles = new ArrayList<>();
     }
+
+    public boolean IsTreasureLevel() { return m_treasureLevel; }
 
     public void AddRiddle(Riddle i_Riddle){
         m_Riddles.add(i_Riddle);
@@ -118,6 +127,9 @@ public class Level {
     }
 
     public Riddle GetRiddleById(Integer i_id) {
+        if (m_treasureLevel) {
+            return m_Riddles.get(0);
+        }
         for (Riddle riddle : m_Riddles) {
             if (riddle.getId() == i_id) {
                 return riddle;

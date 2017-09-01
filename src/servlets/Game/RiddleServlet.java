@@ -18,7 +18,6 @@ import java.util.Map;
 
 import static servlets.Util.ServletUtils.SetError;
 
-
 /**
  * Created by Dean on 03/03/2017.
  */
@@ -28,7 +27,6 @@ public class RiddleServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
-        //String username = SessionUtils.getUsername(request);
         String token = request.getParameter("token");
         if (token == null || !DatabaseFacade.IsTokenValid(token)) {
             response.sendRedirect("index.jsp"); //TODO: Change this according to login system
@@ -41,7 +39,9 @@ public class RiddleServlet extends HttpServlet {
                 if (game == null) {
                     throw new ServletException("No game was found");
                 }
-                handlePostRequest(request, user, out, game, game.GetUserRiddleById(Integer.parseInt(request.getParameter("riddleCode")),user));
+                String riddleCode = request.getParameter("riddleCode");
+                Integer intRiddleCode = riddleCode != null ? Integer.parseInt(riddleCode) : null;
+                handlePostRequest(request, user, out, game, game.GetUserRiddleById(intRiddleCode ,user));
                 DatabaseFacade.EndTransaction();
             } catch (Exception e) {
                 DatabaseFacade.RollbackTransaction();
@@ -51,9 +51,11 @@ public class RiddleServlet extends HttpServlet {
     }
 
     private void handlePostRequest(HttpServletRequest request, User user, PrintWriter out, Game game, Riddle riddle) {
-        //TODO: Handle photo riddle
-
-        out.println(gson.toJson(game.TryToSolveRiddle(user, riddle, request.getParameter("answer"))));
+        String answer = request.getParameter("answer");
+        if (answer == null) {
+            answer = new String();
+        }
+        out.println(gson.toJson(game.TryToSolveRiddle(user, riddle, answer)));
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -90,7 +92,7 @@ public class RiddleServlet extends HttpServlet {
         dataMap.put("question", riddle.getTextQuestion());
         dataMap.put("optionalImage", riddle.GetOptionalQuestionImage());
         if (!riddle.isIsTextType()) {
-            dataMap.put("answer", riddle.getAnswer());
+            dataMap.put(Game.sr_TreasureLevelAnswer, riddle.getAnswer());
         }
         out.println(gson.toJson(dataMap));
     }

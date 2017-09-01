@@ -95,8 +95,8 @@ public final class DatabaseFacade {
         return riddle;
     }
 
-    public static Level CreateNewLevel(int i_LevelIdx) {
-        Level level = new Level(i_LevelIdx);
+    public static Level CreateNewLevel(int i_LevelIdx, boolean i_TreasureLevel) {
+        Level level = new Level(i_LevelIdx, i_TreasureLevel);
         refreshEntityManagerAndTransAction();
         m_HuntieEntityManager.persist(level);
         return level;
@@ -209,7 +209,7 @@ public final class DatabaseFacade {
         m_HuntieEntityManager = m_HuntieEntityManagerFactory.createEntityManager();
         SessionToken token = m_HuntieEntityManager.find(SessionToken.class, i_Token);
         if(token != null){
-            res = token.IsExpiried();
+            res = !token.IsExpiried();
         }
         m_HuntieEntityManager.close();
 
@@ -242,7 +242,7 @@ public final class DatabaseFacade {
 //    }
 
     public static User GetUserFromToken(String i_Token){
-        m_HuntieEntityManager = m_HuntieEntityManagerFactory.createEntityManager();
+        refreshEntityManagerAndTransAction();
         SessionToken token = m_HuntieEntityManager.find(SessionToken.class, i_Token);
 
         return token.GetUser();
@@ -269,8 +269,11 @@ public final class DatabaseFacade {
     }
 
     public static void RollbackTransaction() {
-        if (m_HuntieEntityManager != null && !m_HuntieEntityManager.isOpen()) {
-            m_HuntieEntityManager.getTransaction().rollback();
+        if (m_HuntieEntityManager != null && m_HuntieEntityManager.isOpen()) {
+            EntityTransaction transaction = m_HuntieEntityManager.getTransaction();
+            if (transaction != null && transaction.isActive()) {
+                m_HuntieEntityManager.getTransaction().rollback();
+            }
             m_HuntieEntityManager.close();
         }
     }

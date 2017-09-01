@@ -104,7 +104,7 @@ function onAddRiddleButtonClick() {
 function sendRiddleToServer(riddle) {
     $.ajax({
         url: GAME_CREATOR_COMPONENTS_URL,
-        data: "requestType=GameBuilder&action=add&riddle=" + JSON.stringify(riddle),token: sessionStorage.getItem("access token"),
+        data: {"requestType": "GameBuilder", "action": "add", "riddle": JSON.stringify(riddle), token: sessionStorage.getItem("access token")},
         type: 'POST',
         success: onSuccessfulRiddlePost(riddle),
         error: function(err) {
@@ -403,7 +403,7 @@ function showPosition1(position) {
     var mapWidth = document.body.clientWidth < 500 ? 240 : 400;
     var mapHeight = parseInt((mapWidth * 3) / 4);
     locationCoords = position;
-    var img_url = "https://maps.googleapis.com/maps/api/staticmap?markers=color:blue%7Clabel:S%7C"
+    var img_url = "https://maps.googleapis.com/maps/api/staticmap?markers=color:blue%7Clabel:Riddle%7C"
         +position+"&zoom=14&size=" + mapWidth + "x" + mapHeight + "&sensor=false&key=AIzaSyAsfLflI-UcGro_hBwjIQyIFVndLphZjOE";
 
     mapHolder.innerHTML = "<img src='"+img_url+"'>";

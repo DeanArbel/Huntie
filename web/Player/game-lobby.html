@@ -16,7 +16,7 @@
     <h2 class="text-center" style="margin-top: 120px">Loading Game...</h2>
     <div class="loader centered "></div>
 </div>
-<div class="container lobby-container">
+<div class="container navbar-container">
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <a class="brand" href="/index.jsp">
             <img src="/assets/images/MiniLogo.png" class="huntie-logo" alt="Huntie">
@@ -28,7 +28,8 @@
             <li style="top: -5px;"><button disabled style="margin-right: 20px" id="solveRiddle-btn" class="btn navbar-btn btn-success btn-sm">Solve Riddle<span class="glyphicon glyphicon-chevron-right"></span></button></li>
         </ul>
     </nav>
-    <h2 hidden id="player-message-won" style="margin-top: 80px; background-color: yellow" class="text-center">You Won The Game!</h2>
+</div>
+<div class="container lobby-container">
     <h2 hidden id="game-ended-message" style="margin-top: 80px; background-color: yellow" class="text-center">Game Has Ended!</h2>
     <h2 id="game-name" style="margin-top: 80px" class="text-center">Game Name</h2>
     <h3 id="game-start-time" class="text-center">Game Start Time</h3>
@@ -63,7 +64,7 @@
         </div>
     </div>
 </div>
-<div class="container">
+<div class="container map-container">
     <div class="col-xs-12">
         <h3 class="text-center" id="player-message"></h3>
         <h4 hidden class="text-center riddle-content">Riddles Locations</h4>
@@ -79,6 +80,16 @@
                 </tbody>
             </table>
         </div>
+    </div>
+</div>
+<div hidden class="container treasure-container">
+    <div class="col-xs-12">
+        <br>
+        <br>
+        <br>
+        <h3 id="player-message-won" class="text-center">You Won The Game</h3>
+        <h4 class="text-center">AND FOUND THE TREASURE!!!</h4>
+        <img class="center-block" id="treasure-img" src="/assets/gifs/animated-trophy.gif" alt="Treasure!!!" width="250" height="250">
     </div>
 </div>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAsfLflI-UcGro_hBwjIQyIFVndLphZjOE&callback=initMap"></script>

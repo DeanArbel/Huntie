@@ -7,7 +7,7 @@ var MAX_DURATION = 72;
 var MIN_DURATION = 1;
 
 var mTreasureType;
-var mTreasureLocation;
+var mTreasureLocation = "";
 var mGameName;
 var mGameDuration;
 var mStartDate;
@@ -67,7 +67,7 @@ function buildGameSettings() {
     if (!isDateOk(settings.startTime)) {
         errMsg += "- Please give a valid start date and time\n";
     }
-    //TODO: Check treasure location
+    settings.treasureLocation = mTreasureLocation;
     return [settings, errMsg];
 }
 
@@ -77,3 +77,22 @@ function isDateOk(date) {
 }
 
 function dropdownChange(innerText) {}
+
+function setTreasureLocation() {
+    getLocation();
+}
+
+function showPosition(position) {
+    mTreasureLocation = position.coords.latitude + "," + position.coords.longitude;
+    var mapWidth = document.body.clientWidth < 400 ? 140 : 300;
+    var mapHeight = parseInt((mapWidth * 3) / 4);
+    var img_url = "https://maps.googleapis.com/maps/api/staticmap?markers=color:green%7Clabel:Treasure%7C"
+        +mTreasureLocation+"&zoom=14&size=" + mapWidth + "x" + mapHeight + "&sensor=false&key=AIzaSyAsfLflI-UcGro_hBwjIQyIFVndLphZjOE";
+
+    $("#mapholder")[0].innerHTML = "<img src='"+img_url+"'>";
+    showLocationElems();
+}
+
+function showLocationElems() {
+    $('.location-info').show();
+}

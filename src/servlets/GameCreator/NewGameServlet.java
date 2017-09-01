@@ -18,11 +18,9 @@ public class NewGameServlet extends javax.servlet.http.HttpServlet {
     @Override
     protected void doPost(javax.servlet.http.HttpServletRequest request, javax.servlet.http.HttpServletResponse response) throws javax.servlet.ServletException, IOException {
         response.setContentType("application/json");
-        //TODO: Fix this
-        //String username = SessionUtils.getUsername(request);
         String token = request.getParameter("token");
         if (token == null || !DatabaseFacade.IsTokenValid(token)) {
-            response.sendRedirect("index.jsp"); //TODO: Change this according to login system
+            SetError(response, 480, "User has to login");
         } else {
             try {
                 User user = DatabaseFacade.GetUserFromToken(token);
