@@ -134,7 +134,9 @@ function isLocationWithinDistanceFromOtherLocation(lat1, lon1, lat2, lon2, maxDi
     return maxDistance >= getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2);
 }
 
-document.onload(function () {
+window.addEventListener('load', tokenCheck);
+
+function tokenCheck() {
     var token = sessionStorage.getItem("access token");
     if(token !== null) {
         $.ajax({
@@ -149,4 +151,4 @@ document.onload(function () {
     else{
         window.location.href = "/login.html";
     }
-});
+}
