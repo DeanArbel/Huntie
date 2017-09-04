@@ -11,7 +11,7 @@ $("#sign-in-btn").on('click', function() {
             window.location.href = "/home.html";
         },
         error: function(msg) {
-            alert(msg);
+            alert(msg.toString());
         }
     });
 });
@@ -60,3 +60,16 @@ function checkLoginState(data) {
     }
 }
 
+document.onload(function () {
+    var token = sessionStorage.getItem("access token");
+    if(token !== null) {
+        $.ajax({
+            url: "TokenVerification",
+            type: 'POST',
+            data: {token: token},
+            success: function () {
+                window.location.href = "/home.html";
+            }
+        })
+    }
+});

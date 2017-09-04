@@ -4,6 +4,11 @@ import GameComponents.*;
 import GameComponents.Utils.RandomString;
 
 import javax.persistence.*;
+import java.util.Date;
+import java.util.Timer;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Dean on 18/2/2017.
@@ -11,6 +16,18 @@ import javax.persistence.*;
 public final class DatabaseFacade {
     private static EntityManagerFactory m_HuntieEntityManagerFactory = Persistence.createEntityManagerFactory("Huntie.odb");
     private static EntityManager m_HuntieEntityManager;
+   // private Timer timer = new Timer().scheduleAtFixedRate(()->refrashTokens(),(long)3,(long)3);
+//        ses.scheduleWithFixedDelay(new Runnable() {
+//        @Override
+//        public void run() {
+//            System.out.println(new Date());
+//        }
+//    }, 0, 1, TimeUnit.SECONDS);
+
+//    public DatabaseFacade(){
+//        final ScheduledExecutorService ses = Executors.newSingleThreadScheduledExecutor();
+//        ses.scheduleWithFixedDelay(()->refrashTokens(),30,60,TimeUnit.MINUTES);
+//    }
 
     public static User GetUser(String i_UserEmail) {
         User user;
@@ -227,19 +244,19 @@ public final class DatabaseFacade {
             m_HuntieEntityManager.close();
         }
     }
-//
-//    public static void RefrashTokens(){
-//        m_HuntieEntityManager = m_HuntieEntityManagerFactory.createEntityManager();
-//        TypedQuery<SessionToken> query = m_HuntieEntityManager.createQuery("select s from SessionToken s ", SessionToken.class);
-//        m_HuntieEntityManager.getTransaction().begin();
-//        for(SessionToken sessionToken:query.getResultList()){
-//            if(sessionToken.IsExpiried()){
-//                m_HuntieEntityManager.remove(sessionToken);
-//            }
-//        }
-//        m_HuntieEntityManager.getTransaction().commit();
-//        m_HuntieEntityManager.close();
-//    }
+
+    private static void refrashTokens(){
+        m_HuntieEntityManager = m_HuntieEntityManagerFactory.createEntityManager();
+        TypedQuery<SessionToken> query = m_HuntieEntityManager.createQuery("select s from SessionToken s ", SessionToken.class);
+        m_HuntieEntityManager.getTransaction().begin();
+        for(SessionToken sessionToken:query.getResultList()){
+            if(sessionToken.IsExpiried()){
+                m_HuntieEntityManager.remove(sessionToken);
+            }
+        }
+        m_HuntieEntityManager.getTransaction().commit();
+        m_HuntieEntityManager.close();
+    }
 
     public static User GetUserFromToken(String i_Token){
         refreshEntityManagerAndTransAction();

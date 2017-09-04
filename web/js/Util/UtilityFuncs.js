@@ -133,3 +133,20 @@ function deg2rad(deg) {
 function isLocationWithinDistanceFromOtherLocation(lat1, lon1, lat2, lon2, maxDistance) {
     return maxDistance >= getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2);
 }
+
+document.onload(function () {
+    var token = sessionStorage.getItem("access token");
+    if(token !== null) {
+        $.ajax({
+            url: "TokenVerification",
+            type: 'POST',
+            data: {token: token},
+            fail: function () {
+                window.location.href = "/login.html";
+            }
+        })
+    }
+    else{
+        window.location.href = "/login.html";
+    }
+});

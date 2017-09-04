@@ -81,3 +81,20 @@ function pictureComparison(img1, img2) {
     console.log(found ? "Match found" : "Match not found");
     return found;
 }
+
+// document.onload(function () {
+//     var token = sessionStorage.getItem("access token");
+//     if(token !== null) {
+//         $.ajax({
+//             url: "Token",
+//             type: 'POST',
+//             data: {token: token},
+//             fail: function () {
+//                 window.location.href = "/login.html";
+//             }
+//         })
+//     }
+//     else{
+//         window.location.href = "/login.html";
+//     }
+// });
