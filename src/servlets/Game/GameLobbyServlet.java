@@ -91,7 +91,7 @@ public class GameLobbyServlet extends HttpServlet {
         }
         responseData.put("playerHasWon", playerHasWon);
         if (!playerHasWon) {
-            int teamLevel = game.GetTeamLevel(user);
+            int teamLevel = game.GetTeamLevelIndex(user);
             responseData.put("myLevel", teamLevel);
             responseData.put("riddlesNamesAndLocations", riddlesNameAndLocations);
             responseData.put("riddlesNamesAndIds", riddleNamesAndIds);
