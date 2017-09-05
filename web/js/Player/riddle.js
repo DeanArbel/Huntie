@@ -107,22 +107,5 @@ function submitAnswer() {
 }
 
 function goBackToLobby() {
-    window.location.href =   "/Player/game-lobby.html?gameCode=" + mGameCode;
+    window.location.href =   "/Player/GameLobby.html?gameCode=" + mGameCode;
 }
-
-document.onload(function () {
-    var token = sessionStorage.getItem("access token");
-    if(token !== null) {
-        $.ajax({
-            url: "Token",
-            type: 'POST',
-            data: {token: token},
-            fail: function () {
-                window.location.href = "/login.html";
-            }
-        })
-    }
-    else{
-        window.location.href = "/login.html";
-    }
-});
