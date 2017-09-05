@@ -92,7 +92,7 @@ public class RiddleServlet extends HttpServlet {
         dataMap.put("question", riddle.getTextQuestion());
         dataMap.put("optionalImage", riddle.GetOptionalQuestionImage());
         if (!riddle.isIsTextType()) {
-            dataMap.put(Game.sr_TreasureLevelAnswer, riddle.getAnswer());
+            dataMap.put("answer", riddle.getAnswer());
         }
         out.println(gson.toJson(dataMap));
     }

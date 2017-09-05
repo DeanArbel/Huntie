@@ -59,7 +59,7 @@ function getGrayImg(img) {
     return blurred1;
 }
 
-function pictureComparison(img1, img2) {
+function pictureComparison(img1, img2, imgCmpBase) {
     tracking.Brief.N = 512;
     tracking.Fast.THRESHOLD = 30;
     var grayImg1 = getGrayImg(img1);
@@ -77,7 +77,7 @@ function pictureComparison(img1, img2) {
             cntr++;
         }
     }
-    var found = matches.length / smallestCornersCnt > 0.25 && cntr > matches.length / 2;
+    var found = matches.length / smallestCornersCnt > imgCmpBase && cntr > matches.length / (0.5 / imgCmpBase);
     console.log(found ? "Match found" : "Match not found");
     return found;
 }
