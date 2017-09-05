@@ -11,7 +11,7 @@
     <script src="../js/Util/UtilityFuncs.js"></script>
     <script src="../js/trackingjs/build/tracking-min.js"></script>
     <script src="../js/Util/imageUtil.js"></script>
-    <script src="../js/Player/riddle.js"></script>
+    <script src="../js/Player/Riddle.js"></script>
 <body>
 <div class="loading-area">
     <h2 class="text-center" style="margin-top: 100px">Loading Riddle...</h2>
@@ -36,7 +36,6 @@
                 </div>
                 <div class="modal-footer center-block">
                     <button type="button" class="btn btn-default" id="modal-btn-lobby" onclick="goBackToLobby();">Go Back To Lobby</button>
-                    <button type="button" class="btn btn-default" id="modal-btn-objection" onclick="submitAnswerEZ();">Objection!</button>
                     <button type="button" class="btn btn-default" id="modal-btn-ok" data-dismiss="modal">OK</button>
                 </div>
             </div>
@@ -59,13 +58,12 @@
             <label for="riddle-answer-photo-button">Your Answer:</label>
             <div hidden class="panel panel-default">
                 <div class="panel-body text-center ">
-                    <input type='file' accept="image/*" id="riddle-answer-photo-button" onchange="readPictureURL(this, '#riddle-answer-photo-image'); onPhotoAnswerInput();" />
+                    <input type='file' id="riddle-answer-photo-button" onchange="readPictureURL(this, '#riddle-answer-photo-image'); onPhotoAnswerInput();" />
                     <br>
+                    <img hidden id="riddle-answer-photo-image" src="#" alt="your image" />
                 </div>
             </div>
             <button class="btn btn-info" id="riddle-tmp-btn" onclick="document.getElementById('riddle-answer-photo-button').click();">Choose Photo</button>
-            <br>
-            <img hidden id="riddle-answer-photo-image" src="#" alt="your image" />
         </div>
     </div>
     <div class="text-center">
