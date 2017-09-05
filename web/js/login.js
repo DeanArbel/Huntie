@@ -49,6 +49,7 @@ function checkLoginState(data) {
             success:function (data) {
                 sessionStorage.setItem("access token",data);
                 window.location.href = "/home.html";
+                FB.logout()
             },
             error: function () {
                 alert("Invalid Login")
@@ -60,7 +61,7 @@ function checkLoginState(data) {
     }
 }
 
-window.addEventListener('load', tokenCheck);
+window.addEventListener('load', loadRoutine);
 function tokenCheck() {
     var token = sessionStorage.getItem("access token");
     if (token !== null) {
@@ -73,4 +74,36 @@ function tokenCheck() {
             }
         })
     }
+}
+
+function rememberMe() {
+
+    if (localStorage.chkbx && localStorage.chkbx != '') {
+        $('#remember_me').attr('checked', 'checked');
+        $('#textInputUserEmail').val(localStorage.usrname);
+        $('#textInputPassword').val(localStorage.pass);
+    } else {
+        $('#remember_me').removeAttr('checked');
+        $('#textInputUserEmail').val('');
+        $('#textInputPassword').val('');
+    }
+}
+
+$('#remember_me').click(function() {
+
+    if ($('#remember_me').is(':checked')) {
+        // save username and password
+        localStorage.usrname = $('#textInputUserEmail').val();
+        localStorage.pass = $('#textInputPassword').val();
+        localStorage.chkbx = $('#remember_me').val();
+    } else {
+        localStorage.usrname = '';
+        localStorage.pass = '';
+        localStorage.chkbx = '';
+    }
+});
+
+function loadRoutine() {
+    rememberMe();
+    tokenCheck();
 }

@@ -2,6 +2,7 @@
 <head>
     <script src="js/jquery-3.1.1.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
+    <script src="js/login.js"></script>
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/Login.css">
     <link rel="stylesheet" href="css/Util/UtilityClasses.css">
@@ -40,17 +41,22 @@
 
             <div class="row">
 
-                <div class="col-md-5  col-lg-5 col-xs-5" >
+                <div class="col-md-5 col-xs-12" >
                     <fb:login-button scope="public_profile,email" onlogin="checkLoginState">
                     </fb:login-button>
                 </div>
-
-                <div class="col-md-7 col-lg-7 col-xs-7" style="border-left:1px solid #ccc;height:160px">
+                <div class="visible-xs-block visible-sm-block ">
+                    <br />
+                    <br />
+                    <div style="border-bottom:1px solid #ccc; width: 100%;"></div>
+                    <br />
+                </div>
+                <div class="col-md-7  col-xs-12" style="border-left:1px solid #ccc;height:160px">
                     <div class="form-horizontal">
                         <fieldset>
 
                             <input id="textInputUserEmail" name="textInputUserEmail" type="text" placeholder="Enter Email" class="form-control input-md">
-                            <div class="spacing"><input type="checkbox" name="checkboxes" id="checkboxes-0" value="1"><small> Remember me</small></div>
+                            <div class="spacing"><input type="checkbox" name="checkboxes" id="remember_me" value="1"><small> Remember me</small></div>
                             <input id="textInputPassword" name="textInputPassword" type="text" placeholder="Enter Password" class="form-control input-md">
                             <div class="spacing"><a href="#" data-target="#pwdModal" data-toggle="modal"><small> Forgot Password?</small></a><br/></div>
                             <button id="sign-in-btn" name="sign-in-btn" class="btn btn-info btn-sm pull-right">Sign In</button>
