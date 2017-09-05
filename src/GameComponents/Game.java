@@ -272,18 +272,11 @@ public class Game {
             i_Answer = sr_TreasureLevelAnswer;
         }
         if (i_Riddle.CheckAnswer(i_Answer)) {
-            i_Riddle.UserSolvedRiddle(i_User, playerTeam);
+            int nextLevelIdx = playerRiddleLevel + 1;
+            Level nextLevel = m_Levels.size() > nextLevelIdx ?  m_Levels.get(nextLevelIdx) : null;
             userSolvedRiddle = true;
-            int nextLevel = playerRiddleLevel + 1;
-            Level level = m_Levels.size() > nextLevel ?  m_Levels.get(nextLevel) : null;
-            if (m_IsTeamGame) {
-                // Updates riddles solved and to be solved for team
-                if (i_Riddle.IsSolvedByTeam(playerTeam)) {//was playerTeam.GetTeamName()
-                    playerTeam.TeamSolvedRiddle(level);
-                }
-            }
-            // Updates riddles solved and to be solved for player
-            playerTeam.PlayerSolvedRiddle(i_User, level);
+            // Updates riddles solved and to be solved for player and team
+            playerTeam.PlayerSolvedRiddle(i_User, i_Riddle, nextLevel);
         }
 
         return userSolvedRiddle;

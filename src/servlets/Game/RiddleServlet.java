@@ -44,7 +44,7 @@ public class RiddleServlet extends HttpServlet {
                 handlePostRequest(request, user, out, game, game.GetUserRiddleById(intRiddleCode ,user));
                 DatabaseFacade.EndTransaction();
             } catch (Exception e) {
-                DatabaseFacade.RollbackTransaction();
+                    DatabaseFacade.RollbackTransaction();
                 SetError(response, 400, e.getMessage());
             }
         }

@@ -1,7 +1,9 @@
 package GameComponents;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -15,13 +17,14 @@ public class Team {
 
     private String m_TeamName;
 
-//    private final Map<String, Pair<Integer, Integer>> r_PlayerRiddleLevel;
-
     @OneToMany
     private Map<User,Level> m_PlayerLevels;
 
     @ManyToOne
     private Level m_TeamRiddleLevel; // In TeamGame this field is used for player score. In single it is used for checking player riddle level
+
+    @OneToMany
+    private List<Riddle> m_UnsolvedTeamRiddles = new ArrayList<>();
 
     public Team() {
         m_PlayerLevels = new HashMap<>();
@@ -83,9 +86,13 @@ public class Team {
         return m_TeamRiddleLevel.GetIndex();
     }
 
-    public boolean PlayerSolvedRiddle(User i_User, Level i_NextLevel) {
+    public boolean PlayerSolvedRiddle(User i_User, Riddle i_Riddle, Level i_NextLevel) {
         boolean playerHasCompletedGame = false;
         Level playerPrevRiddleLevel = m_PlayerLevels.get(i_User);
+        if (!i_Riddle.IsSolvedByTeam(this)) {
+            playerHasCompletedGame = TeamSolvedRiddle(i_NextLevel, i_Riddle);
+        }
+        i_Riddle.UserSolvedRiddle(i_User, this);
         if (playerPrevRiddleLevel.GetRiddlesNotSolvedByPlayer(i_User).isEmpty()) {
             m_PlayerLevels.put(i_User, i_NextLevel);
             playerHasCompletedGame = i_NextLevel == null;
@@ -94,11 +101,20 @@ public class Team {
         return playerHasCompletedGame;
     }
 
-    public boolean TeamSolvedRiddle(Level i_NextLevel) {
+    public boolean TeamSolvedRiddle(Level i_NextLevel, Riddle i_Riddle) {
         boolean teamHasWon = false;
-        if (m_TeamRiddleLevel.GetRiddlesNotSolvedByTeam(this).isEmpty()) {
+        if (m_UnsolvedTeamRiddles.isEmpty()) {
+            m_UnsolvedTeamRiddles = m_TeamRiddleLevel.GetRiddlesNotSolvedByTeam(this);
+        }
+        if (m_UnsolvedTeamRiddles.contains(i_Riddle)) {
+            m_UnsolvedTeamRiddles.remove(i_Riddle);
+        }
+        if (m_UnsolvedTeamRiddles.isEmpty()) {
             m_TeamRiddleLevel = i_NextLevel;
             teamHasWon = i_NextLevel == null;
+            if (!teamHasWon) {
+                m_UnsolvedTeamRiddles = m_TeamRiddleLevel.GetRiddlesNotSolvedByTeam(this);
+            }
         }
 
         return teamHasWon;

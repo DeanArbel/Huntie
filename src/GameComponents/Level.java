@@ -130,7 +130,7 @@ public class Level {
         if (m_treasureLevel) {
             return m_Riddles.get(0);
         }
-        for (Riddle riddle : m_Riddles) {
+            for (Riddle riddle : m_Riddles) {
             if (riddle.getId() == i_id) {
                 return riddle;
             }

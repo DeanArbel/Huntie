@@ -140,7 +140,7 @@ function tokenCheck() {
     var token = sessionStorage.getItem("access token");
     if(token !== null) {
         $.ajax({
-            url: "TokenVerification",
+            url: "/TokenVerification",
             type: 'POST',
             data: {token: token},
             fail: function () {
