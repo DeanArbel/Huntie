@@ -4,11 +4,6 @@ import GameComponents.*;
 import GameComponents.Utils.RandomString;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.Timer;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Dean on 18/2/2017.
@@ -16,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 public final class DatabaseFacade {
     private static EntityManagerFactory m_HuntieEntityManagerFactory = Persistence.createEntityManagerFactory("Huntie.odb");
     private static EntityManager m_HuntieEntityManager;
+    private static int m_Sessions = 0;
    // private Timer timer = new Timer().scheduleAtFixedRate(()->refrashTokens(),(long)3,(long)3);
 //        ses.scheduleWithFixedDelay(new Runnable() {
 //        @Override
@@ -120,8 +116,13 @@ public final class DatabaseFacade {
     }
 
     public static void EndTransaction() {
-        m_HuntieEntityManager.getTransaction().commit();
-        m_HuntieEntityManager.close();
+        EntityTransaction transaction = m_HuntieEntityManager.getTransaction();
+        if (transaction.isActive()) {
+            transaction.commit();
+        }
+        if (--m_Sessions == 0) {
+            m_HuntieEntityManager.close();
+        }
     }
 
     public static void DeleteGame(Game i_Game) {//was String
@@ -144,7 +145,7 @@ public final class DatabaseFacade {
         m_HuntieEntityManager = m_HuntieEntityManagerFactory.createEntityManager();
         TypedQuery<User> query = m_HuntieEntityManager.createQuery("select u from User u where u.m_UserName = :name", User.class);
         nameIsUnique = query.setParameter("name",i_UserName).getResultList().isEmpty();
-        m_HuntieEntityManager.close();
+        //m_HuntieEntityManager.close();
         return nameIsUnique;
     }
 
@@ -160,7 +161,7 @@ public final class DatabaseFacade {
         m_HuntieEntityManager = m_HuntieEntityManagerFactory.createEntityManager();
         TypedQuery<User> query = m_HuntieEntityManager.createQuery("select u from User u where u.m_EmailAddress = :email", User.class);
         emailIsUnique = query.setParameter("email",i_Email).getResultList().isEmpty();
-        m_HuntieEntityManager.close();
+        //m_HuntieEntityManager.close();
         return emailIsUnique;
     }
 
@@ -188,11 +189,10 @@ public final class DatabaseFacade {
         token.SetUser(i_User);
         token.UpdateExpirationTime();
 
-        m_HuntieEntityManager = m_HuntieEntityManagerFactory.createEntityManager();
+        refreshEntityManagerAndTransAction();
         while(m_HuntieEntityManager.contains(token)) {
             token.SetToken(sessionToken.nextString());
         }
-        m_HuntieEntityManager.getTransaction().begin();
         m_HuntieEntityManager.persist(token);
 
         return token;
@@ -223,25 +223,23 @@ public final class DatabaseFacade {
         boolean res = false;
 
 
-        m_HuntieEntityManager = m_HuntieEntityManagerFactory.createEntityManager();
+        refreshEntityManagerAndTransAction();
         SessionToken token = m_HuntieEntityManager.find(SessionToken.class, i_Token);
         if(token != null){
             res = !token.IsExpiried();
         }
-        m_HuntieEntityManager.close();
+        EndTransaction();
 
         return res;
     }
 
     public static void UpdateToken(String i_Token){
         if(IsTokenValid(i_Token)){
-            m_HuntieEntityManager = m_HuntieEntityManagerFactory.createEntityManager();
+            refreshEntityManagerAndTransAction();
             SessionToken token = m_HuntieEntityManager.find(SessionToken.class, i_Token);
             token.UpdateExpirationTime();
-            m_HuntieEntityManager.getTransaction().begin();
             m_HuntieEntityManager.persist(token);
-            m_HuntieEntityManager.getTransaction().commit();
-            m_HuntieEntityManager.close();
+            EndTransaction();
         }
     }
 
@@ -269,6 +267,7 @@ public final class DatabaseFacade {
         if (m_HuntieEntityManager == null || !m_HuntieEntityManager.isOpen()) {
             m_HuntieEntityManager = m_HuntieEntityManagerFactory.createEntityManager();
         }
+        m_Sessions++;
         EntityTransaction transaction = m_HuntieEntityManager.getTransaction();
         if (!transaction.isActive()) {
             transaction.begin();
@@ -291,7 +290,9 @@ public final class DatabaseFacade {
             if (transaction != null && transaction.isActive()) {
                 m_HuntieEntityManager.getTransaction().rollback();
             }
-            m_HuntieEntityManager.close();
+            if (--m_Sessions == 0) {
+                m_HuntieEntityManager.close();
+            }
         }
     }
 }

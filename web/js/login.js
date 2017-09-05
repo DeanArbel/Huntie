@@ -11,7 +11,7 @@ $("#sign-in-btn").on('click', function() {
             window.location.href = "/home.html";
         },
         error: function(msg) {
-            alert(msg.toString());
+            alert(msg.getResponseHeader("errortext"));
         }
     });
 });
@@ -60,9 +60,10 @@ function checkLoginState(data) {
     }
 }
 
-document.onload(function () {
+window.addEventListener('load', tokenCheck);
+function tokenCheck() {
     var token = sessionStorage.getItem("access token");
-    if(token !== null) {
+    if (token !== null) {
         $.ajax({
             url: "TokenVerification",
             type: 'POST',
@@ -72,4 +73,4 @@ document.onload(function () {
             }
         })
     }
-});
+}

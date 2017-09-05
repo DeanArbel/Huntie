@@ -21,6 +21,9 @@ $(document).on('click', '#game-find-btn', function() {
         url: FIND_GAME_URL,
         data: { gameCode: gameCode.value, token: sessionStorage.getItem("access token")},
         success: function(data) {
+            if (data === "") {
+                confirm("Couldn't find a game with this code");
+            }
             dataMap = JSON.parse(data);
             window.location.href =   dataMap.url + "?gameCode=" + dataMap.gameCode;
         },

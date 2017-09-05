@@ -121,7 +121,7 @@ function initPageElementsFromServer() {
             }
         },
         error: function(err) {
-            mPlayerMessage[0].innerText = err;
+            mPlayerMessage[0].innerText = err.getResponseHeader("errortext") || "Encountered an error";
         }
     });
 }

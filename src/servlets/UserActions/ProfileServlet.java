@@ -41,9 +41,7 @@ public class ProfileServlet extends HttpServlet {
                 DatabaseFacade.UpdateToken(token);
                 User user = DatabaseFacade.GetUserFromToken(token);
                 handleGetRequest(request.getParameter("request"), out, user);
-                DatabaseFacade.EndTransaction();
             } catch (Exception e) {
-                DatabaseFacade.RollbackTransaction();
                 SetError(response, 400, e.getMessage());
             }
         }

@@ -83,4 +83,12 @@
         <servlet-name>FaceBookLoginServlet</servlet-name>
         <url-pattern>/FaceBookLogin</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>TokenVerificationServlet</servlet-name>
+        <servlet-class>servlets.TokenVerificationServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>TokenVerificationServlet</servlet-name>
+        <url-pattern>/TokenVerification</url-pattern>
+    </servlet-mapping>
 </web-app>

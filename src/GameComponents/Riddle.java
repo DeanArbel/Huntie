@@ -95,11 +95,11 @@ public class Riddle {
 
     public boolean IsSolvedPlayer(User i_UserId) {
         return m_SolvedByUser.contains(i_UserId);
-    }//r_SolvedByUserList.contains(i_UserId);
+    }
 
     public boolean IsSolvedByTeam(Team i_TeamName) {
         return m_SolvedByTeam.contains(i_TeamName);
-    }//r_SolvedByTeamList.contains(i_TeamName);
+    }
 
     public boolean CheckAnswer(String i_Answer) {
         if (m_IsTextType) {

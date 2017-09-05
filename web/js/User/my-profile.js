@@ -58,8 +58,8 @@ function initPageElementsFromServer() {
             $(".lobby-container").show();
             getGameTablesFromServer();
         },
-        error: function(err) {
-            alert(err);
+        error: function(xhr) {
+            alert(xhr.getResponseHeader("errortext"));
         }
     });
 }

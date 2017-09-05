@@ -107,5 +107,5 @@ function submitAnswer() {
 }
 
 function goBackToLobby() {
-    window.location.href =   "/Player/GameLobby.html?gameCode=" + mGameCode;
+    window.location.href =   "/Player/game-lobby.html?gameCode=" + mGameCode;
 }

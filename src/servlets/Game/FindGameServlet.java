@@ -40,7 +40,7 @@ public class FindGameServlet extends HttpServlet {
                 DatabaseFacade.EndTransaction();
             } catch (Exception e) {
                 DatabaseFacade.RollbackTransaction();
-                SetError(response, 400, e.getMessage());
+                SetError(response, 400, "Coudln't find game");
             }
         }
     }

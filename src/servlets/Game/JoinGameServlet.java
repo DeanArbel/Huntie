@@ -66,10 +66,10 @@ public class JoinGameServlet extends HttpServlet {
                     throw new ServletException("No game was found");
                 }
                 handleGetRequest(out, DatabaseFacade.GetUserFromToken(token).GetEmailAddress(), game);
+                DatabaseFacade.EndTransaction();
             } catch (Exception e) {
                 SetError(response, 400, e.getMessage());
-            } finally {
-                DatabaseFacade.EndTransaction();
+                DatabaseFacade.RollbackTransaction();
             }
         }
     }
